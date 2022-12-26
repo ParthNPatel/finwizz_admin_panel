@@ -245,7 +245,8 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                         color: AppColor.mainColor,
                                       )
                                     : SizedBox(
-                                        width: 200,
+                                        width: 400,
+                                        height: 45,
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: AppColor.mainColor,
@@ -296,7 +297,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                           child: Text(
                                             'Add',
                                             style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 18,
                                               color: AppColor.whiteColor,
                                               fontWeight: FontWeight.w500,
                                             ),

@@ -749,7 +749,8 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: SizedBox(
-                                  width: 200,
+                                  width: 400,
+                                  height: 45,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColor.mainColor,
@@ -830,7 +831,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     child: Text(
                                       'Add',
                                       style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 18,
                                         color: AppColor.whiteColor,
                                         fontWeight: FontWeight.w500,
                                       ),

@@ -266,7 +266,8 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                         color: AppColor.mainColor,
                                       )
                                     : SizedBox(
-                                        width: 200,
+                                        width: 400,
+                                        height: 45,
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: AppColor.mainColor,
@@ -321,7 +322,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                           child: Text(
                                             'Add',
                                             style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 18,
                                               color: AppColor.whiteColor,
                                               fontWeight: FontWeight.w500,
                                             ),

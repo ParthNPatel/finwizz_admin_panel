@@ -397,7 +397,8 @@ class _MoversScreenState extends State<MoversScreen> {
                                             color: AppColor.mainColor,
                                           )
                                         : SizedBox(
-                                            width: 200,
+                                            width: 400,
+                                            height: 45,
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
@@ -476,7 +477,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                               child: Text(
                                                 'Add',
                                                 style: TextStyle(
-                                                  fontSize: 15,
+                                                  fontSize: 18,
                                                   color: AppColor.whiteColor,
                                                   fontWeight: FontWeight.w500,
                                                 ),

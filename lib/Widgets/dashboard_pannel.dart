@@ -148,7 +148,7 @@ class DashBoardPanel extends StatelessWidget {
                   leading: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Image.asset(
-                      AppImages.news,
+                      AppImages.categories,
                       height: iconHeight,
                       color: AppColor.whiteColor,
                     ),
