@@ -23,6 +23,7 @@ class _MoversScreenState extends State<MoversScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController startPriceController = TextEditingController();
   TextEditingController percentageController = TextEditingController();
   TypeController typeController = Get.put(TypeController());
   InputBorder outline =
@@ -33,6 +34,7 @@ class _MoversScreenState extends State<MoversScreen> {
   AddMoversViewModel addMoversViewModel = Get.put(AddMoversViewModel());
   GetMoversViewModel getMoversViewModel = Get.put(GetMoversViewModel());
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
+  DateTimeRange? _selectedDateRange;
 
   @override
   void initState() {
@@ -272,27 +274,6 @@ class _MoversScreenState extends State<MoversScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              addDataForm(
-                                  header: 'Title',
-                                  hint: 'Title',
-                                  textEditingController: titleController),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              addDataForm(
-                                  header: 'Price',
-                                  hint: 'Price',
-                                  textEditingController: priceController),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              addDataForm(
-                                  header: 'Percentage',
-                                  hint: 'Percentage',
-                                  textEditingController: percentageController),
-                              const SizedBox(
-                                height: 20,
-                              ),
                               const Text(
                                 'Company',
                                 style: TextStyle(
@@ -359,8 +340,85 @@ class _MoversScreenState extends State<MoversScreen> {
                                 height: 20,
                               ),
                               const Text(
-                                'Description',
+                                'Date Rang',
                                 style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  DateTimeRange? result =
+                                      await showDateRangePicker(
+                                    context: context,
+                                    firstDate: DateTime(
+                                        2022, 1, 1), // the earliest allowable
+                                    lastDate: DateTime(
+                                        2030, 12, 31), // the latest allowable
+                                    currentDate: DateTime.now(),
+                                    saveText: 'Done',
+                                  );
+                                  if (result != null) {
+                                    // Rebuild the UI
+                                    print(result.start.toString());
+                                    setStat(() {
+                                      _selectedDateRange = result;
+                                    });
+                                  }
+                                  log('SELECTED DATE :- ${_selectedDateRange}');
+                                },
+                                child: Container(
+                                    height: 40,
+                                    width: 380,
+                                    alignment: Alignment.centerLeft,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        border:
+                                            Border.all(color: AppColor.grey100),
+                                        borderRadius: BorderRadius.circular(7)),
+                                    child: Text(_selectedDateRange == null
+                                        ? 'Pick Date'
+                                        : '${_selectedDateRange!.start.day} / ${_selectedDateRange!.start.month} / ${_selectedDateRange!.start.year}  -  ${_selectedDateRange!.end.day} / ${_selectedDateRange!.end.month} / ${_selectedDateRange!.end.year}')),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              addDataForm(
+                                  header: 'Title',
+                                  hint: 'Title',
+                                  textEditingController: titleController),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              addDataForm(
+                                  header: 'Price Start',
+                                  hint: 'Price Start',
+                                  textEditingController: startPriceController),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              addDataForm(
+                                  header: 'Current Price',
+                                  hint: 'Current Price',
+                                  textEditingController: priceController),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              addDataForm(
+                                  header: 'Percentage',
+                                  hint: 'Percentage',
+                                  textEditingController: percentageController),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                'Description',
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),

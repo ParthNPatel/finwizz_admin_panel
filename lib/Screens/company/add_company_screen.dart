@@ -17,6 +17,7 @@ class AddCompanyScreen extends StatefulWidget {
 
 class _AddCompanyScreenState extends State<AddCompanyScreen> {
   TextEditingController companyNameController = TextEditingController();
+  TextEditingController sortCompanyNameController = TextEditingController();
   AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   GetCompanyResponseModel? getCompanyResponseModel;
@@ -175,7 +176,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
           backgroundColor: Colors.transparent,
           body: Center(
             child: Container(
-              height: 270,
+              height: 380,
               width: 350,
               clipBehavior: Clip.antiAliasWithSaveLayer,
               decoration: BoxDecoration(
@@ -232,6 +233,14 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                             header: 'Company name',
                             textEditingController: companyNameController,
                             hint: 'Company name',
+                          ),
+                          const SizedBox(
+                            height: 35,
+                          ),
+                          addDataForm(
+                            header: 'Short name',
+                            textEditingController: sortCompanyNameController,
+                            hint: 'Short name',
                           ),
                           const SizedBox(
                             height: 35,
