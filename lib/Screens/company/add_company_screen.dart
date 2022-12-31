@@ -1,4 +1,5 @@
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Repo/delete_company_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_company_view_model.dart';
@@ -111,46 +112,97 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  height: 20,
-                                );
-                              },
-                              itemCount: getCompanyResponseModel.data!.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: width,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        dividerColor: Colors.transparent),
-                                    child: Container(
-                                      height: 50,
-                                      width: width,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 25),
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        color: AppColor.whiteColor,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        '${getCompanyResponseModel.data![index].name}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 20,
+                            getCompanyResponseModel.data!.isEmpty == true
+                                ? Center(
+                                    child: Text('No Company Added'),
+                                  )
+                                : ListView.separated(
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(
+                                        height: 20,
+                                      );
+                                    },
+                                    itemCount:
+                                        getCompanyResponseModel.data!.length,
+                                    shrinkWrap: true,
+                                    reverse: true,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        width: width,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
-                                      ),
-                                    ),
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                              dividerColor: Colors.transparent),
+                                          child: Container(
+                                            height: 50,
+                                            width: width,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 25),
+                                            alignment: Alignment.centerLeft,
+                                            decoration: BoxDecoration(
+                                              color: AppColor.whiteColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  '${getCompanyResponseModel.data![index].name}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                InkWell(
+                                                  onTap: () {
+                                                    deleteDialog(
+                                                        onPress: () async {
+                                                          await DeleteCompanyRepo()
+                                                              .deleteCompanyRepo(
+                                                                  text:
+                                                                      '${getCompanyResponseModel.data![index].id}');
+
+                                                          await getCompanyViewModel
+                                                              .getCompanyViewModel(
+                                                                  isLoading:
+                                                                      false);
+                                                        },
+                                                        header:
+                                                            'Are you sure to delete this company ?',
+                                                        context: context);
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3),
+                                                      border: Border.all(
+                                                        color:
+                                                            AppColor.mainColor,
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.delete,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
                           ],
                         ),
                       ),
@@ -268,7 +320,12 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                                 "name": companyNameController
                                                     .text
                                                     .trim()
-                                                    .toString()
+                                                    .toString(),
+                                                "shortName":
+                                                    sortCompanyNameController
+                                                        .text
+                                                        .trim()
+                                                        .toString()
                                               });
 
                                               if (addCompanyViewModel
@@ -328,4 +385,31 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
       },
     );
   }
+}
+
+Future deleteDialog({BuildContext? context, onPress, String? header}) {
+  return showDialog(
+    context: context!,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(header!),
+        actions: [
+          TextButton(
+            onPressed: onPress,
+            child: Text(
+              'Yes',
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: Text(
+              'No',
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

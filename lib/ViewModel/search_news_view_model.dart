@@ -9,7 +9,7 @@ class SearchNewsController extends GetxController {
   Future<dynamic> apiCalling({String text = ''}) async {
     var headers = {
       'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiJ9.NjM5NTc2ODVlYmQ2YzgzNzUwOWUwYmRj.1iadelf8X5NZXjvmoOOCIzDHtnaPkv5Hm0-dPWQ5cLE'
+          'Bearer eyJhbGciOiJIUzI1NiJ9.NjNiMDI2Y2NiNDQ0OTdlMDliODNjZWVh.WWMYdR8wZdejv6bT7lEd8bAqMuNfcXRGXffQWLgIzpA'
     };
     var response = await http.get(
         Uri.parse('http://3.109.139.48:4000/news/search?companyId=&text=$text'),

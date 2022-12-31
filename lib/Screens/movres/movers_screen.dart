@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Repo/delete_movers_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
+import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_movers_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
@@ -170,26 +172,90 @@ class _MoversScreenState extends State<MoversScreen> {
                               color: AppColor.whiteColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  '${controller.moversData['data'][index]['title']}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${controller.moversData['data'][index]['title']}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '${controller.moversData['data'][index]['description']}',
+                                        maxLines: 4,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 5,
+                                SizedBox(
+                                  width: 20,
                                 ),
-                                Text(
-                                  '${controller.moversData['data'][index]['description']}',
-                                  maxLines: 4,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 17,
+                                InkWell(
+                                  onTap: () async {
+                                    deleteDialog(
+                                        onPress: () async {
+                                          await DeleteMoversRepo().deleteMoversRepo(
+                                              text:
+                                                  '${controller.moversData['data'][index]['_id']}');
+                                          await getMoversViewModel
+                                              .getMoversViewModel(
+                                                  isLoading: false);
+                                        },
+                                        header:
+                                            'Are you sure to delete this mover ?',
+                                        context: context);
+                                  },
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: AppColor.mainColor,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.delete,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: AppColor.mainColor,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.edit,
+                                        size: 20,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -487,16 +553,57 @@ class _MoversScreenState extends State<MoversScreen> {
                                                                 .toString(),
                                                         "companyId":
                                                             "${getCompanyViewModel.selectedCompanyValue}",
-                                                        "price": priceController
-                                                            .text
-                                                            .trim()
-                                                            .toString(),
+                                                        "currentPrice":
+                                                            priceController.text
+                                                                .trim()
+                                                                .toString(),
                                                         "percentage":
                                                             percentageController
                                                                 .text
                                                                 .trim()
-                                                                .toString()
+                                                                .toString(),
+                                                        "startDate":
+                                                            '${_selectedDateRange!.start.day}-${_selectedDateRange!.start.month}-${_selectedDateRange!.start.year}',
+                                                        "endDate":
+                                                            '${_selectedDateRange!.end.day}-${_selectedDateRange!.end.month}-${_selectedDateRange!.end.year}',
+                                                        "startPrice":
+                                                            startPriceController
+                                                                .text
+                                                                .trim()
+                                                                .toString(),
                                                       });
+
+                                                  log('ADD MOVERS BODY :- ${{
+                                                    "title": titleController
+                                                        .text
+                                                        .trim()
+                                                        .toString(),
+                                                    "description":
+                                                        descriptionController
+                                                            .text
+                                                            .trim()
+                                                            .toString(),
+                                                    "companyId":
+                                                        "${getCompanyViewModel.selectedCompanyValue}",
+                                                    "currentPrice":
+                                                        priceController.text
+                                                            .trim()
+                                                            .toString(),
+                                                    "percentage":
+                                                        percentageController
+                                                            .text
+                                                            .trim()
+                                                            .toString(),
+                                                    "startDate":
+                                                        '${_selectedDateRange!.start.day}-${_selectedDateRange!.start.month}-${_selectedDateRange!.start.year}',
+                                                    "endDate":
+                                                        '${_selectedDateRange!.end.day} / ${_selectedDateRange!.end.month} / ${_selectedDateRange!.end.year}',
+                                                    "startPrice":
+                                                        startPriceController
+                                                            .text
+                                                            .trim()
+                                                            .toString(),
+                                                  }}');
 
                                                   if (addMoversViewModel
                                                           .addMoversApiResponse
@@ -504,7 +611,8 @@ class _MoversScreenState extends State<MoversScreen> {
                                                       Status.COMPLETE) {
                                                     Get.back();
                                                     await getMoversViewModel
-                                                        .getMoversViewModel();
+                                                        .getMoversViewModel(
+                                                            isLoading: false);
                                                     clearData();
 
                                                     snackBarGet('Movers Added',

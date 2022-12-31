@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Repo/delete_news_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Model/Response_model/get_news_cetegories_res_model.dart';
+import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_news_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_news_view_model.dart';
@@ -24,6 +26,7 @@ class AddNewsScreen extends StatefulWidget {
 class _AddNewsScreenState extends State<AddNewsScreen> {
   TextEditingController searchController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+  TextEditingController sourceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   InputBorder outline =
@@ -42,6 +45,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
   SearchNewsController searchNewsController = Get.put(SearchNewsController());
 
   GetNewsCategoriesResponseModel? responseModel;
+  bool newsSelect = false;
   @override
   void initState() {
     getNewsCategoriesViewModel.getNewsCategoriesViewModel();
@@ -152,8 +156,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           backgroundColor: AppColor.mainColor,
                                         ),
                                         onPressed: () {
+                                          newsSelect = false;
                                           addNewsDialog(context, responseModel!,
-                                              controller);
+                                              controller, newsSelect);
                                         },
                                         child: Row(
                                           children: [
@@ -220,8 +225,6 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   .length,
                                           shrinkWrap: true,
                                           itemBuilder: (context, index) {
-                                            log('TOTAL DATA :_ ${searchNewsController.searchNewsData['data']['total']}');
-                                            log('TOTAL DATA :_ ${searchNewsController.searchNewsData['data']['total'].runtimeType}');
                                             return Container(
                                               width: width,
                                               margin:
@@ -237,30 +240,109 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              child: Row(
                                                 children: [
-                                                  Text(
-                                                    '${searchNewsController.searchNewsData['data']['docs'][index]['title']}',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 20,
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '${searchNewsController.searchNewsData['data']['docs'][index]['title']}',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 20,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          '${searchNewsController.searchNewsData['data']['docs'][index]['description']}',
+                                                          maxLines: 4,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 17,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 5,
+                                                  SizedBox(
+                                                    width: 20,
                                                   ),
-                                                  Text(
-                                                    '${searchNewsController.searchNewsData['data']['docs'][index]['description']}',
-                                                    maxLines: 4,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 17,
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deleteDialog(
+                                                          onPress: () async {
+                                                            await DeleteNewsRepo()
+                                                                .deleteNewsRepo(
+                                                                    text:
+                                                                        '${searchNewsController.searchNewsData['data']['docs'][index]['_id']}');
+
+                                                            await searchNewsController
+                                                                .getSearchNewsViewModel(
+                                                                    isLoading:
+                                                                        false,
+                                                                    text: searchController
+                                                                        .text
+                                                                        .trim()
+                                                                        .toString());
+                                                          },
+                                                          header:
+                                                              'Are you sure to delete this news ?',
+                                                          context: context);
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {},
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.edit,
+                                                          size: 20,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -361,7 +443,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                               .isEmpty ==
                                           true
                                       ? Center(
-                                          child: Text('No news fount'),
+                                          child: Text('No news found'),
                                         )
                                       : ListView.separated(
                                           separatorBuilder: (context, index) {
@@ -393,30 +475,163 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              child: Row(
                                                 children: [
-                                                  Text(
-                                                    '${getNewsController.newsData['data'][index]['title']}',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 20,
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '${getNewsController.newsData['data'][index]['title']}',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 20,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          '${getNewsController.newsData['data'][index]['description']}',
+                                                          maxLines: 4,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 17,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 5,
+                                                  SizedBox(
+                                                    width: 20,
                                                   ),
-                                                  Text(
-                                                    '${getNewsController.newsData['data'][index]['description']}',
-                                                    maxLines: 4,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 17,
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deleteDialog(
+                                                          onPress: () async {
+                                                            await DeleteNewsRepo()
+                                                                .deleteNewsRepo(
+                                                                    text:
+                                                                        '${getNewsController.newsData['data'][index]['_id']}');
+
+                                                            await getNewsViewModel
+                                                                .getNewsViewModel(
+                                                                    id: responseModel!
+                                                                        .data![controller
+                                                                            .selectedCategories]
+                                                                        .id);
+                                                          },
+                                                          header:
+                                                              'Are you sure to delete this news ?',
+                                                          context: context);
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      newsSelect = true;
+                                                      titleController.text =
+                                                          getNewsController
+                                                              .newsData['data']
+                                                                  [index]
+                                                                  ['title']
+                                                              .toString();
+                                                      sourceController.text =
+                                                          getNewsController
+                                                              .newsData['data']
+                                                                  [index]
+                                                                  ['source']
+                                                              .toString();
+                                                      descriptionController
+                                                              .text =
+                                                          getNewsController
+                                                              .newsData['data']
+                                                                  [index][
+                                                                  'description']
+                                                              .toString();
+                                                      typeController
+                                                          .selectedType
+                                                          .value = getNewsController
+                                                                          .newsData[
+                                                                      'data'][index]
+                                                                  ['type'] ==
+                                                              1
+                                                          ? 'Positive'
+                                                          : getNewsController.newsData[
+                                                                              'data']
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      'type'] ==
+                                                                  -1
+                                                              ? 'Negative'
+                                                              : 'Neutral';
+                                                      // "companyId": getCompanyViewModel
+                                                      //     .selectedCompanyValue,
+                                                      // "categoryId":
+                                                      // controller.selectedValue,
+                                                      // "type": typeController
+                                                      //     .selectedType.value ==
+                                                      // 'Positive'
+                                                      // ? 1
+                                                      //     : typeController.selectedType
+                                                      //     .value ==
+                                                      // 'Negative'
+                                                      // ? -1
+                                                      //     : 0
+                                                      addNewsDialog(
+                                                          context,
+                                                          responseModel!,
+                                                          controller,
+                                                          newsSelect);
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.edit,
+                                                          size: 20,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -449,7 +664,8 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
   addNewsDialog(
       BuildContext context,
       GetNewsCategoriesResponseModel newsResponse,
-      GetNewsCategoriesViewModel controller) {
+      GetNewsCategoriesViewModel controller,
+      bool selectNews) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -501,7 +717,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Add News',
+                                    selectNews == false
+                                        ? 'Add News'
+                                        : 'Edit News',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: AppColor.whiteColor,
@@ -543,6 +761,36 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     contentPadding:
                                         const EdgeInsets.only(top: 5, left: 10),
                                     hintText: 'Enter Title',
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                'Source',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                height: 40,
+                                width: 380,
+                                child: TextField(
+                                  controller: sourceController,
+                                  decoration: InputDecoration(
+                                    border: outlineBorder,
+                                    focusedBorder: outlineBorder,
+                                    enabledBorder: outlineBorder,
+                                    fillColor: Colors.grey.shade50,
+                                    filled: true,
+                                    contentPadding:
+                                        const EdgeInsets.only(top: 5, left: 10),
+                                    hintText: 'Enter source',
                                   ),
                                 ),
                               ),
@@ -770,6 +1018,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                 .toString(),
                                             "description": descriptionController
                                                 .text
+                                                .trim()
+                                                .toString(),
+                                            "source": sourceController.text
                                                 .trim()
                                                 .toString(),
                                             "companyId": getCompanyViewModel

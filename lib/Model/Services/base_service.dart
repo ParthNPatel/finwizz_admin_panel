@@ -1,6 +1,7 @@
 class ApiUrl {
   static String addCompany = 'http://3.109.139.48:4000/company';
   static String getCompany = 'http://3.109.139.48:4000/stocks/search';
+  static String deleteCompany = 'http://3.109.139.48:4000//company/';
   static String addNewsCategories = 'http://3.109.139.48:4000/news/category';
   static String getNewsCategories = 'http://3.109.139.48:4000/news/category';
   static String addMovers = 'http://3.109.139.48:4000/movers';
