@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Repo/delete_movers_repo.dart';
+import 'package:finwizz_admin/Model/Repo/edit_movers_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_movers_view_model.dart';
@@ -37,6 +38,9 @@ class _MoversScreenState extends State<MoversScreen> {
   GetMoversViewModel getMoversViewModel = Get.put(GetMoversViewModel());
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   DateTimeRange? _selectedDateRange;
+  String? firstDate;
+  String? endDate;
+  bool typeMover = false;
 
   @override
   void initState() {
@@ -123,7 +127,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                       backgroundColor: AppColor.mainColor,
                                     ),
                                     onPressed: () {
-                                      addVideoDialog(context);
+                                      typeMover = false;
+
+                                      addMoverDialog(context, typeMover, '');
                                     },
                                     child: Row(
                                       children: [
@@ -240,7 +246,45 @@ class _MoversScreenState extends State<MoversScreen> {
                                   width: 20,
                                 ),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    typeMover = true;
+                                    titleController.text = controller
+                                        .moversData['data'][index]['title']
+                                        .toString();
+
+                                    descriptionController.text = controller
+                                        .moversData['data'][index]
+                                            ['description']
+                                        .toString();
+
+                                    priceController.text = controller
+                                        .moversData['data'][index]
+                                            ['currentPrice']
+                                        .toString();
+                                    startPriceController.text = controller
+                                        .moversData['data'][index]['startPrice']
+                                        .toString();
+
+                                    percentageController.text = controller
+                                        .moversData['data'][index]['percentage']
+                                        .toString();
+                                    firstDate = controller.moversData['data']
+                                            [index]['createdAt']
+                                        .toString()
+                                        .split('T')
+                                        .first;
+                                    endDate = controller.moversData['data']
+                                            [index]['updatedAt']
+                                        .toString()
+                                        .split('T')
+                                        .first;
+
+                                    addMoverDialog(
+                                        context,
+                                        typeMover,
+                                        controller.moversData['data'][index]
+                                            ['_id']);
+                                  },
                                   child: Container(
                                     height: 30,
                                     width: 30,
@@ -275,7 +319,7 @@ class _MoversScreenState extends State<MoversScreen> {
     );
   }
 
-  addVideoDialog(BuildContext context) {
+  addMoverDialog(BuildContext context, bool typeMovers, String moverId) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -322,7 +366,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Add Movers',
+                                    typeMovers == false
+                                        ? 'Add Movers'
+                                        : 'Update Mover',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: AppColor.whiteColor,
@@ -433,6 +479,10 @@ class _MoversScreenState extends State<MoversScreen> {
                                     setStat(() {
                                       _selectedDateRange = result;
                                     });
+                                    firstDate =
+                                        '${_selectedDateRange!.start.day} - ${_selectedDateRange!.start.month} - ${_selectedDateRange!.start.year}';
+                                    endDate =
+                                        '${_selectedDateRange!.end.day} - ${_selectedDateRange!.end.month} - ${_selectedDateRange!.end.year}';
                                   }
                                   log('SELECTED DATE :- ${_selectedDateRange}');
                                 },
@@ -447,9 +497,10 @@ class _MoversScreenState extends State<MoversScreen> {
                                         border:
                                             Border.all(color: AppColor.grey100),
                                         borderRadius: BorderRadius.circular(7)),
-                                    child: Text(_selectedDateRange == null
-                                        ? 'Pick Date'
-                                        : '${_selectedDateRange!.start.day} / ${_selectedDateRange!.start.month} / ${_selectedDateRange!.start.year}  -  ${_selectedDateRange!.end.day} / ${_selectedDateRange!.end.month} / ${_selectedDateRange!.end.year}')),
+                                    child: Text(
+                                        firstDate == null || endDate == null
+                                            ? 'Pick Date'
+                                            : '${firstDate}  /  ${endDate}')),
                               ),
                               SizedBox(
                                 height: 20,
@@ -529,51 +580,88 @@ class _MoversScreenState extends State<MoversScreen> {
                                                     AppColor.mainColor,
                                               ),
                                               onPressed: () async {
-                                                if (titleController.text.isNotEmpty &&
-                                                    descriptionController
-                                                        .text.isNotEmpty &&
-                                                    priceController
-                                                        .text.isNotEmpty &&
-                                                    percentageController
-                                                        .text.isNotEmpty &&
-                                                    getCompanyViewModel
-                                                            .selectedCompanyValue !=
-                                                        null) {
-                                                  await addMoversViewModel
-                                                      .addMoversViewModel(
-                                                          model: {
-                                                        "title": titleController
-                                                            .text
-                                                            .trim()
-                                                            .toString(),
-                                                        "description":
-                                                            descriptionController
-                                                                .text
-                                                                .trim()
-                                                                .toString(),
-                                                        "companyId":
-                                                            "${getCompanyViewModel.selectedCompanyValue}",
-                                                        "currentPrice":
-                                                            priceController.text
-                                                                .trim()
-                                                                .toString(),
-                                                        "percentage":
-                                                            percentageController
-                                                                .text
-                                                                .trim()
-                                                                .toString(),
-                                                        "startDate":
-                                                            '${_selectedDateRange!.start.day}-${_selectedDateRange!.start.month}-${_selectedDateRange!.start.year}',
-                                                        "endDate":
-                                                            '${_selectedDateRange!.end.day}-${_selectedDateRange!.end.month}-${_selectedDateRange!.end.year}',
-                                                        "startPrice":
-                                                            startPriceController
-                                                                .text
-                                                                .trim()
-                                                                .toString(),
-                                                      });
+                                                if (typeMovers == false) {
+                                                  if (titleController.text.isNotEmpty &&
+                                                      descriptionController
+                                                          .text.isNotEmpty &&
+                                                      priceController
+                                                          .text.isNotEmpty &&
+                                                      percentageController
+                                                          .text.isNotEmpty &&
+                                                      getCompanyViewModel
+                                                              .selectedCompanyValue !=
+                                                          null) {
+                                                    await addMoversViewModel
+                                                        .addMoversViewModel(
+                                                            model: {
+                                                          "title":
+                                                              titleController
+                                                                  .text
+                                                                  .trim()
+                                                                  .toString(),
+                                                          "description":
+                                                              descriptionController
+                                                                  .text
+                                                                  .trim()
+                                                                  .toString(),
+                                                          "companyId":
+                                                              "${getCompanyViewModel.selectedCompanyValue}",
+                                                          "currentPrice":
+                                                              priceController
+                                                                  .text
+                                                                  .trim()
+                                                                  .toString(),
+                                                          "percentage":
+                                                              percentageController
+                                                                  .text
+                                                                  .trim()
+                                                                  .toString(),
+                                                          "startDate":
+                                                              '$firstDate',
+                                                          "endDate": '$endDate',
+                                                          "startPrice":
+                                                              startPriceController
+                                                                  .text
+                                                                  .trim()
+                                                                  .toString(),
+                                                        });
 
-                                                  log('ADD MOVERS BODY :- ${{
+                                                    if (addMoversViewModel
+                                                            .addMoversApiResponse
+                                                            .status ==
+                                                        Status.COMPLETE) {
+                                                      Get.back();
+
+                                                      clearData();
+
+                                                      snackBarGet(
+                                                          'Movers Added',
+                                                          snackBarBackGroundColor:
+                                                              AppColor
+                                                                  .greenColor);
+                                                    }
+                                                    if (addMoversViewModel
+                                                            .addMoversApiResponse
+                                                            .status ==
+                                                        Status.ERROR) {
+                                                      Get.back();
+                                                      clearData();
+                                                      snackBarGet(
+                                                        'Something went wrong',
+                                                        snackBarBackGroundColor:
+                                                            AppColor.redColor,
+                                                      );
+                                                    }
+                                                  } else {
+                                                    snackBarGet(
+                                                      'Fill necessary details',
+                                                      snackBarBackGroundColor:
+                                                          AppColor.redColor,
+                                                    );
+                                                  }
+                                                } else {
+                                                  await EditMoverRepo()
+                                                      .editMoversRepo(body: {
                                                     "title": titleController
                                                         .text
                                                         .trim()
@@ -594,54 +682,23 @@ class _MoversScreenState extends State<MoversScreen> {
                                                             .text
                                                             .trim()
                                                             .toString(),
-                                                    "startDate":
-                                                        '${_selectedDateRange!.start.day}-${_selectedDateRange!.start.month}-${_selectedDateRange!.start.year}',
-                                                    "endDate":
-                                                        '${_selectedDateRange!.end.day} / ${_selectedDateRange!.end.month} / ${_selectedDateRange!.end.year}',
+                                                    "startDate": '$firstDate',
+                                                    "endDate": '$endDate',
                                                     "startPrice":
                                                         startPriceController
                                                             .text
                                                             .trim()
                                                             .toString(),
-                                                  }}');
-
-                                                  if (addMoversViewModel
-                                                          .addMoversApiResponse
-                                                          .status ==
-                                                      Status.COMPLETE) {
-                                                    Get.back();
-                                                    await getMoversViewModel
-                                                        .getMoversViewModel(
-                                                            isLoading: false);
-                                                    clearData();
-
-                                                    snackBarGet('Movers Added',
-                                                        snackBarBackGroundColor:
-                                                            AppColor
-                                                                .greenColor);
-                                                  }
-                                                  if (addMoversViewModel
-                                                          .addMoversApiResponse
-                                                          .status ==
-                                                      Status.ERROR) {
-                                                    Get.back();
-                                                    clearData();
-                                                    snackBarGet(
-                                                      'Something went wrong',
-                                                      snackBarBackGroundColor:
-                                                          AppColor.redColor,
-                                                    );
-                                                  }
-                                                } else {
-                                                  snackBarGet(
-                                                    'Fill necessary details',
-                                                    snackBarBackGroundColor:
-                                                        AppColor.redColor,
-                                                  );
+                                                  }, text: moverId);
                                                 }
+                                                await getMoversViewModel
+                                                    .getMoversViewModel(
+                                                        isLoading: false);
                                               },
                                               child: Text(
-                                                'Add',
+                                                typeMovers == false
+                                                    ? 'Add'
+                                                    : 'Update',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   color: AppColor.whiteColor,

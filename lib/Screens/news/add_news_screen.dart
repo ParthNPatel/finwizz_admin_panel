@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Repo/delete_news_repo.dart';
+import 'package:finwizz_admin/Model/Repo/edit_news_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Model/Response_model/get_news_cetegories_res_model.dart';
 import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
@@ -157,8 +158,12 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                         ),
                                         onPressed: () {
                                           newsSelect = false;
-                                          addNewsDialog(context, responseModel!,
-                                              controller, newsSelect);
+                                          addNewsDialog(
+                                              context,
+                                              '',
+                                              responseModel!,
+                                              controller,
+                                              newsSelect);
                                         },
                                         child: Row(
                                           children: [
@@ -324,7 +329,78 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                     width: 20,
                                                   ),
                                                   InkWell(
-                                                    onTap: () {},
+                                                    onTap: () {
+                                                      newsSelect = true;
+
+                                                      titleController.text =
+                                                          searchNewsController
+                                                              .searchNewsData[
+                                                                  'data']
+                                                                  ['docs']
+                                                                  [index]
+                                                                  ['title']
+                                                              .toString();
+                                                      sourceController.text =
+                                                          searchNewsController
+                                                              .searchNewsData[
+                                                                  'data']
+                                                                  ['docs']
+                                                                  [index]
+                                                                  ['source']
+                                                              .toString();
+                                                      descriptionController
+                                                              .text =
+                                                          searchNewsController
+                                                              .searchNewsData[
+                                                                  'data']
+                                                                  ['docs']
+                                                                  [index][
+                                                                  'description']
+                                                              .toString();
+                                                      typeController
+                                                          .selectedType
+                                                          .value = searchNewsController
+                                                                              .searchNewsData[
+                                                                          'data']
+                                                                      ['docs'][index]
+                                                                  ['type'] ==
+                                                              "1"
+                                                          ? 'Positive'
+                                                          : searchNewsController
+                                                                              .searchNewsData[
+                                                                          'data']['docs'][index]
+                                                                      ['type'] ==
+                                                                  "-1"
+                                                              ? 'Negative'
+                                                              : 'Neutral';
+                                                      getCompanyViewModel
+                                                              .selectedCompanyValue =
+                                                          searchNewsController
+                                                              .searchNewsData[
+                                                                  'data']
+                                                                  ['docs']
+                                                                  [index]
+                                                                  ['companyId']
+                                                              .toString();
+                                                      getNewsCategoriesViewModel
+                                                              .selectedValue =
+                                                          searchNewsController
+                                                              .searchNewsData[
+                                                                  'data']
+                                                                  ['docs']
+                                                                  [index]
+                                                                  ['categoryId']
+                                                              .toString();
+                                                      addNewsDialog(
+                                                          context,
+                                                          searchNewsController
+                                                                      .searchNewsData[
+                                                                  'data']['docs']
+                                                              [index]['_id'],
+                                                          responseModel!,
+                                                          controller,
+                                                          newsSelect);
+                                                    },
                                                     child: Container(
                                                       height: 30,
                                                       width: 30,
@@ -595,21 +671,28 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                                   -1
                                                               ? 'Negative'
                                                               : 'Neutral';
-                                                      // "companyId": getCompanyViewModel
-                                                      //     .selectedCompanyValue,
-                                                      // "categoryId":
-                                                      // controller.selectedValue,
-                                                      // "type": typeController
-                                                      //     .selectedType.value ==
-                                                      // 'Positive'
-                                                      // ? 1
-                                                      //     : typeController.selectedType
-                                                      //     .value ==
-                                                      // 'Negative'
-                                                      // ? -1
-                                                      //     : 0
+                                                      getCompanyViewModel
+                                                              .selectedCompanyValue =
+                                                          getNewsController
+                                                              .newsData['data']
+                                                                  [index]
+                                                                  ['companyId']
+                                                                  ['_id']
+                                                              .toString();
+                                                      getNewsCategoriesViewModel
+                                                              .selectedValue =
+                                                          getNewsController
+                                                              .newsData['data']
+                                                                  [index]
+                                                                  ['categoryId']
+                                                                  ['_id']
+                                                              .toString();
                                                       addNewsDialog(
                                                           context,
+                                                          getNewsController
+                                                                      .newsData[
+                                                                  'data'][index]
+                                                              ['_id'],
                                                           responseModel!,
                                                           controller,
                                                           newsSelect);
@@ -663,6 +746,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
 
   addNewsDialog(
       BuildContext context,
+      String newsId,
       GetNewsCategoriesResponseModel newsResponse,
       GetNewsCategoriesViewModel controller,
       bool selectNews) {
@@ -1011,8 +1095,68 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   .selectedCompanyValue !=
                                               null &&
                                           controller.selectedValue != null) {
-                                        await addNewsViewModel.addNewsViewModel(
-                                          model: {
+                                        if (newsSelect == false) {
+                                          log('ENTER ADD MODE');
+
+                                          await addNewsViewModel
+                                              .addNewsViewModel(
+                                            model: {
+                                              "title": titleController.text
+                                                  .trim()
+                                                  .toString(),
+                                              "description":
+                                                  descriptionController.text
+                                                      .trim()
+                                                      .toString(),
+                                              "source": sourceController.text
+                                                  .trim()
+                                                  .toString(),
+                                              "companyId": getCompanyViewModel
+                                                  .selectedCompanyValue,
+                                              "categoryId":
+                                                  controller.selectedValue,
+                                              "type": typeController
+                                                          .selectedType.value ==
+                                                      'Positive'
+                                                  ? 1
+                                                  : typeController.selectedType
+                                                              .value ==
+                                                          'Negative'
+                                                      ? -1
+                                                      : 0
+                                            },
+                                          );
+
+                                          if (addNewsViewModel
+                                                  .addNewsApiResponse.status ==
+                                              Status.COMPLETE) {
+                                            Get.back();
+
+                                            snackBarGet('News Added',
+                                                snackBarBackGroundColor:
+                                                    AppColor.greenColor);
+                                          }
+                                          if (addNewsViewModel
+                                                  .addNewsApiResponse.status ==
+                                              Status.ERROR) {
+                                            Get.back();
+                                            titleController.clear();
+                                            descriptionController.clear();
+                                            getCompanyViewModel
+                                                .selectedCompanyValue = null;
+                                            controller.selectedValue = null;
+                                            snackBarGet(
+                                              'Something went wrong',
+                                              snackBarBackGroundColor:
+                                                  AppColor.redColor,
+                                            );
+                                          }
+                                        } else {
+                                          log('ENTER EDIT MODE');
+                                          log('News Id :- ${newsId}');
+                                          log('CATEGORIES  Id :- ${controller.selectedValue}');
+                                          await EditNewsRepo()
+                                              .editNewsRepo(body: {
                                             "title": titleController.text
                                                 .trim()
                                                 .toString(),
@@ -1030,46 +1174,13 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                             "type": typeController
                                                         .selectedType.value ==
                                                     'Positive'
-                                                ? 1
+                                                ? "1"
                                                 : typeController.selectedType
                                                             .value ==
                                                         'Negative'
-                                                    ? -1
-                                                    : 0
-                                          },
-                                        );
-
-                                        if (addNewsViewModel
-                                                .addNewsApiResponse.status ==
-                                            Status.COMPLETE) {
-                                          Get.back();
-                                          await getNewsViewModel
-                                              .getNewsViewModel(
-                                                  isLoading: false,
-                                                  id: controller.selectedValue);
-                                          titleController.clear();
-                                          descriptionController.clear();
-                                          getCompanyViewModel
-                                              .selectedCompanyValue = null;
-                                          controller.selectedValue = null;
-                                          snackBarGet('Movers Added',
-                                              snackBarBackGroundColor:
-                                                  AppColor.greenColor);
-                                        }
-                                        if (addNewsViewModel
-                                                .addNewsApiResponse.status ==
-                                            Status.ERROR) {
-                                          Get.back();
-                                          titleController.clear();
-                                          descriptionController.clear();
-                                          getCompanyViewModel
-                                              .selectedCompanyValue = null;
-                                          controller.selectedValue = null;
-                                          snackBarGet(
-                                            'Something went wrong',
-                                            snackBarBackGroundColor:
-                                                AppColor.redColor,
-                                          );
+                                                    ? "-1"
+                                                    : "0"
+                                          }, text: newsId);
                                         }
                                       } else {
                                         snackBarGet(
@@ -1078,9 +1189,12 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                               AppColor.redColor,
                                         );
                                       }
+                                      await getNewsViewModel.getNewsViewModel(
+                                          isLoading: false,
+                                          id: controller.selectedValue);
                                     },
                                     child: Text(
-                                      'Add',
+                                      newsSelect == true ? 'Update' : 'Add',
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: AppColor.whiteColor,
@@ -1102,6 +1216,12 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
           },
         );
       },
-    );
+    ).whenComplete(() {
+      titleController.clear();
+      descriptionController.clear();
+      getCompanyViewModel.selectedCompanyValue = null;
+      controller.selectedValue = null;
+      sourceController.clear();
+    });
   }
 }
