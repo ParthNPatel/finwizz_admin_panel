@@ -248,6 +248,10 @@ class _MoversScreenState extends State<MoversScreen> {
                                 InkWell(
                                   onTap: () {
                                     typeMover = true;
+                                    getCompanyViewModel.selectedCompanyValue =
+                                        controller.moversData['data'][index]
+                                                ['companyId']['_id']
+                                            .toString();
                                     titleController.text = controller
                                         .moversData['data'][index]['title']
                                         .toString();
@@ -645,7 +649,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                                             .status ==
                                                         Status.ERROR) {
                                                       Get.back();
-                                                      clearData();
+
                                                       snackBarGet(
                                                         'Something went wrong',
                                                         snackBarBackGroundColor:
@@ -722,14 +726,19 @@ class _MoversScreenState extends State<MoversScreen> {
           },
         );
       },
-    );
+    ).whenComplete(() {
+      clearData();
+    });
   }
 
   clearData() {
     titleController.clear();
     descriptionController.clear();
     priceController.clear();
+    startPriceController.clear();
     percentageController.clear();
+    firstDate = null;
+    endDate = null;
     getCompanyViewModel.selectedCompanyValue = null;
   }
 }
