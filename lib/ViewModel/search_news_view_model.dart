@@ -39,7 +39,7 @@ class SearchNewsController extends GetxController {
     update();
     try {
       searchNewsData = await apiCalling(text: text!);
-      print("searchNewsData=response==>$searchNewsData");
+      // print("searchNewsData=response==>$searchNewsData");
 
       _getSearchNewsApiResponse = ApiResponse.complete(searchNewsData);
     } catch (e) {

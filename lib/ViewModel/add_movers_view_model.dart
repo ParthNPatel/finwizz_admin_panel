@@ -29,7 +29,7 @@ class AddMoversViewModel extends GetxController {
     try {
       AddMoversResponseModel response =
           await AddMoversRepo().addMoversRepo(body: model);
-      log("AddMoversResponseModel=response==>$response");
+      // log("AddMoversResponseModel=response==>$response");
 
       _addMoversApiResponse = ApiResponse.complete(response);
       updateLoader(false);

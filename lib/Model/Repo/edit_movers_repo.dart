@@ -10,10 +10,12 @@ class EditMoverRepo {
     var headers = {
       'Authorization':
           'Bearer eyJhbGciOiJIUzI1NiJ9.NjM5MmE2YzBiNDQzNjA3MjFhNjdhZTcy.W7YYKaSSjCTkHIXzbog7lTQpIWQdleQDlhry8iXmTSo',
+      'Content-Type': 'application/json'
     };
+
     var response = await http.patch(
         Uri.parse('http://3.109.139.48:4000/movers/$text'),
-        body: body,
+        body: jsonEncode(body),
         headers: headers);
 
     if (response.statusCode == 200) {

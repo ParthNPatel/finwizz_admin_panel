@@ -31,7 +31,7 @@ class GetMoversViewModel extends GetxController {
     update();
     try {
       moversData = await GetMoversRepo().getMoversRepo();
-      print("GetMoversResponseModel=response==>$moversData");
+      // print("GetMoversResponseModel=response==>$moversData");
 
       _getMoversApiResponse = ApiResponse.complete(moversData);
       updateError(false);

@@ -35,7 +35,7 @@ class ConnectUsViewModel extends GetxController {
       totalData = response.data!.total!;
       update();
 
-      print("ConnectUsResponseModel=response==>${response.data!.total}");
+      // print("ConnectUsResponseModel=response==>${response.data!.total}");
 
       _connectUsApiResponse = ApiResponse.complete(response);
     } catch (e) {

@@ -51,7 +51,7 @@ class GetNewsCategoriesViewModel extends GetxController {
     try {
       GetNewsCategoriesResponseModel response =
           await GetNewsCategoriesRepo().getNewsCategoriesRepo();
-      print("GetNewsCategoriesResponseModel=response==>$response");
+      // print("GetNewsCategoriesResponseModel=response==>$response");
 
       _getNewsCategoriesApiResponse = ApiResponse.complete(response);
     } catch (e) {

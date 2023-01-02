@@ -7,14 +7,14 @@ import 'package:http/http.dart' as http;
 
 class EditNewsRepo {
   editNewsRepo({String text = "", Map<String, dynamic>? body}) async {
+    var header = {'Content-Type': 'application/json'};
+
     var response = await http.patch(
-      Uri.parse('http://3.109.139.48:4000/news/$text'),
-      body: body,
-    );
+        Uri.parse('http://3.109.139.48:4000/news/$text'),
+        body: jsonEncode(body),
+        headers: header);
 
     if (response.statusCode == 200) {
-      print(' Status Code :- ${response.statusCode}');
-      print(' Successfully Response :- ${jsonDecode(response.body)}');
       Get.back();
       snackBarGet('News Update Successfully',
           snackBarBackGroundColor: AppColor.greenColor);
