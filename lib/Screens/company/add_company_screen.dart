@@ -383,7 +383,10 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      companyNameController.clear();
+      sortCompanyNameController.clear();
+    });
   }
 }
 

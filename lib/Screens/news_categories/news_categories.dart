@@ -399,6 +399,8 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      newsCategoriesController.clear();
+    });
   }
 }
