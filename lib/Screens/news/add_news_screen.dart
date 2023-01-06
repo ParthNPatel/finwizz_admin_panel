@@ -189,6 +189,146 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                             ),
                           ),
                           const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            color: AppColor.mainColor,
+                            padding: const EdgeInsets.all(13),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Company Name',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Short Name',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Heading',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Associated News',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    // alignment: Alignment.centerLeft,
+                                    alignment: Alignment.center,
+
+                                    child: Text(
+                                      'Source',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () async {},
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: AppColor.mainColor,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.transparent,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: AppColor.mainColor,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        color: Colors.transparent,
+                                        Icons.edit,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
                             height: 20,
                           ),
                           if (controller.changeData == true)
@@ -232,52 +372,88 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           itemBuilder: (context, index) {
                                             return Container(
                                               width: width,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20),
+                                              // margin:
+                                              //     const EdgeInsets.symmetric(
+                                              //         horizontal: 20),
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 25,
+                                                      // horizontal: 25,
                                                       vertical: 25),
-                                              alignment: Alignment.centerLeft,
+                                              alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                 color: AppColor.whiteColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                // borderRadius:
+                                                //     BorderRadius.circular(10),
                                               ),
                                               child: Row(
                                                 children: [
                                                   Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          '${searchNewsController.searchNewsData['data']['docs'][index]['title']}',
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 20,
-                                                          ),
+                                                    flex: 1,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        'Com Name',
+                                                        maxLines: 2,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
                                                         ),
-                                                        const SizedBox(
-                                                          height: 5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        'Short Name',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
                                                         ),
-                                                        Text(
-                                                          '${searchNewsController.searchNewsData['data']['docs'][index]['description']}',
-                                                          maxLines: 4,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 17,
-                                                          ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${searchNewsController.searchNewsData['data']['docs'][index]['title']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
                                                         ),
-                                                      ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${searchNewsController.searchNewsData['data']['docs'][index]['description']}',
+                                                        maxLines: 3,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${searchNewsController.searchNewsData['data']['docs'][index]['source']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(
@@ -421,6 +597,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                       ),
                                                     ),
                                                   ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
                                                 ],
                                               ),
                                             );
@@ -538,52 +717,88 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           itemBuilder: (context, index) {
                                             return Container(
                                               width: width,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20),
+                                              // margin:
+                                              //     const EdgeInsets.symmetric(
+                                              //         horizontal: 20),
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 25,
+                                                      //         horizontal: 25,
                                                       vertical: 25),
                                               alignment: Alignment.centerLeft,
                                               decoration: BoxDecoration(
                                                 color: AppColor.whiteColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                // borderRadius:
+                                                //     BorderRadius.circular(10),
                                               ),
                                               child: Row(
+                                                // '${getNewsController.newsData['data'][index]['title']}',
                                                 children: [
                                                   Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          '${getNewsController.newsData['data'][index]['title']}',
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 20,
-                                                          ),
+                                                    flex: 1,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getNewsController.newsData['data'][index]['companyId']['name']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
                                                         ),
-                                                        const SizedBox(
-                                                          height: 5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getNewsController.newsData['data'][index]['companyId']['shortName']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
                                                         ),
-                                                        Text(
-                                                          '${getNewsController.newsData['data'][index]['description']}',
-                                                          maxLines: 4,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 17,
-                                                          ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getNewsController.newsData['data'][index]['title']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
                                                         ),
-                                                      ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getNewsController.newsData['data'][index]['description']}',
+                                                        maxLines: 3,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getNewsController.newsData['data'][index]['source']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(
@@ -716,6 +931,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                         ),
                                                       ),
                                                     ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
                                                   ),
                                                 ],
                                               ),
