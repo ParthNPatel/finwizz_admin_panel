@@ -665,13 +665,13 @@ class _MoversScreenState extends State<MoversScreen> {
                               SizedBox(
                                 height: 20,
                               ),
-                              addDataForm(
-                                  header: 'Title',
-                                  hint: 'Title',
-                                  textEditingController: titleController),
-                              const SizedBox(
-                                height: 20,
-                              ),
+                              // addDataForm(
+                              //     header: 'Title',
+                              //     hint: 'Title',
+                              //     textEditingController: titleController),
+                              // const SizedBox(
+                              //   height: 20,
+                              // ),
                               addDataForm(
                                   header: 'Price Start',
                                   hint: 'Price Start',
@@ -693,36 +693,36 @@ class _MoversScreenState extends State<MoversScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              Text(
-                                'Description',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 150,
-                                width: 380,
-                                child: TextField(
-                                  controller: descriptionController,
-                                  maxLines: 5,
-                                  decoration: InputDecoration(
-                                    border: outlineBorder,
-                                    focusedBorder: outlineBorder,
-                                    enabledBorder: outlineBorder,
-                                    fillColor: Colors.grey.shade50,
-                                    filled: true,
-                                    contentPadding: const EdgeInsets.only(
-                                      top: 25,
-                                      left: 10,
-                                    ),
-                                    hintText: 'Type',
-                                  ),
-                                ),
-                              ),
+                              // Text(
+                              //   'Description',
+                              //   style: const TextStyle(
+                              //     fontSize: 16,
+                              //     fontWeight: FontWeight.w500,
+                              //   ),
+                              // ),
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
+                              // SizedBox(
+                              //   height: 150,
+                              //   width: 380,
+                              //   child: TextField(
+                              //     controller: descriptionController,
+                              //     maxLines: 5,
+                              //     decoration: InputDecoration(
+                              //       border: outlineBorder,
+                              //       focusedBorder: outlineBorder,
+                              //       enabledBorder: outlineBorder,
+                              //       fillColor: Colors.grey.shade50,
+                              //       filled: true,
+                              //       contentPadding: const EdgeInsets.only(
+                              //         top: 25,
+                              //         left: 10,
+                              //       ),
+                              //       hintText: 'Type',
+                              //     ),
+                              //   ),
+                              // ),
                               Align(
                                 alignment: Alignment.center,
                                 child: GetBuilder<AddMoversViewModel>(
@@ -902,6 +902,7 @@ class _MoversScreenState extends State<MoversScreen> {
 Widget addDataForm(
     {String? header,
     String? hint,
+    TextInputType? textInputType = TextInputType.emailAddress,
     TextEditingController? textEditingController}) {
   InputBorder outlineBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.grey.shade200),
@@ -923,6 +924,7 @@ Widget addDataForm(
         height: 40,
         width: 380,
         child: TextField(
+          keyboardType: textInputType,
           controller: textEditingController,
           decoration: InputDecoration(
             border: outlineBorder,

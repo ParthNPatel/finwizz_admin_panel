@@ -5,8 +5,11 @@ class ApiUrl {
   static String addNewsCategories = 'http://3.109.139.48:4000/news/category';
   static String getNewsCategories = 'http://3.109.139.48:4000/news/category';
   static String addMovers = 'http://3.109.139.48:4000/movers';
+  static String addInsider = 'http://3.109.139.48:4000/insider';
+  static String getInsider = 'http://3.109.139.48:4000/insider';
   static String getNews = 'http://3.109.139.48:4000/news?categoryId=';
-  static String getSearchNews = 'http://3.109.139.48:4000/news?search?text=';
+  static String getSearchNews =
+      'http://3.109.139.48:4000/news/search?companyId=&text=';
   static String getMovers = 'http://3.109.139.48:4000/movers';
   static String addNews = 'http://3.109.139.48:4000/news';
 }

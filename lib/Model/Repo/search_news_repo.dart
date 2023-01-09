@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 class GetSearchNewsRepo {
   Future<dynamic> getSearchNewsRepo(
       {String? categoriesId = '', String? search = ''}) async {
-    var response = await http.get(Uri.parse('${ApiUrl.getSearchNews}$search'));
+    var response = await http.get(Uri.parse(
+        'http://3.109.139.48:4000/news/search?companyId=$categoriesId&text=$search'));
 
     if (response.statusCode == 200) {
       print(await jsonDecode(response.body));

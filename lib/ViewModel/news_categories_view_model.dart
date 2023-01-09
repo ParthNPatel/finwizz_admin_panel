@@ -8,12 +8,12 @@ class GetNewsCategoriesViewModel extends GetxController {
   bool loader = false;
   int selectedCategories = 0;
   dynamic selectedValue;
-  bool changeData = false;
+  // bool changeData = false;
 
-  updateChangeValue(val) {
-    changeData = val;
-    update();
-  }
+  // updateChangeValue(val) {
+  //   changeData = val;
+  //   update();
+  // }
 
   updateValue(val) {
     selectedValue = val;
