@@ -1516,6 +1516,8 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
         );
       },
     ).whenComplete(() {
+      genericType.value = false;
+      typeController.selectedType.value = 'Positive';
       titleController.clear();
       descriptionController.clear();
       getCompanyViewModel.selectedCompanyValue = null;
