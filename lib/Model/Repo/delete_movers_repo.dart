@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class DeleteMoversRepo {
   deleteMoversRepo({String text = ""}) async {
     var response =
-        await http.delete(Uri.parse('http://3.109.139.48:4000/movers/$text'));
+        await http.delete(Uri.parse('http://52.66.209.219:4000/movers/$text'));
 
     if (response.statusCode == 200) {
       print(jsonDecode(response.body));

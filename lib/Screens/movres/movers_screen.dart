@@ -147,7 +147,7 @@ class _MoversScreenState extends State<MoversScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: Container(
                                 // padding: const EdgeInsets.only(left: 20),
                                 color: AppColor.mainColor,
@@ -161,20 +161,26 @@ class _MoversScreenState extends State<MoversScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Expanded(
-                              flex: 3,
+                              flex: 1,
                               child: Container(
                                 // padding: const EdgeInsets.only(left: 20),
                                 color: AppColor.mainColor,
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Associated News',
+                                  'Stock Ticker',
                                   style: TextStyle(
                                     color: AppColor.whiteColor,
                                     fontSize: 16,
                                   ),
                                 ),
                               ),
+                            ),
+                            SizedBox(
+                              width: 5,
                             ),
                             Expanded(
                               flex: 1,
@@ -193,6 +199,45 @@ class _MoversScreenState extends State<MoversScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                // padding: const EdgeInsets.only(left: 20),
+                                color: AppColor.mainColor,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'From Price',
+                                  style: TextStyle(
+                                    color: AppColor.whiteColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                // padding: const EdgeInsets.only(left: 20),
+                                color: AppColor.mainColor,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'to Price',
+                                  style: TextStyle(
+                                    color: AppColor.whiteColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Expanded(
                               flex: 1,
                               child: Container(
@@ -207,6 +252,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                   ),
                                 ),
                               ),
+                            ),
+                            SizedBox(
+                              width: 5,
                             ),
                             Expanded(
                               flex: 1,
@@ -299,11 +347,11 @@ class _MoversScreenState extends State<MoversScreen> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  flex: 1,
+                                  flex: 2,
                                   child: Container(
                                     padding: const EdgeInsets.only(left: 20),
                                     color: Colors.transparent,
-                                    alignment: Alignment.centerLeft,
+                                    alignment: Alignment.center,
                                     child: Text(
                                       '${controller.moversData['data'][index]['companyId']['name']}',
                                       style: TextStyle(
@@ -312,12 +360,15 @@ class _MoversScreenState extends State<MoversScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Expanded(
-                                  flex: 3,
+                                  flex: 1,
                                   child: Container(
-                                    alignment: Alignment.centerLeft,
+                                    alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['description']}',
+                                      '${controller.moversData['data'][index]['companyId']['shortName']}',
                                       maxLines: 4,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -325,6 +376,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 5,
                                 ),
                                 Expanded(
                                   flex: 1,
@@ -338,6 +392,39 @@ class _MoversScreenState extends State<MoversScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${controller.moversData['data'][index]['startPrice']}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${controller.moversData['data'][index]['currentPrice']}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Expanded(
                                   flex: 1,
                                   child: Container(
@@ -349,6 +436,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 5,
                                 ),
                                 Expanded(
                                   flex: 1,
@@ -583,7 +673,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                           items: getCompany.data!
                                               .map(
                                                 (e) => DropdownMenuItem(
-                                                  value: e.id,
+                                                  value: e!.id,
                                                   child: Text(
                                                     '${e.name}',
                                                     style: TextStyle(
@@ -741,10 +831,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                               ),
                                               onPressed: () async {
                                                 if (typeMovers == false) {
-                                                  if (titleController.text.isNotEmpty &&
-                                                      descriptionController
-                                                          .text.isNotEmpty &&
-                                                      priceController
+                                                  if (priceController
                                                           .text.isNotEmpty &&
                                                       percentageController
                                                           .text.isNotEmpty &&
@@ -754,16 +841,16 @@ class _MoversScreenState extends State<MoversScreen> {
                                                     await addMoversViewModel
                                                         .addMoversViewModel(
                                                             model: {
-                                                          "title":
-                                                              titleController
-                                                                  .text
-                                                                  .trim()
-                                                                  .toString(),
-                                                          "description":
-                                                              descriptionController
-                                                                  .text
-                                                                  .trim()
-                                                                  .toString(),
+                                                          // "title":
+                                                          //     titleController
+                                                          //         .text
+                                                          //         .trim()
+                                                          //         .toString(),
+                                                          // "description":
+                                                          //     descriptionController
+                                                          //         .text
+                                                          //         .trim()
+                                                          //         .toString(),
                                                           "companyId":
                                                               "${getCompanyViewModel.selectedCompanyValue}",
                                                           "currentPrice":
@@ -822,15 +909,15 @@ class _MoversScreenState extends State<MoversScreen> {
                                                 } else {
                                                   await EditMoverRepo()
                                                       .editMoversRepo(body: {
-                                                    "title": titleController
-                                                        .text
-                                                        .trim()
-                                                        .toString(),
-                                                    "description":
-                                                        descriptionController
-                                                            .text
-                                                            .trim()
-                                                            .toString(),
+                                                    // "title": titleController
+                                                    //     .text
+                                                    //     .trim()
+                                                    //     .toString(),
+                                                    // "description":
+                                                    //     descriptionController
+                                                    //         .text
+                                                    //         .trim()
+                                                    //         .toString(),
                                                     "companyId":
                                                         "${getCompanyViewModel.selectedCompanyValue}",
                                                     "currentPrice":

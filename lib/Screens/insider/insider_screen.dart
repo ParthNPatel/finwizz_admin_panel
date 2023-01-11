@@ -29,10 +29,10 @@ class _InsiderScreenState extends State<InsiderScreen> {
   TextEditingController valueController = TextEditingController();
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController modeController = TextEditingController();
-
   @override
   void initState() {
     getCompanyViewModel.getCompanyViewModel();
+    insiderViewModel.getInsiderViewModel();
     super.initState();
   }
 
@@ -104,213 +104,339 @@ class _InsiderScreenState extends State<InsiderScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                color: AppColor.mainColor,
+                padding: const EdgeInsets.all(13),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      width: width,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Theme(
-                        data: Theme.of(context)
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: Container(
-                          height: 50,
-                          width: width,
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Company Name',
+                          style: TextStyle(
                             color: AppColor.whiteColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                '${"NA"}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              // Spacer(),
-                              // InkWell(
-                              //   onTap: () {
-                              //     deleteDialog(
-                              //         onPress: () async {
-                              //           await DeleteNewsCategoriesRepo()
-                              //               .deleteNewsCategoriesRepo(
-                              //               text: responseModel!
-                              //                   .data![
-                              //               index]
-                              //                   .id
-                              //                   .toString());
-                              //
-                              //           await getNewsCategoriesViewModel
-                              //               .getNewsCategoriesViewModel(
-                              //               isLoading:
-                              //               false);
-                              //         },
-                              //         header:
-                              //         'Are you sure to delete this categorie ?',
-                              //         context: context);
-                              //   },
-                              //   child: Container(
-                              //     height: 30,
-                              //     width: 30,
-                              //     decoration: BoxDecoration(
-                              //       borderRadius:
-                              //       BorderRadius
-                              //           .circular(3),
-                              //       border: Border.all(
-                              //         color: AppColor
-                              //             .mainColor,
-                              //       ),
-                              //     ),
-                              //     child: Center(
-                              //       child: Icon(
-                              //         Icons.delete,
-                              //         size: 20,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // )
-                            ],
+                            fontSize: 16,
                           ),
                         ),
                       ),
                     ),
-                    // GetBuilder<GetNewsCategoriesViewModel>(
-                    //   builder: (controller) {
-                    //     if (controller.getNewsCategoriesApiResponse.status ==
-                    //         Status.LOADING) {
-                    //       return const Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     }
-                    //     if (controller.getNewsCategoriesApiResponse.status ==
-                    //         Status.COMPLETE) {
-                    //       try {
-                    //         responseModel =
-                    //             controller.getNewsCategoriesApiResponse.data;
-                    //       } catch (e) {
-                    //         controller.updateError(true);
-                    //       }
-                    //       return controller.catchError == false
-                    //           ? responseModel!.data!.isEmpty == true
-                    //           ? Center(
-                    //         child: Text('No Categories Added'),
-                    //       )
-                    //           : ListView.separated(
-                    //         separatorBuilder: (context, index) {
-                    //           return const SizedBox(
-                    //             height: 20,
-                    //           );
-                    //         },
-                    //         itemCount: responseModel!.data!.length,
-                    //         shrinkWrap: true,
-                    //         reverse: true,
-                    //         itemBuilder: (context, index) {
-                    //           return Container(
-                    //             width: width,
-                    //             decoration: BoxDecoration(
-                    //               color: Colors.white,
-                    //               borderRadius:
-                    //               BorderRadius.circular(10),
-                    //             ),
-                    //             child: Theme(
-                    //               data: Theme.of(context).copyWith(
-                    //                   dividerColor:
-                    //                   Colors.transparent),
-                    //               child: Container(
-                    //                 height: 50,
-                    //                 width: width,
-                    //                 padding:
-                    //                 const EdgeInsets.symmetric(
-                    //                     horizontal: 25),
-                    //                 alignment: Alignment.centerLeft,
-                    //                 decoration: BoxDecoration(
-                    //                   color: AppColor.whiteColor,
-                    //                   borderRadius:
-                    //                   BorderRadius.circular(10),
-                    //                 ),
-                    //                 child: Row(
-                    //                   children: [
-                    //                     Text(
-                    //                       '${responseModel!.data![index].name ?? "NA"}',
-                    //                       style: const TextStyle(
-                    //                         fontWeight:
-                    //                         FontWeight.w600,
-                    //                         fontSize: 20,
-                    //                       ),
-                    //                     ),
-                    //                     Spacer(),
-                    //                     InkWell(
-                    //                       onTap: () {
-                    //                         deleteDialog(
-                    //                             onPress: () async {
-                    //                               await DeleteNewsCategoriesRepo()
-                    //                                   .deleteNewsCategoriesRepo(
-                    //                                   text: responseModel!
-                    //                                       .data![
-                    //                                   index]
-                    //                                       .id
-                    //                                       .toString());
-                    //
-                    //                               await getNewsCategoriesViewModel
-                    //                                   .getNewsCategoriesViewModel(
-                    //                                   isLoading:
-                    //                                   false);
-                    //                             },
-                    //                             header:
-                    //                             'Are you sure to delete this categorie ?',
-                    //                             context: context);
-                    //                       },
-                    //                       child: Container(
-                    //                         height: 30,
-                    //                         width: 30,
-                    //                         decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                           BorderRadius
-                    //                               .circular(3),
-                    //                           border: Border.all(
-                    //                             color: AppColor
-                    //                                 .mainColor,
-                    //                           ),
-                    //                         ),
-                    //                         child: Center(
-                    //                           child: Icon(
-                    //                             Icons.delete,
-                    //                             size: 20,
-                    //                           ),
-                    //                         ),
-                    //                       ),
-                    //                     )
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           );
-                    //         },
-                    //       )
-                    //           : const Center(
-                    //         child: Text('Something went wrong'),
-                    //       );
-                    //       ;
-                    //     }
-                    //     return const Center(
-                    //       child: Text('Something went wrong...'),
-                    //     );
-                    //   },
-                    // )
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Stock Ticker',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        // alignment: Alignment.centerLeft,
+                        alignment: Alignment.center,
+
+                        child: Text(
+                          'Categories of Person',
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'value',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Transcation Type',
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Mode of acquisition',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
                   ],
                 ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GetBuilder<InsiderViewModel>(
+                    builder: (controller) {
+                      if (controller.getInsiderApiResponse.status ==
+                          Status.LOADING) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (controller.getInsiderApiResponse.status ==
+                          Status.COMPLETE) {
+                        return (controller.insiderData['data'] as List)
+                                    .isEmpty ==
+                                true
+                            ? Center(
+                                child: Text('No Insider Added'),
+                              )
+                            : ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox(
+                                    height: 20,
+                                  );
+                                },
+                                itemCount:
+                                    (controller.insiderData['data'] as List)
+                                        .length,
+                                shrinkWrap: true,
+                                reverse: true,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    width: width,
+                                    // margin: const EdgeInsets.symmetric(horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: AppColor.whiteColor,
+                                      // borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            padding:
+                                                const EdgeInsets.only(left: 20),
+                                            color: Colors.transparent,
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              '${controller.insiderData['data'][index]['name']}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              '${controller.insiderData['data'][index]['shortName']}',
+                                              maxLines: 4,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                          [index]['insiders'] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['personCategory'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                          [index]['insiders'] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['shares'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                          [index]['insiders'] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['value'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                          [index]['insiders'] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['transactionType'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            // padding: const EdgeInsets.only(left: 20),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                          [index]['insiders'] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['mode'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                      }
+                      return const Center(
+                        child: Text('Something went wrong...'),
+                      );
+                    },
+                  )
+                ],
               ),
             ],
           ),
@@ -423,7 +549,7 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                           items: getCompany.data!
                                               .map(
                                                 (e) => DropdownMenuItem(
-                                                  value: e.id,
+                                                  value: e!.id,
                                                   child: Text(
                                                     '${e.name}',
                                                     style: TextStyle(
@@ -573,6 +699,9 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             snackBarBackGroundColor:
                                                 AppColor.redColor);
                                       }
+                                      await insiderViewModel
+                                          .getInsiderViewModel(
+                                              isLoading: false);
                                     },
                                     child: Text(
                                       'Add',

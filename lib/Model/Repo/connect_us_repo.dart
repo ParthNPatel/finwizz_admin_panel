@@ -5,7 +5,7 @@ class ConnectUsRepo {
   Future<ConnectUsResponseModel> connectUsRepo(
       {int? limit = 10, int page = 1}) async {
     var response = await APIService().getResponse(
-      url: 'http://3.109.139.48:4000/contact?limit=$limit&page=$page',
+      url: 'http://52.66.209.219:4000/contact?limit=$limit&page=$page',
       apitype: APIType.aGet,
     );
     ConnectUsResponseModel connectUsResponseModel =

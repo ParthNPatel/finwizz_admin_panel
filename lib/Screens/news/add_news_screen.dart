@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Repo/delete_news_repo.dart';
 import 'package:finwizz_admin/Model/Repo/edit_news_repo.dart';
@@ -48,12 +49,22 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
 
   GetNewsCategoriesResponseModel? responseModel;
   bool newsSelect = false;
+  bool? isShowSticker = false;
+  FocusNode passFocus = FocusNode();
+
   @override
   void initState() {
     getNewsCategoriesViewModel.getNewsCategoriesViewModel();
     searchNewsController.getSearchNewsViewModel(
         text: searchController.text.trim().toString(), companyId: '');
     getCompanyViewModel.getCompanyViewModel();
+    passFocus.addListener(() {
+      if (passFocus.hasFocus) {
+        setState(() {
+          isShowSticker = false;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -142,12 +153,20 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                 items: getCompany.data!
                                                     .map(
                                                       (e) => DropdownMenuItem(
-                                                        value: e.id,
-                                                        child: Text(
-                                                          '${e.name}',
-                                                          style: TextStyle(
-                                                            color: AppColor
-                                                                .blackColor,
+                                                        value: e!.id,
+                                                        child: SizedBox(
+                                                          height: 40,
+                                                          width: 150,
+                                                          child: Text(
+                                                            '${e.name}',
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                              color: AppColor
+                                                                  .blackColor,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -275,6 +294,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Expanded(
                                   flex: 1,
                                   child: Container(
@@ -289,6 +311,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 5,
                                 ),
                                 Expanded(
                                   flex: 2,
@@ -305,6 +330,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Expanded(
                                   flex: 3,
                                   child: Container(
@@ -319,6 +347,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 5,
                                 ),
                                 Expanded(
                                   flex: 1,
@@ -460,6 +491,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                     ),
                                                   ),
                                                 ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
                                                 Expanded(
                                                   flex: 1,
                                                   child: Container(
@@ -472,6 +506,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                     ),
                                                   ),
                                                 ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
                                                 Expanded(
                                                   flex: 2,
                                                   child: Container(
@@ -483,6 +520,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                       ),
                                                     ),
                                                   ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
                                                 ),
                                                 Expanded(
                                                   flex: 3,
@@ -498,6 +538,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                       ),
                                                     ),
                                                   ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
                                                 ),
                                                 Expanded(
                                                   flex: 1,
@@ -583,21 +626,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                                 [index]
                                                                 ['description']
                                                             .toString();
-                                                    typeController.selectedType
-                                                        .value = searchNewsController
-                                                                            .searchNewsData[
-                                                                        'data']
-                                                                    ['docs'][index]
-                                                                ['type'] ==
-                                                            "1"
-                                                        ? 'Positive'
-                                                        : searchNewsController.searchNewsData[
-                                                                            'data']
-                                                                        ['docs']
-                                                                    [index]['type'] ==
-                                                                "-1"
-                                                            ? 'Negative'
-                                                            : 'Neutral';
+
                                                     getCompanyViewModel
                                                             .selectedCompanyValue =
                                                         searchNewsController
@@ -1313,7 +1342,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           items: getCompany.data!
                                               .map(
                                                 (e) => DropdownMenuItem(
-                                                  value: e.id,
+                                                  value: e!.id,
                                                   child: Text(
                                                     '${e.name}',
                                                     style: TextStyle(
@@ -1463,6 +1492,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                 .text
                                                 .trim()
                                                 .toString(),
+                                            "generic": genericType.value,
                                             "source": sourceController.text
                                                 .trim()
                                                 .toString(),
@@ -1488,9 +1518,12 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                               AppColor.redColor,
                                         );
                                       }
-                                      await getNewsViewModel.getNewsViewModel(
-                                          isLoading: false,
-                                          id: controller.selectedValue);
+                                      await searchNewsController
+                                          .getSearchNewsViewModel(
+                                              text: searchController.text
+                                                  .trim()
+                                                  .toString(),
+                                              companyId: '');
                                     },
                                     child: Text(
                                       newsSelect == true ? 'Update' : 'Add',
@@ -1524,5 +1557,19 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
       controller.selectedValue = null;
       sourceController.clear();
     });
+  }
+
+  Widget buildSticker() {
+    return SizedBox(
+      height: 400,
+      width: 400,
+      child: EmojiPicker(
+        textEditingController: descriptionController,
+        config: Config(emojiSizeMax: 20),
+        onEmojiSelected: (emoji, category) {
+          print(emoji);
+        },
+      ),
+    );
   }
 }

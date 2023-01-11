@@ -46,7 +46,7 @@ class InsiderViewModel extends GetxController {
     update();
   }
 
-  /// get Movers
+  /// get Insider
 
   ApiResponse _getInsiderApiResponse =
       ApiResponse.initial(message: 'Initialization');

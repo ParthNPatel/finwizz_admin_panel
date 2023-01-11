@@ -10,7 +10,7 @@ class EditNewsRepo {
     var header = {'Content-Type': 'application/json'};
 
     var response = await http.patch(
-        Uri.parse('http://3.109.139.48:4000/news/$text'),
+        Uri.parse('http://52.66.209.219:4000/news/$text'),
         body: jsonEncode(body),
         headers: header);
 

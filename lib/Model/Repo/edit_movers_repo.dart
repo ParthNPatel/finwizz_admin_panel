@@ -9,14 +9,15 @@ class EditMoverRepo {
   editMoversRepo({String text = "", Map<String, dynamic>? body}) async {
     var headers = {
       'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiJ9.NjM5MmE2YzBiNDQzNjA3MjFhNjdhZTcy.W7YYKaSSjCTkHIXzbog7lTQpIWQdleQDlhry8iXmTSo',
+          'Bearer eyJhbGciOiJIUzI1NiJ9.NjNiZDZkZWIyYzBjZmJkYmQxMWIzMmQ2.XxjWyJcaxqZv0VT9dYV6acZtTeipfJc0abwkkUYgVhM',
       'Content-Type': 'application/json'
     };
 
     var response = await http.patch(
-        Uri.parse('http://3.109.139.48:4000/movers/$text'),
+        Uri.parse('http://52.66.209.219:4000/movers/$text'),
         body: jsonEncode(body),
         headers: headers);
+    print(' Status Code :- ${response.statusCode}');
 
     if (response.statusCode == 200) {
       print(' Status Code :- ${response.statusCode}');

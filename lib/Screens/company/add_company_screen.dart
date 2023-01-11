@@ -216,7 +216,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                                 // padding: const EdgeInsets.only(left: 20),
                                                 alignment: Alignment.center,
                                                 child: Text(
-                                                  '${getCompanyResponseModel.data![index].name}',
+                                                  '${getCompanyResponseModel.data![index]!.name}',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 20,
@@ -229,7 +229,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                                 // padding: const EdgeInsets.only(left: 20),
                                                 alignment: Alignment.center,
                                                 child: Text(
-                                                  '${getCompanyResponseModel.data![index].name!.split('').first}${getCompanyResponseModel.data![index].name!.split('')[1]}',
+                                                  '${getCompanyResponseModel.data![index]!.shortName}',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 20,
@@ -247,7 +247,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                                       await DeleteCompanyRepo()
                                                           .deleteCompanyRepo(
                                                               text:
-                                                                  '${getCompanyResponseModel.data![index].id}');
+                                                                  '${getCompanyResponseModel.data![index]!.id}');
 
                                                       await getCompanyViewModel
                                                           .getCompanyViewModel(
@@ -364,9 +364,9 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           addDataForm(
-                            header: 'Company name',
+                            header: 'Stock Name',
                             textEditingController: companyNameController,
-                            hint: 'Company name',
+                            hint: 'Stock Name',
                           ),
                           const SizedBox(
                             height: 35,
