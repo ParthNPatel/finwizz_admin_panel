@@ -304,7 +304,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     color: AppColor.mainColor,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      'Short Name',
+                                      'Stock Ticker',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -361,6 +361,23 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
 
                                     child: Text(
                                       'Source',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    // alignment: Alignment.centerLeft,
+                                    alignment: Alignment.center,
+
+                                    child: Text(
+                                      'Categories',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -436,10 +453,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                               if (searchNewsController
                                       .getSearchNewsApiResponse.status ==
                                   Status.COMPLETE) {
-                                log('RESPONSE LIST ;- ${(searchNewsController.searchNewsData['data']['docs'] as List).isEmpty}');
+                                log('RESPONSE LIST ;- ${(searchNewsController.searchNewsData['data'] as List).isEmpty}');
                                 return (searchNewsController
-                                                    .searchNewsData['data']
-                                                ['docs'] as List)
+                                                .searchNewsData['data'] as List)
                                             .isEmpty ==
                                         true
                                     ? Center(
@@ -453,12 +469,12 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                         },
                                         itemCount: (searchNewsController
                                                         .searchNewsData['data']
-                                                    ['docs'] as List)
+                                                    as List)
                                                 .isEmpty
                                             ? 0
                                             : (searchNewsController
                                                         .searchNewsData['data']
-                                                    ['docs'] as List)
+                                                    as List)
                                                 .length,
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
@@ -483,7 +499,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      'Com Name',
+                                                      '${searchNewsController.searchNewsData['data'][index]['companyId']['name']}',
                                                       maxLines: 2,
                                                       style: TextStyle(
                                                         fontSize: 16,
@@ -499,7 +515,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      'Short Name',
+                                                      '${searchNewsController.searchNewsData['data'][index]['companyId']['shortName']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                       ),
@@ -514,7 +530,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      '${searchNewsController.searchNewsData['data']['docs'][index]['title']}',
+                                                      '${searchNewsController.searchNewsData['data'][index]['title']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                       ),
@@ -529,7 +545,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      '${searchNewsController.searchNewsData['data']['docs'][index]['description']}',
+                                                      '${searchNewsController.searchNewsData['data'][index]['description']}',
                                                       maxLines: 3,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -547,9 +563,50 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      '${searchNewsController.searchNewsData['data']['docs'][index]['source']}',
+                                                      '${searchNewsController.searchNewsData['data'][index]['source']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      searchNewsController.searchNewsData[
+                                                                          'data']
+                                                                      [index]
+                                                                  ['type'] ==
+                                                              1
+                                                          ? 'Positive'
+                                                          : searchNewsController
+                                                                              .searchNewsData['data']
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      'type'] ==
+                                                                  -1
+                                                              ? 'Negative'
+                                                              : 'Neutral',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: searchNewsController
+                                                                            .searchNewsData[
+                                                                        'data'][index]
+                                                                    ['type'] ==
+                                                                1
+                                                            ? Colors.green
+                                                            : searchNewsController
+                                                                                .searchNewsData['data']
+                                                                            [
+                                                                            index]
+                                                                        [
+                                                                        'type'] ==
+                                                                    -1
+                                                                ? Colors.red
+                                                                : Colors.blue,
                                                       ),
                                                     ),
                                                   ),
@@ -564,7 +621,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                           await DeleteNewsRepo()
                                                               .deleteNewsRepo(
                                                                   text:
-                                                                      '${searchNewsController.searchNewsData['data']['docs'][index]['_id']}');
+                                                                      '${searchNewsController.searchNewsData['data'][index]['_id']}');
 
                                                           await searchNewsController
                                                               .getSearchNewsViewModel(
@@ -609,21 +666,19 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                     titleController.text =
                                                         searchNewsController
                                                             .searchNewsData[
-                                                                'data']['docs']
-                                                                [index]['title']
+                                                                'data'][index]
+                                                                ['title']
                                                             .toString();
                                                     sourceController.text =
                                                         searchNewsController
                                                             .searchNewsData[
-                                                                'data']['docs']
-                                                                [index]
+                                                                'data'][index]
                                                                 ['source']
                                                             .toString();
                                                     descriptionController.text =
                                                         searchNewsController
                                                             .searchNewsData[
-                                                                'data']['docs']
-                                                                [index]
+                                                                'data'][index]
                                                                 ['description']
                                                             .toString();
 
@@ -631,24 +686,23 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                             .selectedCompanyValue =
                                                         searchNewsController
                                                             .searchNewsData[
-                                                                'data']['docs']
-                                                                [index]
+                                                                'data'][index]
                                                                 ['companyId']
+                                                                ['_id']
                                                             .toString();
                                                     getNewsCategoriesViewModel
                                                             .selectedValue =
                                                         searchNewsController
                                                             .searchNewsData[
-                                                                'data']['docs']
-                                                                [index]
+                                                                'data'][index]
                                                                 ['categoryId']
+                                                                ['_id']
                                                             .toString();
                                                     addNewsDialog(
                                                         context,
                                                         searchNewsController
-                                                                    .searchNewsData[
-                                                                'data']['docs']
-                                                            [index]['_id'],
+                                                                .searchNewsData[
+                                                            'data'][index]['_id'],
                                                         responseModel!,
                                                         controller,
                                                         newsSelect);
@@ -1323,6 +1377,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     GetCompanyResponseModel getCompany =
                                         companyController
                                             .getCompanyApiResponse.data;
+
                                     return Container(
                                       height: 40,
                                       width: 380,
@@ -1399,9 +1454,6 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     hintText: 'Write here...',
                                   ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 20,
                               ),
                               const SizedBox(
                                 height: 20,
