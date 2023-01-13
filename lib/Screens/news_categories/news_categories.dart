@@ -1,5 +1,7 @@
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Repo/delete_news_categories_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_news_cetegories_res_model.dart';
+import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_news_categories_view_model.dart';
 import 'package:finwizz_admin/ViewModel/news_categories_view_model.dart';
@@ -123,47 +125,102 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                             controller.updateError(true);
                           }
                           return controller.catchError == false
-                              ? ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      height: 20,
-                                    );
-                                  },
-                                  itemCount: responseModel!.data!.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      width: width,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Theme(
-                                        data: Theme.of(context).copyWith(
-                                            dividerColor: Colors.transparent),
-                                        child: Container(
-                                          height: 50,
+                              ? responseModel!.data!.isEmpty == true
+                                  ? Center(
+                                      child: Text('No Categories Added'),
+                                    )
+                                  : ListView.separated(
+                                      separatorBuilder: (context, index) {
+                                        return const SizedBox(
+                                          height: 20,
+                                        );
+                                      },
+                                      itemCount: responseModel!.data!.length,
+                                      shrinkWrap: true,
+                                      reverse: true,
+                                      itemBuilder: (context, index) {
+                                        return Container(
                                           width: width,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 25),
-                                          alignment: Alignment.centerLeft,
                                           decoration: BoxDecoration(
-                                            color: AppColor.whiteColor,
+                                            color: Colors.white,
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
-                                          child: Text(
-                                            '${responseModel!.data![index].name ?? "NA"}',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 20,
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                                dividerColor:
+                                                    Colors.transparent),
+                                            child: Container(
+                                              height: 50,
+                                              width: width,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 25),
+                                              alignment: Alignment.centerLeft,
+                                              decoration: BoxDecoration(
+                                                color: AppColor.whiteColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '${responseModel!.data![index].name ?? "NA"}',
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                  Spacer(),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deleteDialog(
+                                                          onPress: () async {
+                                                            await DeleteNewsCategoriesRepo()
+                                                                .deleteNewsCategoriesRepo(
+                                                                    text: responseModel!
+                                                                        .data![
+                                                                            index]
+                                                                        .id
+                                                                        .toString());
+
+                                                            await getNewsCategoriesViewModel
+                                                                .getNewsCategoriesViewModel(
+                                                                    isLoading:
+                                                                        false);
+                                                          },
+                                                          header:
+                                                              'Are you sure to delete this categorie ?',
+                                                          context: context);
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                )
+                                        );
+                                      },
+                                    )
                               : const Center(
                                   child: Text('Something went wrong'),
                                 );
@@ -342,6 +399,8 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      newsCategoriesController.clear();
+    });
   }
 }

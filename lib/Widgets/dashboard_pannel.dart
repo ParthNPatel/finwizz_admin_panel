@@ -128,6 +128,48 @@ class DashBoardPanel extends StatelessWidget {
             ),
             MouseRegion(
               onEnter: (e) {
+                controller.updateHover7(true);
+              },
+              onExit: (e) {
+                controller.updateHover7(false);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  color: controller.currentScreen.value ==
+                          DashBoardPanelScreens.latestMover
+                      ? AppColor.selectColor
+                      : controller.hover7.value == true
+                          ? AppColor.selectColor
+                          : Colors.transparent,
+                  borderRadius: borderRadius,
+                ),
+                child: CustomTile(
+                  leading: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      AppImages.categories,
+                      height: iconHeight,
+                      color: AppColor.whiteColor,
+                    ),
+                  ),
+                  textColor: _updateColor(controller.currentScreen,
+                      DashBoardPanelScreens.latestMover,
+                      context: context),
+                  titleMessage: "Latest Movers",
+                  onTap: () {
+                    controller.currentScreen.value =
+                        DashBoardPanelScreens.latestMover;
+                    drawerKey.currentState!.closeDrawer();
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            MouseRegion(
+              onEnter: (e) {
                 controller.updateHover2(true);
               },
               onExit: (e) {
@@ -262,9 +304,51 @@ class DashBoardPanel extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 20),
                 decoration: BoxDecoration(
                   color: controller.currentScreen.value ==
-                          DashBoardPanelScreens.contactUs
+                          DashBoardPanelScreens.insider
                       ? AppColor.selectColor
                       : controller.hover5.value == true
+                          ? AppColor.selectColor
+                          : Colors.transparent,
+                  borderRadius: borderRadius,
+                ),
+                child: CustomTile(
+                  leading: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      AppImages.company,
+                      color: AppColor.whiteColor,
+                      height: iconHeight,
+                    ),
+                  ),
+                  titleMessage: "Insider",
+                  textColor: _updateColor(
+                      controller.currentScreen, DashBoardPanelScreens.insider,
+                      context: context),
+                  onTap: () {
+                    drawerKey.currentState!.closeDrawer();
+                    controller.currentScreen.value =
+                        DashBoardPanelScreens.insider;
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            MouseRegion(
+              onEnter: (e) {
+                controller.updateHover6(true);
+              },
+              onExit: (e) {
+                controller.updateHover6(false);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  color: controller.currentScreen.value ==
+                          DashBoardPanelScreens.contactUs
+                      ? AppColor.selectColor
+                      : controller.hover6.value == true
                           ? AppColor.selectColor
                           : Colors.transparent,
                   borderRadius: borderRadius,

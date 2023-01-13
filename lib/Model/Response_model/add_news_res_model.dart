@@ -37,6 +37,7 @@ class Data {
     this.description,
     this.categoryId,
     this.companyId,
+    this.source,
     this.type,
     this.likes,
     this.id,
@@ -48,6 +49,7 @@ class Data {
   String? description;
   String? categoryId;
   String? companyId;
+  String? source;
   int? type;
   int? likes;
   String? id;
@@ -59,6 +61,7 @@ class Data {
         description: json["description"],
         categoryId: json["categoryId"],
         companyId: json["companyId"],
+        source: json["source"],
         type: json["type"],
         likes: json["likes"],
         id: json["_id"],
@@ -71,6 +74,7 @@ class Data {
         "description": description,
         "categoryId": categoryId,
         "companyId": companyId,
+        "source": source,
         "type": type,
         "likes": likes,
         "_id": id,

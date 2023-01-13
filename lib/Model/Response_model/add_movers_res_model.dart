@@ -27,7 +27,7 @@ class AddMoversResponseModel {
 
   Map<String, dynamic> toJson() => {
         "flag": flag,
-        "data": data!.toJson(),
+        "data": data!?.toJson(),
       };
 }
 
@@ -36,8 +36,11 @@ class Data {
     this.title,
     this.description,
     this.companyId,
-    this.price,
     this.percentage,
+    this.startDate,
+    this.endDate,
+    this.startPrice,
+    this.currentPrice,
     this.type,
     this.likes,
     this.id,
@@ -48,8 +51,11 @@ class Data {
   String? title;
   String? description;
   String? companyId;
-  int? price;
   int? percentage;
+  String? startDate;
+  String? endDate;
+  int? startPrice;
+  int? currentPrice;
   int? type;
   int? likes;
   String? id;
@@ -60,8 +66,11 @@ class Data {
         title: json["title"],
         description: json["description"],
         companyId: json["companyId"],
-        price: json["price"],
         percentage: json["percentage"],
+        startDate: json["startDate"],
+        endDate: json["endDate"],
+        startPrice: json["startPrice"],
+        currentPrice: json["currentPrice"],
         type: json["type"],
         likes: json["likes"],
         id: json["_id"],
@@ -73,8 +82,11 @@ class Data {
         "title": title,
         "description": description,
         "companyId": companyId,
-        "price": price,
         "percentage": percentage,
+        "startDate": startDate,
+        "endDate": endDate,
+        "startPrice": startPrice,
+        "currentPrice": currentPrice,
         "type": type,
         "likes": likes,
         "_id": id,

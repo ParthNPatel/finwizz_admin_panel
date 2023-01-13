@@ -1,6 +1,8 @@
 import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/Screens/contact_us/contact_us_screen.dart';
 import 'package:finwizz_admin/Screens/dashboard/dashboard_screen.dart';
+import 'package:finwizz_admin/Screens/insider/insider_screen.dart';
+import 'package:finwizz_admin/Screens/latest_mover/latest_mover_screen.dart';
 import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/Screens/news/add_news_screen.dart';
 import 'package:finwizz_admin/Screens/news_categories/news_categories.dart';
@@ -62,7 +64,15 @@ class _HomePageState extends State<HomePage> {
                                 : dashBoardController.currentScreen.value ==
                                         DashBoardPanelScreens.newsCategories
                                     ? const AddNewsCategoriesScreen()
-                                    : const AddNewsScreen());
+                                    : dashBoardController.currentScreen.value ==
+                                            DashBoardPanelScreens.insider
+                                        ? const InsiderScreen()
+                                        : dashBoardController
+                                                    .currentScreen.value ==
+                                                DashBoardPanelScreens
+                                                    .latestMover
+                                            ? const LatestMoversScreen()
+                                            : const AddNewsScreen());
 
             // Expanded(
             //   child: dashBoardController.currentScreen.value ==

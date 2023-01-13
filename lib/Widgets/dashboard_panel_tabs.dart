@@ -4,5 +4,7 @@ enum DashBoardPanelScreens {
   news,
   movers,
   contactUs,
-  newsCategories
+  newsCategories,
+  insider,
+  latestMover,
 }

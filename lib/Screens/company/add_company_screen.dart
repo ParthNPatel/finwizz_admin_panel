@@ -1,4 +1,5 @@
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Repo/delete_company_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_company_view_model.dart';
@@ -34,135 +35,268 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
     return Scaffold(
       backgroundColor: AppColor.bgColor,
       body: Container(
-          height: height,
-          width: width,
-          margin: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            border: Border.all(color: AppColor.mainColor),
-          ),
-          child: GetBuilder<GetCompanyViewModel>(
-            builder: (controller) {
-              if (controller.getCompanyApiResponse.status == Status.LOADING) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (controller.getCompanyApiResponse.status == Status.COMPLETE) {
-                GetCompanyResponseModel getCompanyResponseModel =
-                    controller.getCompanyApiResponse.data;
+        height: height,
+        width: width,
+        margin: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: AppColor.mainColor),
+        ),
+        child: GetBuilder<GetCompanyViewModel>(
+          builder: (controller) {
+            if (controller.getCompanyApiResponse.status == Status.LOADING) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (controller.getCompanyApiResponse.status == Status.COMPLETE) {
+              GetCompanyResponseModel getCompanyResponseModel =
+                  controller.getCompanyApiResponse.data;
 
-                return SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Company',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 22,
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Company',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 40,
+                            width: 83,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColor.mainColor,
                               ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                              width: 83,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColor.mainColor,
-                                ),
-                                onPressed: () {
-                                  companyAddDialog(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'Add',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: AppColor.whiteColor,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  height: 20,
-                                );
+                              onPressed: () {
+                                companyAddDialog(context);
                               },
-                              itemCount: getCompanyResponseModel.data!.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: width,
-                                  decoration: BoxDecoration(
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.add,
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        dividerColor: Colors.transparent),
-                                    child: Container(
-                                      height: 50,
-                                      width: width,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 25),
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        color: AppColor.whiteColor,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        '${getCompanyResponseModel.data![index].name}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 20,
+                                  Text(
+                                    'Add',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: AppColor.whiteColor,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: AppColor.mainColor,
+                      padding: const EdgeInsets.all(13),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              // padding: const EdgeInsets.only(left: 20),
+                              color: AppColor.mainColor,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Stock Name',
+                                style: TextStyle(
+                                  color: AppColor.whiteColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              // padding: const EdgeInsets.only(left: 20),
+                              color: AppColor.mainColor,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Stock Ticker',
+                                style: TextStyle(
+                                  color: AppColor.whiteColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                border: Border.all(
+                                  color: AppColor.mainColor,
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  color: Colors.transparent,
+                                  Icons.edit,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        getCompanyResponseModel.data!.isEmpty == true
+                            ? Center(
+                                child: Text('No Company Added'),
+                              )
+                            : ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox(
+                                    height: 20,
+                                  );
+                                },
+                                itemCount: getCompanyResponseModel.data!.length,
+                                shrinkWrap: true,
+                                reverse: true,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    width: width,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                          dividerColor: Colors.transparent),
+                                      child: Container(
+                                        height: 50,
+                                        width: width,
+                                        // padding: const EdgeInsets.symmetric(
+                                        //     horizontal: 25),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color: AppColor.whiteColor,
+                                          // borderRadius:
+                                          //     BorderRadius.circular(10),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                // padding: const EdgeInsets.only(left: 20),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${getCompanyResponseModel.data![index]!.name}',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                // padding: const EdgeInsets.only(left: 20),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${getCompanyResponseModel.data![index]!.shortName}',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                deleteDialog(
+                                                    onPress: () async {
+                                                      await DeleteCompanyRepo()
+                                                          .deleteCompanyRepo(
+                                                              text:
+                                                                  '${getCompanyResponseModel.data![index]!.id}');
+
+                                                      await getCompanyViewModel
+                                                          .getCompanyViewModel(
+                                                              isLoading: false);
+                                                    },
+                                                    header:
+                                                        'Are you sure to delete this company ?',
+                                                    context: context);
+                                              },
+                                              child: Container(
+                                                height: 30,
+                                                width: 30,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(3),
+                                                  border: Border.all(
+                                                    color: AppColor.mainColor,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return Center(
-                child: Text('Something went wrong..'),
+                                  );
+                                },
+                              ),
+                      ],
+                    ),
+                  ],
+                ),
               );
-            },
-          )),
+            }
+            return Center(
+              child: Text('Something went wrong..'),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -230,17 +364,17 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           addDataForm(
-                            header: 'Company name',
+                            header: 'Stock Name',
                             textEditingController: companyNameController,
-                            hint: 'Company name',
+                            hint: 'Stock Name',
                           ),
                           const SizedBox(
                             height: 35,
                           ),
                           addDataForm(
-                            header: 'Short name',
+                            header: 'Stock Ticker',
                             textEditingController: sortCompanyNameController,
-                            hint: 'Short name',
+                            hint: 'Stock Ticker',
                           ),
                           const SizedBox(
                             height: 35,
@@ -268,7 +402,12 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                                 "name": companyNameController
                                                     .text
                                                     .trim()
-                                                    .toString()
+                                                    .toString(),
+                                                "shortName":
+                                                    sortCompanyNameController
+                                                        .text
+                                                        .trim()
+                                                        .toString()
                                               });
 
                                               if (addCompanyViewModel
@@ -326,6 +465,36 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      companyNameController.clear();
+      sortCompanyNameController.clear();
+    });
   }
+}
+
+Future deleteDialog({BuildContext? context, onPress, String? header}) {
+  return showDialog(
+    context: context!,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(header!),
+        actions: [
+          TextButton(
+            onPressed: onPress,
+            child: Text(
+              'Yes',
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: Text(
+              'No',
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

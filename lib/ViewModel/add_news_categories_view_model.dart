@@ -29,7 +29,7 @@ class AddNewsCategoriesViewModel extends GetxController {
     try {
       AddNewsCategoriesResponseModel response =
           await AddNewsCategoriesRepo().addNewsCategoriesRepo(body: model);
-      log("AddNewsCategoriesResponseModel=response==>$response");
+      // log("AddNewsCategoriesResponseModel=response==>$response");
 
       _addNewsCategoriesApiResponse = ApiResponse.complete(response);
       updateLoader(false);

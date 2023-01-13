@@ -32,7 +32,7 @@ class GetCompanyViewModel extends GetxController {
     try {
       GetCompanyResponseModel response =
           await GetCompanyRepo().getCompanyRepo(text: searchText);
-      print("GetCompanyResponseModel=response==>${response.data!.length}");
+      // print("GetCompanyResponseModel=response==>${response.data!.length}");
       totalData = response.data!.length;
       update();
 

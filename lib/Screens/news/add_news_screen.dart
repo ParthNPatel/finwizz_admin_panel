@@ -1,8 +1,12 @@
 import 'dart:developer';
 
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Repo/delete_news_repo.dart';
+import 'package:finwizz_admin/Model/Repo/edit_news_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Model/Response_model/get_news_cetegories_res_model.dart';
+import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_news_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_news_view_model.dart';
@@ -24,7 +28,9 @@ class AddNewsScreen extends StatefulWidget {
 class _AddNewsScreenState extends State<AddNewsScreen> {
   TextEditingController searchController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+  TextEditingController sourceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  RxBool genericType = false.obs;
 
   InputBorder outline =
       OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
@@ -42,10 +48,23 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
   SearchNewsController searchNewsController = Get.put(SearchNewsController());
 
   GetNewsCategoriesResponseModel? responseModel;
+  bool newsSelect = false;
+  bool? isShowSticker = false;
+  FocusNode passFocus = FocusNode();
+
   @override
   void initState() {
     getNewsCategoriesViewModel.getNewsCategoriesViewModel();
+    searchNewsController.getSearchNewsViewModel(
+        text: searchController.text.trim().toString(), companyId: '');
     getCompanyViewModel.getCompanyViewModel();
+    passFocus.addListener(() {
+      if (passFocus.hasFocus) {
+        setState(() {
+          isShowSticker = false;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -107,24 +126,90 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                 const Spacer(),
                                 Row(
                                   children: [
+                                    GetBuilder<GetCompanyViewModel>(
+                                      builder: (companyController) {
+                                        if (companyController
+                                                .getCompanyApiResponse.status ==
+                                            Status.COMPLETE) {
+                                          GetCompanyResponseModel getCompany =
+                                              companyController
+                                                  .getCompanyApiResponse.data;
+                                          return Container(
+                                            height: 40,
+                                            width: 200,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey.shade200,
+                                                border: Border.all(
+                                                    color: AppColor.grey100),
+                                                borderRadius:
+                                                    BorderRadius.circular(7)),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButton(
+                                                hint: const Text('All'),
+                                                value: companyController
+                                                    .selectedCompanyValue,
+                                                items: getCompany.data!
+                                                    .map(
+                                                      (e) => DropdownMenuItem(
+                                                        value: e!.id,
+                                                        child: SizedBox(
+                                                          height: 40,
+                                                          width: 150,
+                                                          child: Text(
+                                                            '${e.name}',
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                              color: AppColor
+                                                                  .blackColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                                onChanged: (val) async {
+                                                  companyController
+                                                      .updateValue(val!);
+                                                  await searchNewsController
+                                                      .getSearchNewsViewModel(
+                                                          isLoading: false,
+                                                          text: searchController
+                                                              .text
+                                                              .trim()
+                                                              .toString(),
+                                                          companyId: val
+                                                              .toString()
+                                                              .trim()
+                                                              .toString());
+                                                  log('SEARCH Company ID :- ${val}');
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return SizedBox();
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
                                     SizedBox(
                                       height: 40,
                                       width: 250,
                                       child: TextField(
                                         controller: searchController,
                                         onChanged: (val) async {
-                                          if (searchController
-                                              .text.isNotEmpty) {
-                                            controller.updateChangeValue(true);
-                                            await searchNewsController
-                                                .getSearchNewsViewModel(
-                                                    isLoading: false,
-                                                    text: searchController.text
-                                                        .trim()
-                                                        .toString());
-                                          } else {
-                                            controller.updateChangeValue(false);
-                                          }
+                                          await searchNewsController
+                                              .getSearchNewsViewModel(
+                                                  isLoading: false,
+                                                  text: searchController.text
+                                                      .trim()
+                                                      .toString());
                                         },
                                         decoration: InputDecoration(
                                           border: outline,
@@ -152,8 +237,13 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           backgroundColor: AppColor.mainColor,
                                         ),
                                         onPressed: () {
-                                          addNewsDialog(context, responseModel!,
-                                              controller);
+                                          newsSelect = false;
+                                          addNewsDialog(
+                                              context,
+                                              '',
+                                              responseModel!,
+                                              controller,
+                                              newsSelect);
                                         },
                                         child: Row(
                                           children: [
@@ -179,257 +269,813 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                             ),
                           ),
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
-                          if (controller.changeData == true)
-                            GetBuilder<SearchNewsController>(
-                              builder: (searchNewsController) {
-                                if (searchNewsController
-                                        .getSearchNewsApiResponse.status ==
-                                    Status.LOADING) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                if (searchNewsController
-                                        .getSearchNewsApiResponse.status ==
-                                    Status.COMPLETE) {
-                                  log('RESPONSE LIST ;- ${(searchNewsController.searchNewsData['data']['docs'] as List).isEmpty}');
-                                  return (searchNewsController
-                                                      .searchNewsData['data']
-                                                  ['docs'] as List)
-                                              .isEmpty ==
-                                          true
-                                      ? Center(
-                                          child: Text('No news fount'),
-                                        )
-                                      : ListView.separated(
-                                          separatorBuilder: (context, index) {
-                                            return const SizedBox(
-                                              height: 20,
-                                            );
-                                          },
-                                          itemCount: (searchNewsController
-                                                          .searchNewsData[
-                                                      'data']['docs'] as List)
-                                                  .isEmpty
-                                              ? 0
-                                              : (searchNewsController
-                                                          .searchNewsData[
-                                                      'data']['docs'] as List)
-                                                  .length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            log('TOTAL DATA :_ ${searchNewsController.searchNewsData['data']['total']}');
-                                            log('TOTAL DATA :_ ${searchNewsController.searchNewsData['data']['total'].runtimeType}');
-                                            return Container(
-                                              width: width,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 25,
-                                                      vertical: 25),
-                                              alignment: Alignment.centerLeft,
-                                              decoration: BoxDecoration(
-                                                color: AppColor.whiteColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '${searchNewsController.searchNewsData['data']['docs'][index]['title']}',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 20,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                    '${searchNewsController.searchNewsData['data']['docs'][index]['description']}',
-                                                    maxLines: 4,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 17,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
-                                }
-                                return const Center(
-                                  child: Text('Something went wrong'),
-                                );
-                              },
-                            ),
-                          if (controller.changeData == false)
-                            SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Row(
-                                  // mainAxisAlignment: MainAxisAlignment.,
-
-                                  children: List.generate(
-                                    responseModel!.data!.length,
-                                    (index) => Row(
-                                      children: [
-                                        InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          onTap: () async {
-                                            controller.updateCategories(index);
-                                            await getNewsViewModel
-                                                .getNewsViewModel(
-                                                    id: responseModel!
-                                                        .data![controller
-                                                            .selectedCategories]
-                                                        .id);
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              border: Border.all(
-                                                  color: AppColor.mainColor),
-                                              color: controller
-                                                          .selectedCategories ==
-                                                      index
-                                                  ? AppColor.mainColor
-                                                  : AppColor.whiteColor,
-                                            ),
-                                            child: Text(
-                                              responseModel!
-                                                          .data![index].name ==
-                                                      null
-                                                  ? 'NA'
-                                                  : responseModel!
-                                                      .data![index].name!,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: controller
-                                                            .selectedCategories ==
-                                                        index
-                                                    ? AppColor.whiteColor
-                                                    : AppColor.mainColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 30,
-                                        )
-                                      ],
+                          Container(
+                            color: AppColor.mainColor,
+                            padding: const EdgeInsets.all(13),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Company Name',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Stock Ticker',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Heading',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Associated News',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    // alignment: Alignment.centerLeft,
+                                    alignment: Alignment.center,
+
+                                    child: Text(
+                                      'Source',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    // alignment: Alignment.centerLeft,
+                                    alignment: Alignment.center,
+
+                                    child: Text(
+                                      'Categories',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () async {},
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: AppColor.mainColor,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.transparent,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: AppColor.mainColor,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        color: Colors.transparent,
+                                        Icons.edit,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                              ],
                             ),
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
-                          if (controller.changeData == false)
-                            GetBuilder<GetNewsViewModel>(
-                              builder: (getNewsController) {
-                                if (getNewsController
-                                        .getNewsApiResponse.status ==
-                                    Status.LOADING) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                if (getNewsController
-                                        .getNewsApiResponse.status ==
-                                    Status.COMPLETE) {
-                                  return (getNewsController.newsData['data']
-                                                  as List)
-                                              .isEmpty ==
-                                          true
-                                      ? Center(
-                                          child: Text('No news fount'),
-                                        )
-                                      : ListView.separated(
-                                          separatorBuilder: (context, index) {
-                                            return const SizedBox(
-                                              height: 20,
-                                            );
-                                          },
-                                          itemCount:
-                                              getNewsController.newsData == null
-                                                  ? 0
-                                                  : (getNewsController
-                                                              .newsData['data']
-                                                          as List)
-                                                      .length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              width: width,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 25,
-                                                      vertical: 25),
-                                              alignment: Alignment.centerLeft,
-                                              decoration: BoxDecoration(
-                                                color: AppColor.whiteColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '${getNewsController.newsData['data'][index]['title']}',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 20,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                    '${getNewsController.newsData['data'][index]['description']}',
-                                                    maxLines: 4,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 17,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
-                                }
+                          // if (controller.changeData == true)
+                          GetBuilder<SearchNewsController>(
+                            builder: (searchNewsController) {
+                              if (searchNewsController
+                                      .getSearchNewsApiResponse.status ==
+                                  Status.LOADING) {
                                 return const Center(
-                                  child: Text('Something went wrong'),
+                                  child: CircularProgressIndicator(),
                                 );
-                              },
-                            )
+                              }
+                              if (searchNewsController
+                                      .getSearchNewsApiResponse.status ==
+                                  Status.COMPLETE) {
+                                log('RESPONSE LIST ;- ${(searchNewsController.searchNewsData['data'] as List).isEmpty}');
+                                return (searchNewsController
+                                                .searchNewsData['data'] as List)
+                                            .isEmpty ==
+                                        true
+                                    ? Center(
+                                        child: Text('No news fount'),
+                                      )
+                                    : ListView.separated(
+                                        separatorBuilder: (context, index) {
+                                          return const SizedBox(
+                                            height: 20,
+                                          );
+                                        },
+                                        itemCount: (searchNewsController
+                                                        .searchNewsData['data']
+                                                    as List)
+                                                .isEmpty
+                                            ? 0
+                                            : (searchNewsController
+                                                        .searchNewsData['data']
+                                                    as List)
+                                                .length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                            width: width,
+                                            // margin:
+                                            //     const EdgeInsets.symmetric(
+                                            //         horizontal: 20),
+                                            padding: const EdgeInsets.symmetric(
+                                                // horizontal: 25,
+                                                vertical: 25),
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: AppColor.whiteColor,
+                                              // borderRadius:
+                                              //     BorderRadius.circular(10),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${searchNewsController.searchNewsData['data'][index]['companyId']['name']}',
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${searchNewsController.searchNewsData['data'][index]['companyId']['shortName']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${searchNewsController.searchNewsData['data'][index]['title']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${searchNewsController.searchNewsData['data'][index]['description']}',
+                                                      maxLines: 3,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${searchNewsController.searchNewsData['data'][index]['source']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      searchNewsController.searchNewsData[
+                                                                          'data']
+                                                                      [index]
+                                                                  ['type'] ==
+                                                              1
+                                                          ? 'Positive'
+                                                          : searchNewsController
+                                                                              .searchNewsData['data']
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      'type'] ==
+                                                                  -1
+                                                              ? 'Negative'
+                                                              : 'Neutral',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: searchNewsController
+                                                                            .searchNewsData[
+                                                                        'data'][index]
+                                                                    ['type'] ==
+                                                                1
+                                                            ? Colors.green
+                                                            : searchNewsController
+                                                                                .searchNewsData['data']
+                                                                            [
+                                                                            index]
+                                                                        [
+                                                                        'type'] ==
+                                                                    -1
+                                                                ? Colors.red
+                                                                : Colors.blue,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    deleteDialog(
+                                                        onPress: () async {
+                                                          await DeleteNewsRepo()
+                                                              .deleteNewsRepo(
+                                                                  text:
+                                                                      '${searchNewsController.searchNewsData['data'][index]['_id']}');
+
+                                                          await searchNewsController
+                                                              .getSearchNewsViewModel(
+                                                                  isLoading:
+                                                                      false,
+                                                                  text: searchController
+                                                                      .text
+                                                                      .trim()
+                                                                      .toString());
+                                                        },
+                                                        header:
+                                                            'Are you sure to delete this news ?',
+                                                        context: context);
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3),
+                                                      border: Border.all(
+                                                        color:
+                                                            AppColor.mainColor,
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.delete,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    newsSelect = true;
+
+                                                    titleController.text =
+                                                        searchNewsController
+                                                            .searchNewsData[
+                                                                'data'][index]
+                                                                ['title']
+                                                            .toString();
+                                                    sourceController.text =
+                                                        searchNewsController
+                                                            .searchNewsData[
+                                                                'data'][index]
+                                                                ['source']
+                                                            .toString();
+                                                    descriptionController.text =
+                                                        searchNewsController
+                                                            .searchNewsData[
+                                                                'data'][index]
+                                                                ['description']
+                                                            .toString();
+
+                                                    getCompanyViewModel
+                                                            .selectedCompanyValue =
+                                                        searchNewsController
+                                                            .searchNewsData[
+                                                                'data'][index]
+                                                                ['companyId']
+                                                                ['_id']
+                                                            .toString();
+                                                    getNewsCategoriesViewModel
+                                                            .selectedValue =
+                                                        searchNewsController
+                                                            .searchNewsData[
+                                                                'data'][index]
+                                                                ['categoryId']
+                                                                ['_id']
+                                                            .toString();
+                                                    addNewsDialog(
+                                                        context,
+                                                        searchNewsController
+                                                                .searchNewsData[
+                                                            'data'][index]['_id'],
+                                                        responseModel!,
+                                                        controller,
+                                                        newsSelect);
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3),
+                                                      border: Border.all(
+                                                        color:
+                                                            AppColor.mainColor,
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.edit,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                              }
+                              return const Center(
+                                child: Text('Something went wrong'),
+                              );
+                            },
+                          ),
+                          // if (controller.changeData == false)
+                          //   SingleChildScrollView(
+                          //     physics: const BouncingScrollPhysics(),
+                          //     scrollDirection: Axis.horizontal,
+                          //     child: Padding(
+                          //       padding:
+                          //           const EdgeInsets.symmetric(horizontal: 20),
+                          //       child: Row(
+                          //         // mainAxisAlignment: MainAxisAlignment.,
+                          //
+                          //         children: List.generate(
+                          //           responseModel!.data!.length,
+                          //           (index) => Row(
+                          //             children: [
+                          //               InkWell(
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(20),
+                          //                 onTap: () async {
+                          //                   controller.updateCategories(index);
+                          //                   await getNewsViewModel
+                          //                       .getNewsViewModel(
+                          //                           id: responseModel!
+                          //                               .data![controller
+                          //                                   .selectedCategories]
+                          //                               .id);
+                          //                 },
+                          //                 child: Container(
+                          //                   padding: const EdgeInsets.all(8),
+                          //                   decoration: BoxDecoration(
+                          //                     borderRadius:
+                          //                         BorderRadius.circular(20),
+                          //                     border: Border.all(
+                          //                         color: AppColor.mainColor),
+                          //                     color: controller
+                          //                                 .selectedCategories ==
+                          //                             index
+                          //                         ? AppColor.mainColor
+                          //                         : AppColor.whiteColor,
+                          //                   ),
+                          //                   child: Text(
+                          //                     responseModel!
+                          //                                 .data![index].name ==
+                          //                             null
+                          //                         ? 'NA'
+                          //                         : responseModel!
+                          //                             .data![index].name!,
+                          //                     style: TextStyle(
+                          //                       fontWeight: FontWeight.w600,
+                          //                       color: controller
+                          //                                   .selectedCategories ==
+                          //                               index
+                          //                           ? AppColor.whiteColor
+                          //                           : AppColor.mainColor,
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //               const SizedBox(
+                          //                 width: 30,
+                          //               )
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // const SizedBox(
+                          //   height: 20,
+                          // ),
+                          // if (controller.changeData == false)
+                          //   GetBuilder<GetNewsViewModel>(
+                          //     builder: (getNewsController) {
+                          //       if (getNewsController
+                          //               .getNewsApiResponse.status ==
+                          //           Status.LOADING) {
+                          //         return const Center(
+                          //           child: CircularProgressIndicator(),
+                          //         );
+                          //       }
+                          //       if (getNewsController
+                          //               .getNewsApiResponse.status ==
+                          //           Status.COMPLETE) {
+                          //         return (getNewsController.newsData['data']
+                          //                         as List)
+                          //                     .isEmpty ==
+                          //                 true
+                          //             ? Center(
+                          //                 child: Text('No news found'),
+                          //               )
+                          //             : ListView.separated(
+                          //                 separatorBuilder: (context, index) {
+                          //                   return const SizedBox(
+                          //                     height: 20,
+                          //                   );
+                          //                 },
+                          //                 itemCount:
+                          //                     getNewsController.newsData == null
+                          //                         ? 0
+                          //                         : (getNewsController
+                          //                                     .newsData['data']
+                          //                                 as List)
+                          //                             .length,
+                          //                 shrinkWrap: true,
+                          //                 itemBuilder: (context, index) {
+                          //                   return Container(
+                          //                     width: width,
+                          //                     // margin:
+                          //                     //     const EdgeInsets.symmetric(
+                          //                     //         horizontal: 20),
+                          //                     padding:
+                          //                         const EdgeInsets.symmetric(
+                          //                             //         horizontal: 25,
+                          //                             vertical: 25),
+                          //                     alignment: Alignment.centerLeft,
+                          //                     decoration: BoxDecoration(
+                          //                       color: AppColor.whiteColor,
+                          //                       // borderRadius:
+                          //                       //     BorderRadius.circular(10),
+                          //                     ),
+                          //                     child: Row(
+                          //                       // '${getNewsController.newsData['data'][index]['title']}',
+                          //                       children: [
+                          //                         Expanded(
+                          //                           flex: 1,
+                          //                           child: Container(
+                          //                             alignment:
+                          //                                 Alignment.center,
+                          //                             child: Text(
+                          //                               '${getNewsController.newsData['data'][index]['companyId']['name']}',
+                          //                               style: TextStyle(
+                          //                                 fontSize: 16,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         Expanded(
+                          //                           flex: 1,
+                          //                           child: Container(
+                          //                             alignment:
+                          //                                 Alignment.center,
+                          //                             child: Text(
+                          //                               '${getNewsController.newsData['data'][index]['companyId']['shortName']}',
+                          //                               style: TextStyle(
+                          //                                 fontSize: 16,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         Expanded(
+                          //                           flex: 2,
+                          //                           child: Container(
+                          //                             alignment:
+                          //                                 Alignment.center,
+                          //                             child: Text(
+                          //                               '${getNewsController.newsData['data'][index]['title']}',
+                          //                               style: TextStyle(
+                          //                                 fontSize: 16,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         Expanded(
+                          //                           flex: 3,
+                          //                           child: Container(
+                          //                             alignment:
+                          //                                 Alignment.center,
+                          //                             child: Text(
+                          //                               '${getNewsController.newsData['data'][index]['description']}',
+                          //                               maxLines: 3,
+                          //                               overflow: TextOverflow
+                          //                                   .ellipsis,
+                          //                               style: TextStyle(
+                          //                                 fontSize: 16,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         Expanded(
+                          //                           flex: 1,
+                          //                           child: Container(
+                          //                             alignment:
+                          //                                 Alignment.center,
+                          //                             child: Text(
+                          //                               '${getNewsController.newsData['data'][index]['source']}',
+                          //                               style: TextStyle(
+                          //                                 fontSize: 16,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         SizedBox(
+                          //                           width: 20,
+                          //                         ),
+                          //                         InkWell(
+                          //                           onTap: () {
+                          //                             deleteDialog(
+                          //                                 onPress: () async {
+                          //                                   await DeleteNewsRepo()
+                          //                                       .deleteNewsRepo(
+                          //                                           text:
+                          //                                               '${getNewsController.newsData['data'][index]['_id']}');
+                          //
+                          //                                   await getNewsViewModel
+                          //                                       .getNewsViewModel(
+                          //                                           id: responseModel!
+                          //                                               .data![controller
+                          //                                                   .selectedCategories]
+                          //                                               .id);
+                          //                                 },
+                          //                                 header:
+                          //                                     'Are you sure to delete this news ?',
+                          //                                 context: context);
+                          //                           },
+                          //                           child: Container(
+                          //                             height: 30,
+                          //                             width: 30,
+                          //                             decoration: BoxDecoration(
+                          //                               borderRadius:
+                          //                                   BorderRadius
+                          //                                       .circular(3),
+                          //                               border: Border.all(
+                          //                                 color: AppColor
+                          //                                     .mainColor,
+                          //                               ),
+                          //                             ),
+                          //                             child: Center(
+                          //                               child: Icon(
+                          //                                 Icons.delete,
+                          //                                 size: 20,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         SizedBox(
+                          //                           width: 20,
+                          //                         ),
+                          //                         InkWell(
+                          //                           onTap: () {
+                          //                             newsSelect = true;
+                          //                             titleController.text =
+                          //                                 getNewsController
+                          //                                     .newsData['data']
+                          //                                         [index]
+                          //                                         ['title']
+                          //                                     .toString();
+                          //                             sourceController.text =
+                          //                                 getNewsController
+                          //                                     .newsData['data']
+                          //                                         [index]
+                          //                                         ['source']
+                          //                                     .toString();
+                          //                             descriptionController
+                          //                                     .text =
+                          //                                 getNewsController
+                          //                                     .newsData['data']
+                          //                                         [index][
+                          //                                         'description']
+                          //                                     .toString();
+                          //                             typeController
+                          //                                 .selectedType
+                          //                                 .value = getNewsController
+                          //                                                 .newsData[
+                          //                                             'data'][index]
+                          //                                         ['type'] ==
+                          //                                     1
+                          //                                 ? 'Positive'
+                          //                                 : getNewsController.newsData[
+                          //                                                     'data']
+                          //                                                 [
+                          //                                                 index]
+                          //                                             [
+                          //                                             'type'] ==
+                          //                                         -1
+                          //                                     ? 'Negative'
+                          //                                     : 'Neutral';
+                          //                             getCompanyViewModel
+                          //                                     .selectedCompanyValue =
+                          //                                 getNewsController
+                          //                                     .newsData['data']
+                          //                                         [index]
+                          //                                         ['companyId']
+                          //                                         ['_id']
+                          //                                     .toString();
+                          //                             getNewsCategoriesViewModel
+                          //                                     .selectedValue =
+                          //                                 getNewsController
+                          //                                     .newsData['data']
+                          //                                         [index]
+                          //                                         ['categoryId']
+                          //                                         ['_id']
+                          //                                     .toString();
+                          //                             addNewsDialog(
+                          //                                 context,
+                          //                                 getNewsController
+                          //                                             .newsData[
+                          //                                         'data'][index]
+                          //                                     ['_id'],
+                          //                                 responseModel!,
+                          //                                 controller,
+                          //                                 newsSelect);
+                          //                           },
+                          //                           child: Container(
+                          //                             height: 30,
+                          //                             width: 30,
+                          //                             decoration: BoxDecoration(
+                          //                               borderRadius:
+                          //                                   BorderRadius
+                          //                                       .circular(3),
+                          //                               border: Border.all(
+                          //                                 color: AppColor
+                          //                                     .mainColor,
+                          //                               ),
+                          //                             ),
+                          //                             child: Center(
+                          //                               child: Icon(
+                          //                                 Icons.edit,
+                          //                                 size: 20,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         SizedBox(
+                          //                           width: 10,
+                          //                         ),
+                          //                       ],
+                          //                     ),
+                          //                   );
+                          //                 },
+                          //               );
+                          //       }
+                          //       return const Center(
+                          //         child: Text('Something went wrong'),
+                          //       );
+                          //     },
+                          //   )
                         ],
                       ),
                     )
@@ -448,8 +1094,10 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
 
   addNewsDialog(
       BuildContext context,
+      String newsId,
       GetNewsCategoriesResponseModel newsResponse,
-      GetNewsCategoriesViewModel controller) {
+      GetNewsCategoriesViewModel controller,
+      bool selectNews) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -501,7 +1149,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Add News',
+                                    selectNews == false
+                                        ? 'Add News'
+                                        : 'Edit News',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: AppColor.whiteColor,
@@ -520,7 +1170,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Title',
+                                'Heading',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -542,9 +1192,73 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     filled: true,
                                     contentPadding:
                                         const EdgeInsets.only(top: 5, left: 10),
-                                    hintText: 'Enter Title',
+                                    hintText: 'Enter Heading',
                                   ),
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                'Source',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                height: 40,
+                                width: 380,
+                                child: TextField(
+                                  controller: sourceController,
+                                  decoration: InputDecoration(
+                                    border: outlineBorder,
+                                    focusedBorder: outlineBorder,
+                                    enabledBorder: outlineBorder,
+                                    fillColor: Colors.grey.shade50,
+                                    filled: true,
+                                    contentPadding:
+                                        const EdgeInsets.only(top: 5, left: 10),
+                                    hintText: 'Enter source',
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                children: [
+                                  Obx(
+                                    () => Checkbox(
+                                        value: genericType.value,
+                                        onChanged: (val) {
+                                          genericType.value = val!;
+                                          if (genericType.value == true) {
+                                            typeController.type =
+                                                ['Positive', 'Negative'].obs;
+                                          } else {
+                                            typeController.type = [
+                                              'Positive',
+                                              'Negative',
+                                              'Neutral'
+                                            ].obs;
+                                          }
+                                          setStat(() {});
+                                        }),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text(
+                                    'Generic ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 20,
@@ -663,6 +1377,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     GetCompanyResponseModel getCompany =
                                         companyController
                                             .getCompanyApiResponse.data;
+
                                     return Container(
                                       height: 40,
                                       width: 380,
@@ -682,7 +1397,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           items: getCompany.data!
                                               .map(
                                                 (e) => DropdownMenuItem(
-                                                  value: e.id,
+                                                  value: e!.id,
                                                   child: Text(
                                                     '${e.name}',
                                                     style: TextStyle(
@@ -711,7 +1426,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                 height: 20,
                               ),
                               const Text(
-                                'Description',
+                                'Associated News',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -743,9 +1458,6 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
                               Align(
                                 alignment: Alignment.center,
                                 child: SizedBox(
@@ -763,13 +1475,77 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   .selectedCompanyValue !=
                                               null &&
                                           controller.selectedValue != null) {
-                                        await addNewsViewModel.addNewsViewModel(
-                                          model: {
+                                        if (newsSelect == false) {
+                                          log('ENTER ADD MODE');
+
+                                          await addNewsViewModel
+                                              .addNewsViewModel(
+                                            model: {
+                                              "title": titleController.text
+                                                  .trim()
+                                                  .toString(),
+                                              "description":
+                                                  descriptionController.text
+                                                      .trim()
+                                                      .toString(),
+                                              "source": sourceController.text
+                                                  .trim()
+                                                  .toString(),
+                                              "companyId": getCompanyViewModel
+                                                  .selectedCompanyValue,
+                                              "categoryId":
+                                                  controller.selectedValue,
+                                              "type": typeController
+                                                          .selectedType.value ==
+                                                      'Positive'
+                                                  ? 1
+                                                  : typeController.selectedType
+                                                              .value ==
+                                                          'Negative'
+                                                      ? -1
+                                                      : 0
+                                            },
+                                          );
+
+                                          if (addNewsViewModel
+                                                  .addNewsApiResponse.status ==
+                                              Status.COMPLETE) {
+                                            Get.back();
+
+                                            snackBarGet('News Added',
+                                                snackBarBackGroundColor:
+                                                    AppColor.greenColor);
+                                          }
+                                          if (addNewsViewModel
+                                                  .addNewsApiResponse.status ==
+                                              Status.ERROR) {
+                                            Get.back();
+                                            titleController.clear();
+                                            descriptionController.clear();
+                                            getCompanyViewModel
+                                                .selectedCompanyValue = null;
+                                            controller.selectedValue = null;
+                                            snackBarGet(
+                                              'Something went wrong',
+                                              snackBarBackGroundColor:
+                                                  AppColor.redColor,
+                                            );
+                                          }
+                                        } else {
+                                          log('ENTER EDIT MODE');
+                                          log('News Id :- ${newsId}');
+                                          log('CATEGORIES  Id :- ${controller.selectedValue}');
+                                          await EditNewsRepo()
+                                              .editNewsRepo(body: {
                                             "title": titleController.text
                                                 .trim()
                                                 .toString(),
                                             "description": descriptionController
                                                 .text
+                                                .trim()
+                                                .toString(),
+                                            "generic": genericType.value,
+                                            "source": sourceController.text
                                                 .trim()
                                                 .toString(),
                                             "companyId": getCompanyViewModel
@@ -779,46 +1555,13 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                             "type": typeController
                                                         .selectedType.value ==
                                                     'Positive'
-                                                ? 1
+                                                ? "1"
                                                 : typeController.selectedType
                                                             .value ==
                                                         'Negative'
-                                                    ? -1
-                                                    : 0
-                                          },
-                                        );
-
-                                        if (addNewsViewModel
-                                                .addNewsApiResponse.status ==
-                                            Status.COMPLETE) {
-                                          Get.back();
-                                          await getNewsViewModel
-                                              .getNewsViewModel(
-                                                  isLoading: false,
-                                                  id: controller.selectedValue);
-                                          titleController.clear();
-                                          descriptionController.clear();
-                                          getCompanyViewModel
-                                              .selectedCompanyValue = null;
-                                          controller.selectedValue = null;
-                                          snackBarGet('Movers Added',
-                                              snackBarBackGroundColor:
-                                                  AppColor.greenColor);
-                                        }
-                                        if (addNewsViewModel
-                                                .addNewsApiResponse.status ==
-                                            Status.ERROR) {
-                                          Get.back();
-                                          titleController.clear();
-                                          descriptionController.clear();
-                                          getCompanyViewModel
-                                              .selectedCompanyValue = null;
-                                          controller.selectedValue = null;
-                                          snackBarGet(
-                                            'Something went wrong',
-                                            snackBarBackGroundColor:
-                                                AppColor.redColor,
-                                          );
+                                                    ? "-1"
+                                                    : "0"
+                                          }, text: newsId);
                                         }
                                       } else {
                                         snackBarGet(
@@ -827,9 +1570,15 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                               AppColor.redColor,
                                         );
                                       }
+                                      await searchNewsController
+                                          .getSearchNewsViewModel(
+                                              text: searchController.text
+                                                  .trim()
+                                                  .toString(),
+                                              companyId: '');
                                     },
                                     child: Text(
-                                      'Add',
+                                      newsSelect == true ? 'Update' : 'Add',
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: AppColor.whiteColor,
@@ -851,6 +1600,28 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
           },
         );
       },
+    ).whenComplete(() {
+      genericType.value = false;
+      typeController.selectedType.value = 'Positive';
+      titleController.clear();
+      descriptionController.clear();
+      getCompanyViewModel.selectedCompanyValue = null;
+      controller.selectedValue = null;
+      sourceController.clear();
+    });
+  }
+
+  Widget buildSticker() {
+    return SizedBox(
+      height: 400,
+      width: 400,
+      child: EmojiPicker(
+        textEditingController: descriptionController,
+        config: Config(emojiSizeMax: 20),
+        onEmojiSelected: (emoji, category) {
+          print(emoji);
+        },
+      ),
     );
   }
 }

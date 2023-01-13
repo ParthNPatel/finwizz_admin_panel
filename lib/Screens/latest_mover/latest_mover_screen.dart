@@ -1,12 +1,13 @@
 import 'dart:developer';
 
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
-import 'package:finwizz_admin/Model/Repo/delete_movers_repo.dart';
-import 'package:finwizz_admin/Model/Repo/edit_movers_repo.dart';
+import 'package:finwizz_admin/Model/Repo/get_latest_movers_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
+import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_movers_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
+import 'package:finwizz_admin/ViewModel/get_latest_mover_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
@@ -14,14 +15,14 @@ import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MoversScreen extends StatefulWidget {
-  const MoversScreen({Key? key}) : super(key: key);
+class LatestMoversScreen extends StatefulWidget {
+  const LatestMoversScreen({Key? key}) : super(key: key);
 
   @override
-  State<MoversScreen> createState() => _MoversScreenState();
+  State<LatestMoversScreen> createState() => _LatestMoversScreenState();
 }
 
-class _MoversScreenState extends State<MoversScreen> {
+class _LatestMoversScreenState extends State<LatestMoversScreen> {
   TextEditingController searchController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -35,17 +36,19 @@ class _MoversScreenState extends State<MoversScreen> {
       borderSide: BorderSide(color: Colors.grey.shade200),
       borderRadius: BorderRadius.circular(7));
   AddMoversViewModel addMoversViewModel = Get.put(AddMoversViewModel());
-  GetMoversViewModel getMoversViewModel = Get.put(GetMoversViewModel());
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   DateTimeRange? _selectedDateRange;
   String? firstDate;
   String? endDate;
   bool typeMover = false;
 
+  GetLatestMoverViewModel getLatestMoverViewModel =
+      Get.put(GetLatestMoverViewModel());
+
   @override
   void initState() {
-    getMoversViewModel.getMoversViewModel();
     getCompanyViewModel.getCompanyViewModel();
+    getLatestMoverViewModel.getLatestMoversViewModel();
     super.initState();
   }
 
@@ -67,14 +70,16 @@ class _MoversScreenState extends State<MoversScreen> {
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: AppColor.mainColor),
           ),
-          child: GetBuilder<GetMoversViewModel>(
+          child: GetBuilder<GetLatestMoverViewModel>(
             builder: (controller) {
-              if (controller.getMoversApiResponse.status == Status.LOADING) {
+              if (controller.getLatestMoverApiResponse.status ==
+                  Status.LOADING) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               }
-              if (controller.getMoversApiResponse.status == Status.COMPLETE) {
+              if (controller.getLatestMoverApiResponse.status ==
+                  Status.COMPLETE) {
                 return SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Column(
@@ -88,7 +93,7 @@ class _MoversScreenState extends State<MoversScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Text(
-                              'Movers',
+                              'Latest Movers',
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 22,
@@ -110,7 +115,8 @@ class _MoversScreenState extends State<MoversScreen> {
                                     onPressed: () {
                                       typeMover = false;
 
-                                      addMoverDialog(context, typeMover, '');
+                                      addLatestMoverDialog(
+                                          context, typeMover, '');
                                     },
                                     child: Row(
                                       children: [
@@ -147,7 +153,7 @@ class _MoversScreenState extends State<MoversScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
-                              flex: 2,
+                              flex: 1,
                               child: Container(
                                 // padding: const EdgeInsets.only(left: 20),
                                 color: AppColor.mainColor,
@@ -165,13 +171,13 @@ class _MoversScreenState extends State<MoversScreen> {
                               width: 5,
                             ),
                             Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: Container(
                                 // padding: const EdgeInsets.only(left: 20),
                                 color: AppColor.mainColor,
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Stock Ticker',
+                                  'Associated News',
                                   style: TextStyle(
                                     color: AppColor.whiteColor,
                                     fontSize: 16,
@@ -192,42 +198,6 @@ class _MoversScreenState extends State<MoversScreen> {
 
                                 child: Text(
                                   'Percentage',
-                                  style: TextStyle(
-                                    color: AppColor.whiteColor,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                // padding: const EdgeInsets.only(left: 20),
-                                color: AppColor.mainColor,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'From Price',
-                                  style: TextStyle(
-                                    color: AppColor.whiteColor,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                // padding: const EdgeInsets.only(left: 20),
-                                color: AppColor.mainColor,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'to Price',
                                   style: TextStyle(
                                     color: AppColor.whiteColor,
                                     fontSize: 16,
@@ -329,9 +299,11 @@ class _MoversScreenState extends State<MoversScreen> {
                             height: 20,
                           );
                         },
-                        itemCount: controller.moversData == null
+                        itemCount: controller.latestMoverData == null
                             ? 0
-                            : (controller.moversData['data'] as List).length,
+                            : (controller.latestMoverData['data']['docs']
+                                    as List)
+                                .length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Container(
@@ -347,13 +319,13 @@ class _MoversScreenState extends State<MoversScreen> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  flex: 2,
+                                  flex: 1,
                                   child: Container(
                                     padding: const EdgeInsets.only(left: 20),
                                     color: Colors.transparent,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['companyId']['name']}',
+                                      '${controller.latestMoverData['data']['docs'][index]['title']}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -364,11 +336,11 @@ class _MoversScreenState extends State<MoversScreen> {
                                   width: 5,
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 3,
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['companyId']['shortName']}',
+                                      '${controller.latestMoverData['data']['docs'][index]['description']}',
                                       maxLines: 4,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -385,7 +357,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['percentage']}%',
+                                      '${controller.latestMoverData['data']['docs'][index]['percentage']}%',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -400,37 +372,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['startPrice']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['currentPrice']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['startDate']}',
+                                      '${controller.latestMoverData['data']['docs'][index]['startDate']}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -446,7 +388,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                     // padding: const EdgeInsets.only(left: 20),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['endDate']}',
+                                      '${controller.latestMoverData['data']['docs'][index]['endDate']}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -460,11 +402,12 @@ class _MoversScreenState extends State<MoversScreen> {
                                   onTap: () async {
                                     deleteDialog(
                                         onPress: () async {
-                                          await DeleteMoversRepo().deleteMoversRepo(
-                                              text:
-                                                  '${controller.moversData['data'][index]['_id']}');
-                                          await getMoversViewModel
-                                              .getMoversViewModel(
+                                          await GetLatestMoversRepo()
+                                              .deleteLatestMoversRepo(
+                                                  text:
+                                                      '${controller.latestMoverData['data']['docs'][index]['_id']}');
+                                          await getLatestMoverViewModel
+                                              .getLatestMoversViewModel(
                                                   isLoading: false);
                                         },
                                         header:
@@ -494,46 +437,32 @@ class _MoversScreenState extends State<MoversScreen> {
                                 InkWell(
                                   onTap: () {
                                     typeMover = true;
-                                    getCompanyViewModel.selectedCompanyValue =
-                                        controller.moversData['data'][index]
-                                                ['companyId']['_id']
-                                            .toString();
+
                                     titleController.text = controller
-                                        .moversData['data'][index]['title']
+                                        .latestMoverData['data']['docs'][index]
+                                            ['title']
                                         .toString();
 
                                     descriptionController.text = controller
-                                        .moversData['data'][index]
+                                        .latestMoverData['data']['docs'][index]
                                             ['description']
                                         .toString();
 
-                                    priceController.text = controller
-                                        .moversData['data'][index]
-                                            ['currentPrice']
-                                        .toString();
-                                    startPriceController.text = controller
-                                        .moversData['data'][index]['startPrice']
-                                        .toString();
-
                                     percentageController.text = controller
-                                        .moversData['data'][index]['percentage']
+                                        .latestMoverData['data']['docs'][index]
+                                            ['percentage']
                                         .toString();
-                                    firstDate = controller.moversData['data']
-                                            [index]['createdAt']
-                                        .toString()
-                                        .split('T')
-                                        .first;
-                                    endDate = controller.moversData['data']
-                                            [index]['updatedAt']
-                                        .toString()
-                                        .split('T')
-                                        .first;
+                                    firstDate =
+                                        controller.latestMoverData['data']
+                                            ['docs'][index]['startDate'];
+                                    endDate = controller.latestMoverData['data']
+                                        ['docs'][index]['endDate'];
 
-                                    addMoverDialog(
+                                    addLatestMoverDialog(
                                         context,
                                         typeMover,
-                                        controller.moversData['data'][index]
-                                            ['_id']);
+                                        controller.latestMoverData['data']
+                                            ['docs'][index]['_id']);
                                   },
                                   child: Container(
                                     height: 30,
@@ -569,7 +498,7 @@ class _MoversScreenState extends State<MoversScreen> {
     );
   }
 
-  addMoverDialog(BuildContext context, bool typeMovers, String moverId) {
+  addLatestMoverDialog(BuildContext context, bool typeMovers, String moverId) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -636,69 +565,18 @@ class _MoversScreenState extends State<MoversScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Company',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              GetBuilder<GetCompanyViewModel>(
-                                builder: (companyController) {
-                                  if (companyController
-                                          .getCompanyApiResponse.status ==
-                                      Status.COMPLETE) {
-                                    GetCompanyResponseModel getCompany =
-                                        companyController
-                                            .getCompanyApiResponse.data;
-                                    return Container(
-                                      height: 40,
-                                      width: 380,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          border: Border.all(
-                                              color: AppColor.grey100),
-                                          borderRadius:
-                                              BorderRadius.circular(7)),
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton(
-                                          hint: const Text('Select Company'),
-                                          value: companyController
-                                              .selectedCompanyValue,
-                                          items: getCompany.data!
-                                              .map(
-                                                (e) => DropdownMenuItem(
-                                                  value: e!.id,
-                                                  child: Text(
-                                                    '${e.name}',
-                                                    style: TextStyle(
-                                                      color:
-                                                          AppColor.blackColor,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
-                                          onChanged: (val) {
-                                            setStat(() {
-                                              companyController
-                                                  .updateValue(val!);
-                                            });
-                                            log('Company ID;- ${companyController.selectedCompanyValue}');
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  return SizedBox();
-                                },
-                              ),
+                              addDataForm(
+                                  header: 'Title',
+                                  hint: 'Title',
+                                  textEditingController: titleController),
                               SizedBox(
+                                height: 20,
+                              ),
+                              addDataForm(
+                                  header: 'Percentage',
+                                  hint: 'Percentage',
+                                  textEditingController: percentageController),
+                              const SizedBox(
                                 height: 20,
                               ),
                               const Text(
@@ -752,67 +630,39 @@ class _MoversScreenState extends State<MoversScreen> {
                                             ? 'Pick Date'
                                             : '${firstDate}  /  ${endDate}')),
                               ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                'Description',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               SizedBox(
-                                height: 20,
+                                height: 150,
+                                width: 380,
+                                child: TextField(
+                                  controller: descriptionController,
+                                  maxLines: 5,
+                                  decoration: InputDecoration(
+                                    border: outlineBorder,
+                                    focusedBorder: outlineBorder,
+                                    enabledBorder: outlineBorder,
+                                    fillColor: Colors.grey.shade50,
+                                    filled: true,
+                                    contentPadding: const EdgeInsets.only(
+                                      top: 25,
+                                      left: 10,
+                                    ),
+                                    hintText: 'Type',
+                                  ),
+                                ),
                               ),
-                              // addDataForm(
-                              //     header: 'Title',
-                              //     hint: 'Title',
-                              //     textEditingController: titleController),
-                              // const SizedBox(
-                              //   height: 20,
-                              // ),
-                              addDataForm(
-                                  header: 'Price Start',
-                                  hint: 'Price Start',
-                                  textEditingController: startPriceController),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              addDataForm(
-                                  header: 'Current Price',
-                                  hint: 'Current Price',
-                                  textEditingController: priceController),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              addDataForm(
-                                  header: 'Percentage',
-                                  hint: 'Percentage',
-                                  textEditingController: percentageController),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              // Text(
-                              //   'Description',
-                              //   style: const TextStyle(
-                              //     fontSize: 16,
-                              //     fontWeight: FontWeight.w500,
-                              //   ),
-                              // ),
-                              // const SizedBox(
-                              //   height: 10,
-                              // ),
-                              // SizedBox(
-                              //   height: 150,
-                              //   width: 380,
-                              //   child: TextField(
-                              //     controller: descriptionController,
-                              //     maxLines: 5,
-                              //     decoration: InputDecoration(
-                              //       border: outlineBorder,
-                              //       focusedBorder: outlineBorder,
-                              //       enabledBorder: outlineBorder,
-                              //       fillColor: Colors.grey.shade50,
-                              //       filled: true,
-                              //       contentPadding: const EdgeInsets.only(
-                              //         top: 25,
-                              //         left: 10,
-                              //       ),
-                              //       hintText: 'Type',
-                              //     ),
-                              //   ),
-                              // ),
                               Align(
                                 alignment: Alignment.center,
                                 child: GetBuilder<AddMoversViewModel>(
@@ -830,31 +680,23 @@ class _MoversScreenState extends State<MoversScreen> {
                                                     AppColor.mainColor,
                                               ),
                                               onPressed: () async {
-                                                if (typeMovers == false) {
-                                                  if (priceController
+                                                if (typeMover == false) {
+                                                  if (percentageController
                                                           .text.isNotEmpty &&
-                                                      percentageController
+                                                      titleController
                                                           .text.isNotEmpty &&
-                                                      getCompanyViewModel
-                                                              .selectedCompanyValue !=
-                                                          null) {
-                                                    await addMoversViewModel
-                                                        .addMoversViewModel(
-                                                            model: {
-                                                          // "title":
-                                                          //     titleController
-                                                          //         .text
-                                                          //         .trim()
-                                                          //         .toString(),
-                                                          // "description":
-                                                          //     descriptionController
-                                                          //         .text
-                                                          //         .trim()
-                                                          //         .toString(),
-                                                          "companyId":
-                                                              "${getCompanyViewModel.selectedCompanyValue}",
-                                                          "currentPrice":
-                                                              priceController
+                                                      descriptionController
+                                                          .text.isNotEmpty) {
+                                                    await getLatestMoverViewModel
+                                                        .addLatestMoversViewModel(
+                                                            body: {
+                                                          "title":
+                                                              titleController
+                                                                  .text
+                                                                  .trim()
+                                                                  .toString(),
+                                                          "description":
+                                                              descriptionController
                                                                   .text
                                                                   .trim()
                                                                   .toString(),
@@ -866,15 +708,10 @@ class _MoversScreenState extends State<MoversScreen> {
                                                           "startDate":
                                                               '$firstDate',
                                                           "endDate": '$endDate',
-                                                          "startPrice":
-                                                              startPriceController
-                                                                  .text
-                                                                  .trim()
-                                                                  .toString(),
                                                         });
 
-                                                    if (addMoversViewModel
-                                                            .addMoversApiResponse
+                                                    if (getLatestMoverViewModel
+                                                            .addLatestMoverApiResponse
                                                             .status ==
                                                         Status.COMPLETE) {
                                                       Get.back();
@@ -887,8 +724,8 @@ class _MoversScreenState extends State<MoversScreen> {
                                                               AppColor
                                                                   .greenColor);
                                                     }
-                                                    if (addMoversViewModel
-                                                            .addMoversApiResponse
+                                                    if (getLatestMoverViewModel
+                                                            .addLatestMoverApiResponse
                                                             .status ==
                                                         Status.ERROR) {
                                                       Get.back();
@@ -907,39 +744,32 @@ class _MoversScreenState extends State<MoversScreen> {
                                                     );
                                                   }
                                                 } else {
-                                                  await EditMoverRepo()
-                                                      .editMoversRepo(body: {
-                                                    // "title": titleController
-                                                    //     .text
-                                                    //     .trim()
-                                                    //     .toString(),
-                                                    // "description":
-                                                    //     descriptionController
-                                                    //         .text
-                                                    //         .trim()
-                                                    //         .toString(),
-                                                    "companyId":
-                                                        "${getCompanyViewModel.selectedCompanyValue}",
-                                                    "currentPrice":
-                                                        priceController.text
-                                                            .trim()
-                                                            .toString(),
-                                                    "percentage":
-                                                        percentageController
+                                                  await GetLatestMoversRepo()
+                                                      .editLatestMoversRepo(
+                                                          body: {
+                                                        "title": titleController
                                                             .text
                                                             .trim()
                                                             .toString(),
-                                                    "startDate": '$firstDate',
-                                                    "endDate": '$endDate',
-                                                    "startPrice":
-                                                        startPriceController
-                                                            .text
-                                                            .trim()
-                                                            .toString(),
-                                                  }, text: moverId);
+                                                        "description":
+                                                            descriptionController
+                                                                .text
+                                                                .trim()
+                                                                .toString(),
+                                                        "percentage":
+                                                            percentageController
+                                                                .text
+                                                                .trim()
+                                                                .toString(),
+                                                        "startDate":
+                                                            '$firstDate',
+                                                        "endDate": '$endDate',
+                                                      },
+                                                          text: moverId);
                                                 }
-                                                await getMoversViewModel
-                                                    .getMoversViewModel(
+
+                                                await getLatestMoverViewModel
+                                                    .getLatestMoversViewModel(
                                                         isLoading: false);
                                               },
                                               child: Text(
@@ -984,46 +814,4 @@ class _MoversScreenState extends State<MoversScreen> {
     endDate = null;
     getCompanyViewModel.selectedCompanyValue = null;
   }
-}
-
-Widget addDataForm(
-    {String? header,
-    String? hint,
-    TextInputType? textInputType = TextInputType.emailAddress,
-    TextEditingController? textEditingController}) {
-  InputBorder outlineBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.grey.shade200),
-      borderRadius: BorderRadius.circular(7));
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        '$header',
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      const SizedBox(
-        height: 10,
-      ),
-      SizedBox(
-        height: 40,
-        width: 380,
-        child: TextField(
-          keyboardType: textInputType,
-          controller: textEditingController,
-          decoration: InputDecoration(
-            border: outlineBorder,
-            focusedBorder: outlineBorder,
-            enabledBorder: outlineBorder,
-            fillColor: Colors.grey.shade50,
-            filled: true,
-            contentPadding: const EdgeInsets.only(top: 5, left: 10),
-            hintText: '$hint',
-          ),
-        ),
-      ),
-    ],
-  );
 }

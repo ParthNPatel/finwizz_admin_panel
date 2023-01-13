@@ -29,7 +29,7 @@ class AddCompanyViewModel extends GetxController {
     try {
       AddCompanyResponseModel response =
           await AddCompanyRepo().addCompanyRepo(body: model);
-      log("AddCompanyResponseModel=response==>$response");
+      // log("AddCompanyResponseModel=response==>$response");
 
       _addCompanyApiResponse = ApiResponse.complete(response);
       updateLoader(false);

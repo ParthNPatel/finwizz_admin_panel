@@ -6,13 +6,14 @@ import 'package:http/http.dart' as http;
 
 class SearchNewsController extends GetxController {
   dynamic searchata;
-  Future<dynamic> apiCalling({String text = ''}) async {
+  Future<dynamic> apiCalling({String text = '', String companyId = ''}) async {
     var headers = {
       'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiJ9.NjM5NTc2ODVlYmQ2YzgzNzUwOWUwYmRj.1iadelf8X5NZXjvmoOOCIzDHtnaPkv5Hm0-dPWQ5cLE'
+          'Bearer eyJhbGciOiJIUzI1NiJ9.NjNiZDZkZWIyYzBjZmJkYmQxMWIzMmQ2.XxjWyJcaxqZv0VT9dYV6acZtTeipfJc0abwkkUYgVhM'
     };
     var response = await http.get(
-        Uri.parse('http://3.109.139.48:4000/news/search?companyId=&text=$text'),
+        Uri.parse(
+            'http://52.66.209.219:4000/news/search?companyId=$companyId&text=$text'),
         headers: headers);
 
     if (response.statusCode == 200) {
@@ -31,15 +32,17 @@ class SearchNewsController extends GetxController {
   ApiResponse get getSearchNewsApiResponse => _getSearchNewsApiResponse;
 
   Future<void> getSearchNewsViewModel(
-      {bool isLoading = true, String? text = ''}) async {
+      {bool isLoading = true,
+      String? text = '',
+      String? companyId = ''}) async {
     if (isLoading) {
       _getSearchNewsApiResponse = ApiResponse.loading(message: 'Loading');
     }
 
     update();
     try {
-      searchNewsData = await apiCalling(text: text!);
-      print("searchNewsData=response==>$searchNewsData");
+      searchNewsData = await apiCalling(text: text!, companyId: companyId!);
+      // print("searchNewsData=response==>$searchNewsData");
 
       _getSearchNewsApiResponse = ApiResponse.complete(searchNewsData);
     } catch (e) {

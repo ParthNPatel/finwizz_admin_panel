@@ -34,6 +34,7 @@ class AddCompanyResponseModel {
 class Data {
   Data({
     this.name,
+    this.shortName,
     this.id,
     this.createdAt,
     this.updatedAt,
@@ -41,6 +42,7 @@ class Data {
   });
 
   String? name;
+  String? shortName;
   String? id;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -48,6 +50,7 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         name: json["name"],
+        shortName: json["shortName"],
         id: json["_id"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
@@ -56,6 +59,7 @@ class Data {
 
   Map<String, dynamic> toJson() => {
         "name": name,
+        "shortName": shortName,
         "_id": id,
         "createdAt": createdAt!.toIso8601String(),
         "updatedAt": updatedAt!.toIso8601String(),

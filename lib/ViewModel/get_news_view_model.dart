@@ -30,9 +30,9 @@ class GetNewsViewModel extends GetxController {
     update();
     try {
       newsData = await GetNewsRepo().getNewsRepo(id: id);
-      print("GetNewsResponseModel=response==>${{
+      /*  print("GetNewsResponseModel=response==>${{
         (newsData['data'] as List).length
-      }}");
+      }}");*/
       totalData = (newsData['data'] as List).length;
       update();
       _getNewsApiResponse = ApiResponse.complete(newsData);

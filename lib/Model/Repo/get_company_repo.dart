@@ -7,7 +7,7 @@ import 'package:finwizz_admin/Model/Services/base_service.dart';
 class GetCompanyRepo {
   var headers = {
     'Authorization':
-        'Bearer eyJhbGciOiJIUzI1NiJ9.NjM5NTc2ODVlYmQ2YzgzNzUwOWUwYmRj.1iadelf8X5NZXjvmoOOCIzDHtnaPkv5Hm0-dPWQ5cLE'
+        'Bearer eyJhbGciOiJIUzI1NiJ9.NjNiZDZkZWIyYzBjZmJkYmQxMWIzMmQ2.XxjWyJcaxqZv0VT9dYV6acZtTeipfJc0abwkkUYgVhM'
   };
   Future<GetCompanyResponseModel> getCompanyRepo({String? text = ""}) async {
     log("URL :- ${ApiUrl.getCompany}");
