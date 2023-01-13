@@ -276,7 +276,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: 20,
+                                              width: 30,
                                             ),
                                           ],
                                         ),

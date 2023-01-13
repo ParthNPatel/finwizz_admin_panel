@@ -430,7 +430,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['startDate']}',
+                                      '${controller.moversData['data'][index]['startDate'].toString().split(" ")[0]}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -446,7 +446,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                     // padding: const EdgeInsets.only(left: 20),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['endDate']}',
+                                      '${controller.moversData['data'][index]['endDate'].toString().split(" ")[0]}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),

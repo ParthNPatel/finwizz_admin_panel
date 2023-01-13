@@ -612,7 +612,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  width: 20,
+                                                  width: 10,
                                                 ),
                                                 InkWell(
                                                   onTap: () {
@@ -728,7 +728,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  width: 10,
+                                                  width: 30,
                                                 ),
                                               ],
                                             ),
@@ -1255,8 +1255,8 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                   const Text(
                                     'Generic ',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black),
                                   ),
                                 ],
                               ),

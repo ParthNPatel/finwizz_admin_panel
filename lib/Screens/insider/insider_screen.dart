@@ -29,6 +29,7 @@ class _InsiderScreenState extends State<InsiderScreen> {
   TextEditingController valueController = TextEditingController();
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController modeController = TextEditingController();
+
   @override
   void initState() {
     getCompanyViewModel.getCompanyViewModel();
