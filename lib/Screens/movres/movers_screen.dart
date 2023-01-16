@@ -864,8 +864,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                                                   .trim()
                                                                   .toString(),
                                                           "startDate":
-                                                              '$firstDate',
-                                                          "endDate": '$endDate',
+                                                              '${_selectedDateRange!.start}',
+                                                          "endDate":
+                                                              '${_selectedDateRange!.end}',
                                                           "startPrice":
                                                               startPriceController
                                                                   .text
