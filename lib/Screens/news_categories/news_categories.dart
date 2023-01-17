@@ -7,6 +7,7 @@ import 'package:finwizz_admin/ViewModel/add_news_categories_view_model.dart';
 import 'package:finwizz_admin/ViewModel/news_categories_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
+import 'package:finwizz_admin/Widgets/toggle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -76,7 +77,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                           backgroundColor: AppColor.mainColor,
                         ),
                         onPressed: () {
-                          newsCategoriesAddDialog(context);
+                          newsCategoriesAddDialog(context, false);
                         },
                         child: Row(
                           children: [
@@ -94,6 +95,37 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                color: AppColor.mainColor,
+                padding: const EdgeInsets.all(18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: Text(
+                              'News Category',
+                              style: TextStyle(
+                                color: AppColor.whiteColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -140,6 +172,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                       reverse: true,
                                       itemBuilder: (context, index) {
                                         return Container(
+                                          height: 78,
                                           width: width,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
@@ -213,7 +246,39 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                  )
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      newsCategoriesAddDialog(
+                                                        context,
+                                                        true,
+                                                        category:
+                                                            '${responseModel!.data![index].name ?? "NA"}',
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.edit,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -241,7 +306,8 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
     );
   }
 
-  newsCategoriesAddDialog(BuildContext context) {
+  newsCategoriesAddDialog(BuildContext context, bool isEdit,
+      {String? category}) {
     InputBorder outlineBorder = OutlineInputBorder(
         borderSide: BorderSide(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(7));
@@ -250,6 +316,9 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
       barrierDismissible: false,
       barrierColor: Colors.black12,
       builder: (context) {
+        if (isEdit == true) {
+          newsCategoriesController = TextEditingController(text: category);
+        }
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
@@ -289,7 +358,9 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Add Categories',
+                                isEdit == true
+                                    ? 'Edit Categories'
+                                    : 'Add Categories',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: AppColor.whiteColor,
@@ -377,7 +448,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                             }
                                           },
                                           child: Text(
-                                            'Add',
+                                            isEdit == true ? 'Edit' : 'Add',
                                             style: TextStyle(
                                               fontSize: 18,
                                               color: AppColor.whiteColor,

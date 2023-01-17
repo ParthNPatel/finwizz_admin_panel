@@ -304,6 +304,42 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     color: AppColor.mainColor,
                                     alignment: Alignment.center,
                                     child: Text(
+                                      'Category',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Generic',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
                                       'Stock Ticker',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
@@ -506,6 +542,38 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                       ),
                                                     ),
                                                   ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${searchNewsController.searchNewsData['data'][index]['categoryId']['name']}',
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Checkbox(
+                                                        value: searchNewsController
+                                                                    .searchNewsData[
+                                                                'data'][index]
+                                                            ['generic'],
+                                                        onChanged: (value) {},
+                                                      )),
                                                 ),
                                                 SizedBox(
                                                   width: 5,

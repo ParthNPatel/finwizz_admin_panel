@@ -12,6 +12,7 @@ import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class MoversScreen extends StatefulWidget {
@@ -28,6 +29,7 @@ class _MoversScreenState extends State<MoversScreen> {
   TextEditingController priceController = TextEditingController();
   TextEditingController startPriceController = TextEditingController();
   TextEditingController percentageController = TextEditingController();
+  TextEditingController imageTypeController = TextEditingController();
   TypeController typeController = Get.put(TypeController());
   InputBorder outline =
       OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
@@ -55,7 +57,6 @@ class _MoversScreenState extends State<MoversScreen> {
     double fem = MediaQuery.of(context).size.width / baseWidth;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
     log('width :- $width');
     return Scaffold(
       backgroundColor: AppColor.bgColor,
@@ -172,6 +173,24 @@ class _MoversScreenState extends State<MoversScreen> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Stock Ticker',
+                                  style: TextStyle(
+                                    color: AppColor.whiteColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                // padding: const EdgeInsets.only(left: 20),
+                                color: AppColor.mainColor,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Image Type',
                                   style: TextStyle(
                                     color: AppColor.whiteColor,
                                     fontSize: 16,
@@ -317,6 +336,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              width: 20,
+                            ),
                           ],
                         ),
                       ),
@@ -366,9 +388,26 @@ class _MoversScreenState extends State<MoversScreen> {
                                 Expanded(
                                   flex: 1,
                                   child: Container(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    color: Colors.transparent,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.moversData['data'][index]['companyId']['shortName']}',
+                                      '${controller.moversData['data'][index]['companyId']['name']}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${controller.moversData['data'][index]['imageType']}',
                                       maxLines: 4,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -518,6 +557,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                     percentageController.text = controller
                                         .moversData['data'][index]['percentage']
                                         .toString();
+                                    imageTypeController.text = controller
+                                        .moversData['data'][index]['imageType']
+                                        .toString();
                                     firstDate = controller.moversData['data']
                                             [index]['createdAt']
                                         .toString()
@@ -551,6 +593,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 20,
                                 ),
                               ],
                             ),
@@ -783,6 +828,17 @@ class _MoversScreenState extends State<MoversScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
+                              addDataForm(
+                                  inputFormatter: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  header: 'Image Type',
+                                  hint: 'Type',
+                                  textInputType: TextInputType.number,
+                                  textEditingController: imageTypeController),
+                              const SizedBox(
+                                height: 20,
+                              ),
                               // Text(
                               //   'Description',
                               //   style: const TextStyle(
@@ -872,6 +928,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                                                   .text
                                                                   .trim()
                                                                   .toString(),
+                                                          "imageType": int.parse(
+                                                              imageTypeController
+                                                                  .text)
                                                         });
 
                                                     if (addMoversViewModel
@@ -931,6 +990,9 @@ class _MoversScreenState extends State<MoversScreen> {
                                                             .trim()
                                                             .toString(),
                                                     "startDate": '$firstDate',
+                                                    "imageType": int.parse(
+                                                        imageTypeController
+                                                            .text),
                                                     "endDate": '$endDate',
                                                     "startPrice":
                                                         startPriceController
@@ -991,7 +1053,8 @@ Widget addDataForm(
     {String? header,
     String? hint,
     TextInputType? textInputType = TextInputType.emailAddress,
-    TextEditingController? textEditingController}) {
+    TextEditingController? textEditingController,
+    dynamic inputFormatter}) {
   InputBorder outlineBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.grey.shade200),
       borderRadius: BorderRadius.circular(7));
@@ -1012,6 +1075,7 @@ Widget addDataForm(
         height: 40,
         width: 380,
         child: TextField(
+          inputFormatters: inputFormatter,
           keyboardType: textInputType,
           controller: textEditingController,
           decoration: InputDecoration(

@@ -11,6 +11,7 @@ import 'package:finwizz_admin/ViewModel/get_latest_mover_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
+import 'package:finwizz_admin/Widgets/toggle_button.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,6 +42,10 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
   String? firstDate;
   String? endDate;
   bool typeMover = false;
+
+  List<String> statusList = ['Active', 'Inactive'];
+
+  int selected = 0;
 
   GetLatestMoverViewModel getLatestMoverViewModel =
       Get.put(GetLatestMoverViewModel());
@@ -171,7 +176,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                               width: 5,
                             ),
                             Expanded(
-                              flex: 3,
+                              flex: 2,
                               child: Container(
                                 // padding: const EdgeInsets.only(left: 20),
                                 color: AppColor.mainColor,
@@ -287,6 +292,15 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              width: 148,
+                            ),
+                            SizedBox(
+                              width: 50,
+                            ),
                           ],
                         ),
                       ),
@@ -336,7 +350,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                   width: 5,
                                 ),
                                 Expanded(
-                                  flex: 3,
+                                  flex: 2,
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: Text(
@@ -480,6 +494,23 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                AnimatedToggle(
+                                  values: statusList,
+                                  buttonColor: AppColor.mainColor,
+                                  backgroundColor: Colors.grey.shade200,
+                                  textColor: const Color(0xFFFFFFFF),
+                                  onToggleCallback: (value) {
+                                    setState(() {
+                                      selected = value;
+                                    });
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 20,
                                 ),
                               ],
                             ),
