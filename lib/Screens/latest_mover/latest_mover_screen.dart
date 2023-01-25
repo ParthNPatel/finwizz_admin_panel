@@ -386,7 +386,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.latestMoverData['data']['docs'][index]['startDate']}',
+                                      '${controller.latestMoverData['data']['docs'][index]['startDate'].toString().split(" ")[0]}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -402,7 +402,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                     // padding: const EdgeInsets.only(left: 20),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${controller.latestMoverData['data']['docs'][index]['endDate']}',
+                                      '${controller.latestMoverData['data']['docs'][index]['endDate'].toString().split(" ")[0]}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -466,11 +466,15 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                         .latestMoverData['data']['docs'][index]
                                             ['percentage']
                                         .toString();
-                                    firstDate =
-                                        controller.latestMoverData['data']
-                                            ['docs'][index]['startDate'];
+                                    firstDate = controller
+                                        .latestMoverData['data']['docs'][index]
+                                            ['startDate']
+                                        .toString()
+                                        .split(" ")[0];
                                     endDate = controller.latestMoverData['data']
-                                        ['docs'][index]['endDate'];
+                                            ['docs'][index]['endDate']
+                                        .toString()
+                                        .split(" ")[0];
 
                                     addLatestMoverDialog(
                                         context,
@@ -638,10 +642,8 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                     setStat(() {
                                       _selectedDateRange = result;
                                     });
-                                    firstDate =
-                                        '${_selectedDateRange!.start.day} - ${_selectedDateRange!.start.month} - ${_selectedDateRange!.start.year}';
-                                    endDate =
-                                        '${_selectedDateRange!.end.day} - ${_selectedDateRange!.end.month} - ${_selectedDateRange!.end.year}';
+                                    firstDate = '${_selectedDateRange!.start}';
+                                    endDate = '${_selectedDateRange!.end}';
                                   }
                                   log('SELECTED DATE :- ${_selectedDateRange}');
                                 },
@@ -793,8 +795,9 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                                                 .trim()
                                                                 .toString(),
                                                         "startDate":
-                                                            '$firstDate',
-                                                        "endDate": '$endDate',
+                                                            '${_selectedDateRange!.start}',
+                                                        "endDate":
+                                                            '${_selectedDateRange!.end}',
                                                       },
                                                           text: moverId);
                                                 }

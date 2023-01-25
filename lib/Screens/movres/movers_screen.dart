@@ -12,7 +12,6 @@ import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class MoversScreen extends StatefulWidget {
@@ -43,6 +42,10 @@ class _MoversScreenState extends State<MoversScreen> {
   String? firstDate;
   String? endDate;
   bool typeMover = false;
+
+  int? imageTypeSelected;
+
+  List<int> imageType = [1, 2, 3, 4, 5];
 
   @override
   void initState() {
@@ -828,14 +831,56 @@ class _MoversScreenState extends State<MoversScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              addDataForm(
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
-                                  header: 'Image Type',
-                                  hint: 'Type',
-                                  textInputType: TextInputType.number,
-                                  textEditingController: imageTypeController),
+                              // addDataForm(
+                              //     inputFormatter: [
+                              //       FilteringTextInputFormatter.digitsOnly,
+                              //     ],
+                              //     header: 'Image Type',
+                              //     hint: 'Type',
+                              //     textInputType: TextInputType.number,
+                              //     textEditingController: imageTypeController),
+                              Text(
+                                'Image Type',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height: 40,
+                                width: 380,
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    border: Border.all(color: AppColor.grey100),
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    hint: const Text('Select ImageType'),
+                                    value: imageTypeSelected,
+                                    items: List.generate(
+                                      imageType.length,
+                                      (index) => DropdownMenuItem(
+                                        value: imageType[index],
+                                        child: Text(
+                                          'Image Type - ${imageType[index]}',
+                                          style: TextStyle(
+                                            color: AppColor.blackColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (val) {
+                                      setStat(() {
+                                        imageTypeSelected = val as int;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -897,16 +942,6 @@ class _MoversScreenState extends State<MoversScreen> {
                                                     await addMoversViewModel
                                                         .addMoversViewModel(
                                                             model: {
-                                                          // "title":
-                                                          //     titleController
-                                                          //         .text
-                                                          //         .trim()
-                                                          //         .toString(),
-                                                          // "description":
-                                                          //     descriptionController
-                                                          //         .text
-                                                          //         .trim()
-                                                          //         .toString(),
                                                           "companyId":
                                                               "${getCompanyViewModel.selectedCompanyValue}",
                                                           "currentPrice":
@@ -928,9 +963,8 @@ class _MoversScreenState extends State<MoversScreen> {
                                                                   .text
                                                                   .trim()
                                                                   .toString(),
-                                                          "imageType": int.parse(
-                                                              imageTypeController
-                                                                  .text)
+                                                          "imageType":
+                                                              imageTypeSelected
                                                         });
 
                                                     if (addMoversViewModel
@@ -969,15 +1003,6 @@ class _MoversScreenState extends State<MoversScreen> {
                                                 } else {
                                                   await EditMoverRepo()
                                                       .editMoversRepo(body: {
-                                                    // "title": titleController
-                                                    //     .text
-                                                    //     .trim()
-                                                    //     .toString(),
-                                                    // "description":
-                                                    //     descriptionController
-                                                    //         .text
-                                                    //         .trim()
-                                                    //         .toString(),
                                                     "companyId":
                                                         "${getCompanyViewModel.selectedCompanyValue}",
                                                     "currentPrice":
@@ -990,9 +1015,8 @@ class _MoversScreenState extends State<MoversScreen> {
                                                             .trim()
                                                             .toString(),
                                                     "startDate": '$firstDate',
-                                                    "imageType": int.parse(
-                                                        imageTypeController
-                                                            .text),
+                                                    "imageType":
+                                                        imageTypeSelected,
                                                     "endDate": '$endDate',
                                                     "startPrice":
                                                         startPriceController

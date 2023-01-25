@@ -279,6 +279,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                SizedBox(
+                                  width: 30,
+                                ),
                                 Expanded(
                                   flex: 1,
                                   child: Container(
@@ -367,7 +370,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 5,
+                                  width: 15,
                                 ),
                                 Expanded(
                                   flex: 3,
@@ -530,6 +533,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                             ),
                                             child: Row(
                                               children: [
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
                                                 Expanded(
                                                   flex: 1,
                                                   child: Container(
@@ -606,7 +612,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  width: 5,
+                                                  width: 15,
                                                 ),
                                                 Expanded(
                                                   flex: 3,
