@@ -41,6 +41,10 @@ class _MoversScreenState extends State<MoversScreen> {
   DateTimeRange? _selectedDateRange;
   String? firstDate;
   String? endDate;
+  DateTime? stDate;
+  DateTime? lsDate;
+  DateTime? fsDate;
+  DateTime? edDate;
   bool typeMover = false;
 
   int? imageTypeSelected;
@@ -99,6 +103,45 @@ class _MoversScreenState extends State<MoversScreen> {
                               ),
                             ),
                             const Spacer(),
+                            GestureDetector(
+                              onTap: () async {
+                                DateTimeRange? result =
+                                    await showDateRangePicker(
+                                  context: context,
+                                  firstDate: DateTime(
+                                      2022, 1, 1), // the earliest allowable
+                                  lastDate: DateTime(
+                                      2030, 12, 31), // the latest allowable
+                                  currentDate: DateTime.now(),
+                                  saveText: 'Done',
+                                );
+                                if (result != null) {
+                                  // Rebuild the UI
+                                  print(result.start.toString());
+                                  setState(() {
+                                    _selectedDateRange = result;
+                                  });
+                                  firstDate =
+                                      '${_selectedDateRange!.start.year}-${_selectedDateRange!.start.month < 10 ? '0${_selectedDateRange!.start.month}' : _selectedDateRange!.start.month}-${_selectedDateRange!.start.day < 10 ? '0${_selectedDateRange!.start.day}' : _selectedDateRange!.start.day}';
+                                  endDate =
+                                      '${_selectedDateRange!.end.year}-${_selectedDateRange!.end.month < 10 ? '0${_selectedDateRange!.end.month}' : _selectedDateRange!.end.month}-${_selectedDateRange!.end.day < 10 ? '0${_selectedDateRange!.end.day}' : _selectedDateRange!.end.day}';
+                                }
+                              },
+                              child: Container(
+                                height: 40,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all()),
+                                child: Center(
+                                  child: Text(
+                                      firstDate == null || endDate == null
+                                          ? 'Pick Date'
+                                          : '${firstDate}  /  ${endDate}'),
+                                ),
+                              ),
+                            ),
                             Row(
                               children: [
                                 const SizedBox(
@@ -359,250 +402,285 @@ class _MoversScreenState extends State<MoversScreen> {
                             : (controller.moversData['data'] as List).length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          return Container(
-                            width: width,
-                            // margin: const EdgeInsets.symmetric(horizontal: 20),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                              color: AppColor.whiteColor,
-                              // borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    padding: const EdgeInsets.only(left: 20),
-                                    color: Colors.transparent,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['companyId']['name']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
+                          String startDate = controller.moversData['data']
+                                  [index]['createdAt']
+                              .toString()
+                              .split(" ")
+                              .first;
+                          String lastDate = controller.moversData['data'][index]
+                                  ['updatedAt']
+                              .toString()
+                              .split(" ")
+                              .first;
+
+                          if (firstDate != null) {
+                            stDate = DateTime.parse(startDate);
+                            lsDate = DateTime.parse(lastDate);
+                            fsDate = DateTime.parse(firstDate!);
+                            edDate = DateTime.parse(endDate!);
+                          }
+                          return firstDate == null ||
+                                  fsDate!.isBefore(stDate!) == true &&
+                                      edDate!.isAfter(stDate!) == true
+                              ? Container(
+                                  width: width,
+                                  // margin: const EdgeInsets.symmetric(horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  alignment: Alignment.centerLeft,
+                                  decoration: BoxDecoration(
+                                    color: AppColor.whiteColor,
+                                    // borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    padding: const EdgeInsets.only(left: 20),
-                                    color: Colors.transparent,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['companyId']['name']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 20),
+                                          color: Colors.transparent,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['companyId']['name']}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['imageType']}',
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                      SizedBox(
+                                        width: 5,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['percentage']}%',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 20),
+                                          color: Colors.transparent,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['companyId']['name']}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['startPrice']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                      SizedBox(
+                                        width: 5,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['currentPrice']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['imageType']}',
+                                            maxLines: 4,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['startDate'].toString().split(" ")[0]}',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                      SizedBox(
+                                        width: 5,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    // padding: const EdgeInsets.only(left: 20),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${controller.moversData['data'][index]['endDate'].toString().split(" ")[0]}',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['percentage']}%',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    deleteDialog(
-                                        onPress: () async {
-                                          await DeleteMoversRepo().deleteMoversRepo(
-                                              text:
-                                                  '${controller.moversData['data'][index]['_id']}');
-                                          await getMoversViewModel
-                                              .getMoversViewModel(
-                                                  isLoading: false);
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['startPrice']}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['currentPrice']}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['startDate'].toString().split(" ")[0]}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          // padding: const EdgeInsets.only(left: 20),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${controller.moversData['data'][index]['endDate'].toString().split(" ")[0]}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      InkWell(
+                                        onTap: () async {
+                                          deleteDialog(
+                                              onPress: () async {
+                                                await DeleteMoversRepo()
+                                                    .deleteMoversRepo(
+                                                        text:
+                                                            '${controller.moversData['data'][index]['_id']}');
+                                                await getMoversViewModel
+                                                    .getMoversViewModel(
+                                                        isLoading: false);
+                                              },
+                                              header:
+                                                  'Are you sure to delete this mover ?',
+                                              context: context);
                                         },
-                                        header:
-                                            'Are you sure to delete this mover ?',
-                                        context: context);
-                                  },
-                                  child: Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(
-                                        color: AppColor.mainColor,
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(3),
+                                            border: Border.all(
+                                              color: AppColor.mainColor,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.delete,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.delete,
-                                        size: 20,
+                                      SizedBox(
+                                        width: 20,
                                       ),
-                                    ),
+                                      InkWell(
+                                        onTap: () {
+                                          typeMover = true;
+                                          getCompanyViewModel
+                                                  .selectedCompanyValue =
+                                              controller.moversData['data']
+                                                      [index]['companyId']
+                                                      ['_id']
+                                                  .toString();
+                                          titleController.text = controller
+                                              .moversData['data'][index]
+                                                  ['title']
+                                              .toString();
+
+                                          descriptionController.text =
+                                              controller.moversData['data']
+                                                      [index]['description']
+                                                  .toString();
+
+                                          priceController.text = controller
+                                              .moversData['data'][index]
+                                                  ['currentPrice']
+                                              .toString();
+                                          startPriceController.text = controller
+                                              .moversData['data'][index]
+                                                  ['startPrice']
+                                              .toString();
+
+                                          percentageController.text = controller
+                                              .moversData['data'][index]
+                                                  ['percentage']
+                                              .toString();
+                                          imageTypeController.text = controller
+                                              .moversData['data'][index]
+                                                  ['imageType']
+                                              .toString();
+                                          firstDate = controller
+                                              .moversData['data'][index]
+                                                  ['createdAt']
+                                              .toString()
+                                              .split('T')
+                                              .first;
+                                          endDate = controller
+                                              .moversData['data'][index]
+                                                  ['updatedAt']
+                                              .toString()
+                                              .split('T')
+                                              .first;
+
+                                          addMoverDialog(
+                                              context,
+                                              typeMover,
+                                              controller.moversData['data']
+                                                  [index]['_id']);
+                                        },
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(3),
+                                            border: Border.all(
+                                              color: AppColor.mainColor,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.edit,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    typeMover = true;
-                                    getCompanyViewModel.selectedCompanyValue =
-                                        controller.moversData['data'][index]
-                                                ['companyId']['_id']
-                                            .toString();
-                                    titleController.text = controller
-                                        .moversData['data'][index]['title']
-                                        .toString();
-
-                                    descriptionController.text = controller
-                                        .moversData['data'][index]
-                                            ['description']
-                                        .toString();
-
-                                    priceController.text = controller
-                                        .moversData['data'][index]
-                                            ['currentPrice']
-                                        .toString();
-                                    startPriceController.text = controller
-                                        .moversData['data'][index]['startPrice']
-                                        .toString();
-
-                                    percentageController.text = controller
-                                        .moversData['data'][index]['percentage']
-                                        .toString();
-                                    imageTypeController.text = controller
-                                        .moversData['data'][index]['imageType']
-                                        .toString();
-                                    firstDate = controller.moversData['data']
-                                            [index]['createdAt']
-                                        .toString()
-                                        .split('T')
-                                        .first;
-                                    endDate = controller.moversData['data']
-                                            [index]['updatedAt']
-                                        .toString()
-                                        .split('T')
-                                        .first;
-
-                                    addMoverDialog(
-                                        context,
-                                        typeMover,
-                                        controller.moversData['data'][index]
-                                            ['_id']);
-                                  },
-                                  child: Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(
-                                        color: AppColor.mainColor,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                              ],
-                            ),
-                          );
+                                )
+                              : SizedBox();
+                          ;
                         },
                       ),
                     ],

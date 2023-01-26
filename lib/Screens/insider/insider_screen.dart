@@ -246,6 +246,24 @@ class _InsiderScreenState extends State<InsiderScreen> {
                     SizedBox(
                       width: 5,
                     ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Date',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
                   ],
                 ),
               ),
@@ -417,6 +435,26 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                                       null
                                                   ? "NA"
                                                   : '${controller.insiderData['data'][index]['insiders']['table'][0]['mode'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            // padding: const EdgeInsets.only(left: 20),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                          [index]['insiders'] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['updatedAt'].toString().split('T').first ?? 'NA'}',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),

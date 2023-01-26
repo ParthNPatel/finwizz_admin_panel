@@ -83,91 +83,190 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            Container(
+                              color: AppColor.mainColor,
+                              padding: const EdgeInsets.all(13),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  ListView.separated(
-                                    separatorBuilder: (context, index) {
-                                      return const SizedBox(
-                                        height: 20,
-                                      );
-                                    },
-                                    itemCount:
-                                        responseModel!.data!.docs!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        width: width,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                  Expanded(
+                                    child: Container(
+                                      // padding: const EdgeInsets.only(left: 20),
+                                      color: AppColor.mainColor,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Name',
+                                        style: TextStyle(
+                                          color: AppColor.whiteColor,
+                                          fontSize: 16,
                                         ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      // padding: const EdgeInsets.only(left: 20),
+                                      color: AppColor.mainColor,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Email',
+                                        style: TextStyle(
+                                          color: AppColor.whiteColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Container(
+                                      // padding: const EdgeInsets.only(left: 20),
+                                      color: AppColor.mainColor,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Detail',
+                                        style: TextStyle(
+                                          color: AppColor.whiteColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      // padding: const EdgeInsets.only(left: 20),
+                                      color: AppColor.mainColor,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Date',
+                                        style: TextStyle(
+                                          color: AppColor.whiteColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ListView.separated(
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      height: 20,
+                                    );
+                                  },
+                                  itemCount: responseModel!.data!.docs!.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      width: width,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                            dividerColor: Colors.transparent),
                                         child: Container(
+                                          height: 50,
                                           width: width,
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 25, vertical: 25),
-                                          alignment: Alignment.centerLeft,
+                                          // padding: const EdgeInsets.symmetric(
+                                          //     horizontal: 25),
+                                          alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             color: AppColor.whiteColor,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            // borderRadius:
+                                            //     BorderRadius.circular(10),
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                          child: Row(
                                             children: [
-                                              Text(
-                                                responseModel!.data!
-                                                        .docs![index].name ??
-                                                    "NA",
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 20,
+                                              Expanded(
+                                                child: Container(
+                                                  // padding: const EdgeInsets.only(left: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    responseModel!
+                                                            .data!
+                                                            .docs![index]
+                                                            .name ??
+                                                        "NA",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                responseModel!.data!
-                                                        .docs![index].email ??
-                                                    "NA",
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 15,
+                                              Expanded(
+                                                child: Container(
+                                                  // padding: const EdgeInsets.only(left: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    responseModel!
+                                                            .data!
+                                                            .docs![index]
+                                                            .email ??
+                                                        "NA",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                height: 5,
+                                              Expanded(
+                                                child: Container(
+                                                  // padding: const EdgeInsets.only(left: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    responseModel!
+                                                            .data!
+                                                            .docs![index]
+                                                            .message ??
+                                                        "NA",
+                                                    maxLines: 4,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                              Text(
-                                                responseModel!.data!
-                                                        .docs![index].message ??
-                                                    "NA",
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 17,
+                                              Expanded(
+                                                child: Container(
+                                                  // padding: const EdgeInsets.only(left: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    responseModel!
+                                                            .data!
+                                                            .docs![index]
+                                                            .updatedAt
+                                                            .toString()
+                                                            .split(' ')
+                                                            .first ??
+                                                        "NA",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
