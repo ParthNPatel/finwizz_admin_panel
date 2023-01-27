@@ -354,10 +354,11 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             alignment: Alignment.center,
                                             child: Text(
                                               controller.insiderData['data']
-                                                          [index]['insiders'] ==
+                                                              [index]
+                                                          ['insiders'][0] ==
                                                       null
                                                   ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['personCategory'] ?? 'NA'}',
+                                                  : '${controller.insiderData['data'][index]['insiders'][0]['table'][0]['personCategory'] ?? 'NA'}',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),
@@ -373,10 +374,11 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             alignment: Alignment.center,
                                             child: Text(
                                               controller.insiderData['data']
-                                                          [index]['insiders'] ==
+                                                              [index]
+                                                          ['insiders'][0] ==
                                                       null
                                                   ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['shares'] ?? 'NA'}',
+                                                  : '${controller.insiderData['data'][index]['insiders'][0]['table'][0]['shares'] ?? 'NA'}',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),
@@ -392,10 +394,11 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             alignment: Alignment.center,
                                             child: Text(
                                               controller.insiderData['data']
-                                                          [index]['insiders'] ==
+                                                              [index]
+                                                          ['insiders'][0] ==
                                                       null
                                                   ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['value'] ?? 'NA'}',
+                                                  : '${controller.insiderData['data'][index]['insiders'][0]['table'][0]['value'] ?? 'NA'}',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),
@@ -411,30 +414,11 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             alignment: Alignment.center,
                                             child: Text(
                                               controller.insiderData['data']
-                                                          [index]['insiders'] ==
+                                                              [index]
+                                                          ['insiders'][0] ==
                                                       null
                                                   ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['transactionType'] ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            // padding: const EdgeInsets.only(left: 20),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              controller.insiderData['data']
-                                                          [index]['insiders'] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['mode'] ?? 'NA'}',
+                                                  : '${controller.insiderData['data'][index]['insiders'][0]['table'][0]['transactionType'] ?? 'NA'}',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),
@@ -451,7 +435,29 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             alignment: Alignment.center,
                                             child: Text(
                                               controller.insiderData['data']
-                                                          [index]['insiders'] ==
+                                                              [index]
+                                                          ['insiders'][0] ==
+                                                      null
+                                                  ? "NA"
+                                                  : '${controller.insiderData['data'][index]['insiders'][0]['table'][0]['mode'] ?? 'NA'}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            // padding: const EdgeInsets.only(left: 20),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              controller.insiderData['data']
+                                                              [index]
+                                                          ['insiders'][0][0] ==
                                                       null
                                                   ? "NA"
                                                   : '${controller.insiderData['data'][index]['updatedAt'].toString().split('T').first ?? 'NA'}',
