@@ -7,4 +7,6 @@ enum DashBoardPanelScreens {
   newsCategories,
   insider,
   latestMover,
+  notification,
+  userReport,
 }

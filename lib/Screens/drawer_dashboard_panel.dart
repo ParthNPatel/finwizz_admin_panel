@@ -6,6 +6,8 @@ import 'package:finwizz_admin/Screens/latest_mover/latest_mover_screen.dart';
 import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/Screens/news/add_news_screen.dart';
 import 'package:finwizz_admin/Screens/news_categories/news_categories.dart';
+import 'package:finwizz_admin/Screens/notification/send_notification%20_screen.dart';
+import 'package:finwizz_admin/Screens/notification/user_report.dart';
 import 'package:finwizz_admin/Widgets/app_bar.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/dashboard_panel_tabs.dart';
@@ -72,7 +74,18 @@ class _HomePageState extends State<HomePage> {
                                                 DashBoardPanelScreens
                                                     .latestMover
                                             ? const LatestMoversScreen()
-                                            : const AddNewsScreen());
+                                            : dashBoardController
+                                                        .currentScreen.value ==
+                                                    DashBoardPanelScreens
+                                                        .notification
+                                                ? SendNotificationScreen()
+                                                : dashBoardController
+                                                            .currentScreen
+                                                            .value ==
+                                                        DashBoardPanelScreens
+                                                            .userReport
+                                                    ? UserReportScreen()
+                                                    : const AddNewsScreen());
 
             // Expanded(
             //   child: dashBoardController.currentScreen.value ==

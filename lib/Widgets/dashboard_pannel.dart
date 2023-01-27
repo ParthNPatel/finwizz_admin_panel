@@ -126,6 +126,8 @@ class DashBoardPanel extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
+
+            ///7
             MouseRegion(
               onEnter: (e) {
                 controller.updateHover7(true);
@@ -328,6 +330,94 @@ class DashBoardPanel extends StatelessWidget {
                     drawerKey.currentState!.closeDrawer();
                     controller.currentScreen.value =
                         DashBoardPanelScreens.insider;
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+
+            ///9
+            MouseRegion(
+              onEnter: (e) {
+                controller.updateHover9(true);
+              },
+              onExit: (e) {
+                controller.updateHover9(false);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  color: controller.currentScreen.value ==
+                          DashBoardPanelScreens.userReport
+                      ? AppColor.selectColor
+                      : controller.hover9.value == true
+                          ? AppColor.selectColor
+                          : Colors.transparent,
+                  borderRadius: borderRadius,
+                ),
+                child: CustomTile(
+                  leading: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      AppImages.user,
+                      color: AppColor.whiteColor,
+                      height: iconHeight,
+                    ),
+                  ),
+                  titleMessage: "Report",
+                  textColor: _updateColor(controller.currentScreen,
+                      DashBoardPanelScreens.userReport,
+                      context: context),
+                  onTap: () {
+                    drawerKey.currentState!.closeDrawer();
+                    controller.currentScreen.value =
+                        DashBoardPanelScreens.userReport;
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+
+            ///8
+            MouseRegion(
+              onEnter: (e) {
+                controller.updateHover8(true);
+              },
+              onExit: (e) {
+                controller.updateHover8(false);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  color: controller.currentScreen.value ==
+                          DashBoardPanelScreens.notification
+                      ? AppColor.selectColor
+                      : controller.hover8.value == true
+                          ? AppColor.selectColor
+                          : Colors.transparent,
+                  borderRadius: borderRadius,
+                ),
+                child: CustomTile(
+                  leading: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      AppImages.notification,
+                      color: AppColor.whiteColor,
+                      height: iconHeight,
+                    ),
+                  ),
+                  titleMessage: "Notification",
+                  textColor: _updateColor(controller.currentScreen,
+                      DashBoardPanelScreens.notification,
+                      context: context),
+                  onTap: () {
+                    drawerKey.currentState!.closeDrawer();
+                    controller.currentScreen.value =
+                        DashBoardPanelScreens.notification;
                   },
                 ),
               ),

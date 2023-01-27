@@ -5,4 +5,6 @@ class AppImages {
   static String news = 'assets/images/news.png';
   static String logo = 'assets/images/logo_finwizz.png';
   static String categories = 'assets/images/categories.png';
+  static String notification = 'assets/images/notification.png';
+  static String user = 'assets/images/user.png';
 }
