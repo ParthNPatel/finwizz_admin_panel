@@ -83,8 +83,13 @@ class SendNotificationScreen extends StatelessWidget {
                             backgroundColor: AppColor.mainColor),
                         onPressed: () {
                           notificationViewModel.getItems();
-                          snackBarGet('Notification Send',
-                              snackBarBackGroundColor: AppColor.mainColor);
+                          if (notificationViewModel.holder_1.isNotEmpty) {
+                            snackBarGet('Notification Send',
+                                snackBarBackGroundColor: AppColor.mainColor);
+                          } else {
+                            snackBarGet('Select User',
+                                snackBarBackGroundColor: AppColor.redColor);
+                          }
                         },
                         child: Text('Send'),
                       ),

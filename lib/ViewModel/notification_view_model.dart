@@ -59,13 +59,15 @@ class NotificationViewModel extends GetxController {
   }
 
   getItems() {
+    holder_1.clear();
     name.forEach((element) {
       if (element['value'] == true) {
         holder_1.add(element['name']);
       }
     });
     log('------holder_1-----$holder_1');
-    holder_1.clear();
+
+    update();
   }
 
   @override
