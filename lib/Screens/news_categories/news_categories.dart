@@ -150,6 +150,26 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                         ),
                       ),
                     ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: Text(
+                              'Time ',
+                              style: TextStyle(
+                                color: AppColor.whiteColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     InkWell(
                       onTap: () {},
                       child: Container(
@@ -271,6 +291,20 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                                         Alignment.centerLeft,
                                                     child: Text(
                                                       '${responseModel!.data![index].updatedAt.toString().split(' ').first ?? "NA"}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      '${responseModel!.data![index].updatedAt.toString().split(' ').last.split(':').first}:${responseModel!.data![index].updatedAt.toString().split(' ').last.split(':')[1]}',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                       ),

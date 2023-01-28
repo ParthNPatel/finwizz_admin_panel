@@ -299,6 +299,7 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                     (controller.insiderData['data'] as List)
                                         .length,
                                 shrinkWrap: true,
+                                reverse: true,
                                 itemBuilder: (context, index) {
                                   print(
                                       'DATA1111111${controller.insiderData['data'][6]['shortName']}');
@@ -451,12 +452,7 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                             // padding: const EdgeInsets.only(left: 20),
                                             alignment: Alignment.center,
                                             child: Text(
-                                              controller.insiderData['data']
-                                                              [index]
-                                                          ['insiders'][0] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['updatedAt'].toString().split('T').first ?? 'NA'}',
+                                              '${controller.insiderData['data'][index]['updatedAt'].toString().split('T').first ?? 'NA'}',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),

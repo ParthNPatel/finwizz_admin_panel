@@ -244,12 +244,26 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                 // alignment: Alignment.centerLeft,
                                 alignment: Alignment.center,
 
-                                child: Text(
-                                  'Percentage',
-                                  style: TextStyle(
-                                    color: AppColor.whiteColor,
-                                    fontSize: 16,
-                                  ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Percentage',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      'Date',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -428,11 +442,24 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                         flex: 1,
                                         child: Container(
                                           alignment: Alignment.center,
-                                          child: Text(
-                                            '${controller.latestMoverData['data']['docs'][index]['percentage']}%',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                '${controller.latestMoverData['data']['docs'][index]['percentage']}%',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                '${controller.latestMoverData['data']['docs'][index]['updatedAt'].toString().split('T').first}',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),

@@ -464,12 +464,26 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     // alignment: Alignment.centerLeft,
                                     alignment: Alignment.center,
 
-                                    child: Text(
-                                      'Categories',
-                                      style: TextStyle(
-                                        color: AppColor.whiteColor,
-                                        fontSize: 16,
-                                      ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Categories',
+                                          style: TextStyle(
+                                            color: AppColor.whiteColor,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 2,
+                                        ),
+                                        Text(
+                                          'Date',
+                                          style: TextStyle(
+                                            color: AppColor.whiteColor,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -733,38 +747,42 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                         child: Container(
                                                           alignment:
                                                               Alignment.center,
-                                                          child: Text(
-                                                            searchNewsController.searchNewsData['data']
-                                                                            [
-                                                                            index]
-                                                                        [
-                                                                        'type'] ==
-                                                                    1
-                                                                ? 'Positive'
-                                                                : searchNewsController.searchNewsData['data'][index]
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                searchNewsController.searchNewsData['data'][index]
                                                                             [
                                                                             'type'] ==
-                                                                        -1
-                                                                    ? 'Negative'
-                                                                    : 'Neutral',
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              color: searchNewsController.searchNewsData['data']
-                                                                              [
-                                                                              index]
-                                                                          [
-                                                                          'type'] ==
-                                                                      1
-                                                                  ? Colors.green
-                                                                  : searchNewsController.searchNewsData['data'][index]
+                                                                        1
+                                                                    ? 'Positive'
+                                                                    : searchNewsController.searchNewsData['data'][index]['type'] ==
+                                                                            -1
+                                                                        ? 'Negative'
+                                                                        : 'Neutral',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                  color: searchNewsController.searchNewsData['data'][index]
                                                                               [
                                                                               'type'] ==
-                                                                          -1
+                                                                          1
                                                                       ? Colors
-                                                                          .red
-                                                                      : Colors
-                                                                          .blue,
-                                                            ),
+                                                                          .green
+                                                                      : searchNewsController.searchNewsData['data'][index]['type'] ==
+                                                                              -1
+                                                                          ? Colors
+                                                                              .red
+                                                                          : Colors
+                                                                              .blue,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Text(
+                                                                '${searchNewsController.searchNewsData['data'][index]['updatedAt'].toString().split('T').first}',
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ),

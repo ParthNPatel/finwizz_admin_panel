@@ -235,12 +235,26 @@ class _MoversScreenState extends State<MoversScreen> {
                                 // padding: const EdgeInsets.only(left: 20),
                                 color: AppColor.mainColor,
                                 alignment: Alignment.center,
-                                child: Text(
-                                  'Image Type',
-                                  style: TextStyle(
-                                    color: AppColor.whiteColor,
-                                    fontSize: 16,
-                                  ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Image Type',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      'Date',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -474,13 +488,28 @@ class _MoversScreenState extends State<MoversScreen> {
                                         flex: 1,
                                         child: Container(
                                           alignment: Alignment.center,
-                                          child: Text(
-                                            '${controller.moversData['data'][index]['imageType']}',
-                                            maxLines: 4,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                '${controller.moversData['data'][index]['imageType']}',
+                                                maxLines: 4,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                '${controller.moversData['data'][index]['updatedAt'].toString().split('T').first}',
+                                                maxLines: 4,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),

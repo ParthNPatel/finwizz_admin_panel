@@ -14,9 +14,7 @@ class ApiUrl {
   static String addNews = 'http://52.66.209.219:4000/news';
   static String getLatestMover = 'http://52.66.209.219:4000/movers/latest';
   static String addLatestMover = 'http://52.66.209.219:4000/movers/latest';
+  static String stockUsers = 'http://52.66.209.219:4000/stocks/users';
+  static String sendNotification =
+      'http://52.66.209.219:4000/notification/broadcast';
 }
-
-/// addCompany
-/// getNewsCategories  Done
-/// connectUs Done
-/// Add Movers
