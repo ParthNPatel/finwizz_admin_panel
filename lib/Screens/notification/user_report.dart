@@ -87,7 +87,7 @@ class _UserReportScreenState extends State<UserReportScreen> {
                                   color: AppColor.mainColor,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'Username',
+                                    'Phone No',
                                     style: TextStyle(
                                       color: AppColor.whiteColor,
                                       fontSize: 16,
@@ -174,7 +174,7 @@ class _UserReportScreenState extends State<UserReportScreen> {
                                           // padding: const EdgeInsets.only(left: 20),
                                           alignment: Alignment.center,
                                           child: Text(
-                                            '${controller.stockUserData['data']['docs'][index]['name'] ?? 'NA'}',
+                                            '${controller.stockUserData['data']['docs'][index]['phone'] ?? 'NA'}',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 18,

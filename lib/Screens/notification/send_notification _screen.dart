@@ -251,15 +251,16 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(
-                                width: 25,
+                                width: 150,
                               ),
                               Expanded(
                                 child: Container(
                                   // padding: const EdgeInsets.only(left: 20),
                                   color: AppColor.mainColor,
-                                  alignment: Alignment.center,
+                                  alignment: Alignment.centerLeft,
+
                                   child: Text(
-                                    'Username',
+                                    'Phone No',
                                     style: TextStyle(
                                       color: AppColor.whiteColor,
                                       fontSize: 16,
@@ -329,14 +330,14 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                               },
                                             ),
                                             SizedBox(
-                                              width: 5,
+                                              width: 100,
                                             ),
                                             Expanded(
                                               child: Container(
                                                 // padding: const EdgeInsets.only(left: 20),
-                                                alignment: Alignment.center,
+                                                alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  '${controller.stockUserData['data']['docs'][index]['name'] ?? 'NA'}',
+                                                  '${controller.stockUserData['data']['docs'][index]['phone'] ?? 'NA'}',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 20,

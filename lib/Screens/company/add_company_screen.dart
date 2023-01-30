@@ -8,6 +8,7 @@ import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class AddCompanyScreen extends StatefulWidget {
   const AddCompanyScreen({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
   AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   GetCompanyResponseModel? getCompanyResponseModel;
+  String? dateInput;
   @override
   void initState() {
     getCompanyViewModel.getCompanyViewModel(searchText: '');
@@ -70,6 +72,68 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 22,
+                            ),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  builder: (context, child) {
+                                    return Theme(
+                                        data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: AppColor.mainColor,
+                                            onPrimary:
+                                                Colors.black, // <-- SEE HERE
+                                            onSurface: Colors.black,
+                                          ),
+                                        ),
+                                        child: child!);
+                                  },
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1950),
+                                  //DateTime.now() - not to allow to choose before today.
+                                  lastDate: DateTime(2100));
+
+                              if (pickedDate != null) {
+                                print(pickedDate); // 2021-03-10 00:00:00.000
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                                print(formattedDate); //2021-03-16
+                                setState(() {
+                                  dateInput = formattedDate;
+                                });
+                              } else {}
+                            },
+                            child: Container(
+                              height: 40,
+                              margin: EdgeInsets.only(right: 20),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: AppColor.whiteColor,
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.calendar_month,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Text(
+                                    dateInput == null ? 'Date' : dateInput!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -140,6 +204,20 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                               ),
                             ),
                           ),
+                          Expanded(
+                            child: Container(
+                              // padding: const EdgeInsets.only(left: 20),
+                              color: AppColor.mainColor,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Date',
+                                style: TextStyle(
+                                  color: AppColor.whiteColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             width: 10,
                           ),
@@ -189,100 +267,137 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                 shrinkWrap: true,
                                 reverse: true,
                                 itemBuilder: (context, index) {
-                                  return Container(
-                                    width: width,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Theme(
-                                      data: Theme.of(context).copyWith(
-                                          dividerColor: Colors.transparent),
-                                      child: Container(
-                                        height: 50,
-                                        width: width,
-                                        // padding: const EdgeInsets.symmetric(
-                                        //     horizontal: 25),
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: AppColor.whiteColor,
-                                          // borderRadius:
-                                          //     BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '${getCompanyResponseModel.data![index]!.name}',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
+                                  DateTime createDate = DateTime.parse(
+                                      getCompanyResponseModel
+                                          .data![index].createdAt
+                                          .toString()
+                                          .split(' ')
+                                          .first);
+                                  DateTime? pickDate;
+                                  if (dateInput != null) {
+                                    pickDate = DateTime.parse(dateInput!);
+                                  }
+                                  return dateInput == null ||
+                                          pickDate!.isAfter(createDate)
+                                      ? Container(
+                                          width: width,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                                dividerColor:
+                                                    Colors.transparent),
+                                            child: Container(
+                                              height: 50,
+                                              width: width,
+                                              // padding: const EdgeInsets.symmetric(
+                                              //     horizontal: 25),
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                color: AppColor.whiteColor,
+                                                // borderRadius:
+                                                //     BorderRadius.circular(10),
                                               ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '${getCompanyResponseModel.data![index]!.shortName}',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 20,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getCompanyResponseModel.data![index]!.name}',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                deleteDialog(
-                                                    onPress: () async {
-                                                      await DeleteCompanyRepo()
-                                                          .deleteCompanyRepo(
-                                                              text:
-                                                                  '${getCompanyResponseModel.data![index]!.id}');
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getCompanyResponseModel.data![index]!.shortName}',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        '${getCompanyResponseModel.data![index].createdAt.toString().split(' ').first}',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deleteDialog(
+                                                          onPress: () async {
+                                                            await DeleteCompanyRepo()
+                                                                .deleteCompanyRepo(
+                                                                    text:
+                                                                        '${getCompanyResponseModel.data![index]!.id}');
 
-                                                      await getCompanyViewModel
-                                                          .getCompanyViewModel(
-                                                              isLoading: false);
+                                                            await getCompanyViewModel
+                                                                .getCompanyViewModel(
+                                                                    isLoading:
+                                                                        false);
+                                                          },
+                                                          header:
+                                                              'Are you sure to delete this company ?',
+                                                          context: context);
                                                     },
-                                                    header:
-                                                        'Are you sure to delete this company ?',
-                                                    context: context);
-                                              },
-                                              child: Container(
-                                                height: 30,
-                                                width: 30,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(3),
-                                                  border: Border.all(
-                                                    color: AppColor.mainColor,
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3),
+                                                        border: Border.all(
+                                                          color: AppColor
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    size: 20,
+                                                  SizedBox(
+                                                    width: 30,
                                                   ),
-                                                ),
+                                                ],
                                               ),
                                             ),
-                                            SizedBox(
-                                              width: 30,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                          ),
+                                        )
+                                      : SizedBox();
                                 },
                               ),
                       ],

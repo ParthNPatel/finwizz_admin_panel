@@ -4,11 +4,11 @@
 
 import 'dart:convert';
 
-GetCompanyResponseModel? getCompanyResponseModelFromJson(String str) =>
+GetCompanyResponseModel getCompanyResponseModelFromJson(String str) =>
     GetCompanyResponseModel.fromJson(json.decode(str));
 
-String getCompanyResponseModelToJson(GetCompanyResponseModel? data) =>
-    json.encode(data!.toJson());
+String getCompanyResponseModelToJson(GetCompanyResponseModel data) =>
+    json.encode(data.toJson());
 
 class GetCompanyResponseModel {
   GetCompanyResponseModel({
@@ -17,21 +17,17 @@ class GetCompanyResponseModel {
   });
 
   bool? flag;
-  List<Datum?>? data;
+  List<Datum>? data;
 
   factory GetCompanyResponseModel.fromJson(Map<String, dynamic> json) =>
       GetCompanyResponseModel(
         flag: json["flag"],
-        data: json["data"] == null
-            ? []
-            : List<Datum?>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "flag": flag,
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x!.toJson())),
+        "data": List<dynamic>.from(data!.map((x) => x.toJson())),
       };
 }
 
@@ -40,18 +36,21 @@ class Datum {
     this.id,
     this.name,
     this.shortName,
+    this.createdAt,
     this.datumId,
   });
 
   String? id;
   String? name;
   String? shortName;
+  DateTime? createdAt;
   String? datumId;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["_id"],
         name: json["name"],
         shortName: json["shortName"],
+        createdAt: DateTime.parse(json["createdAt"]),
         datumId: json["id"],
       );
 
@@ -59,6 +58,7 @@ class Datum {
         "_id": id,
         "name": name,
         "shortName": shortName,
+        "createdAt": createdAt!.toIso8601String(),
         "id": datumId,
       };
 }
