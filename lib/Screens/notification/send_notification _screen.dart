@@ -285,7 +285,7 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                               .toLowerCase()) ||
                                       controller.searchText == ''
                                   ? 20
-                                  : 0,
+                                  : 10,
                             );
                           },
                           itemCount:
@@ -293,7 +293,7 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return controller.stockUserData['data']['docs']
-                                            [index]['name']
+                                            [index]['phone']
                                         .toString()
                                         .toLowerCase()
                                         .contains(controller.searchText

@@ -10,7 +10,7 @@ class ApiUrl {
   static String getNews = 'http://52.66.209.219:4000/news?categoryId=';
   static String getSearchNews =
       'http://52.66.209.219:4000/news/search?companyId=&text=';
-  static String getMovers = 'http://52.66.209.219:4000/movers';
+  static String getMovers = 'http://52.66.209.219:4000/movers/search?&text=';
   static String addNews = 'http://52.66.209.219:4000/news';
   static String getLatestMover = 'http://52.66.209.219:4000/movers/latest';
   static String addLatestMover = 'http://52.66.209.219:4000/movers/latest';

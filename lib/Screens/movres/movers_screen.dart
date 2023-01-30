@@ -53,7 +53,7 @@ class _MoversScreenState extends State<MoversScreen> {
 
   @override
   void initState() {
-    getMoversViewModel.getMoversViewModel();
+    getMoversViewModel.getMoversViewModel(text: '');
     getCompanyViewModel.getCompanyViewModel();
     super.initState();
   }
@@ -141,6 +141,73 @@ class _MoversScreenState extends State<MoversScreen> {
                                           : '${firstDate}  /  ${endDate}'),
                                 ),
                               ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            GetBuilder<GetCompanyViewModel>(
+                              builder: (companyController) {
+                                if (companyController
+                                        .getCompanyApiResponse.status ==
+                                    Status.COMPLETE) {
+                                  GetCompanyResponseModel getCompany =
+                                      companyController
+                                          .getCompanyApiResponse.data;
+                                  return Container(
+                                    height: 40,
+                                    width: 200,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        border:
+                                            Border.all(color: AppColor.grey100),
+                                        borderRadius: BorderRadius.circular(7)),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        hint: const Text('All'),
+                                        value: controller.selectedCompanyValue,
+                                        items: getCompany.data!
+                                            .map(
+                                              (e) => DropdownMenuItem(
+                                                value: e.name,
+                                                child: SizedBox(
+                                                  height: 40,
+                                                  width: 150,
+                                                  child: Text(
+                                                    '${e.name}',
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      color:
+                                                          AppColor.blackColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (val) async {
+                                          controller.updateValue(val);
+
+                                          await getMoversViewModel
+                                              .getMoversViewModel(
+                                                  text: controller
+                                                      .selectedCompanyValue,
+                                                  isLoading: false);
+
+                                          log('SEARCH Company ID :- ${controller.selectedCompanyValue}');
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return SizedBox();
+                              },
+                            ),
+                            const SizedBox(
+                              width: 20,
                             ),
                             Row(
                               children: [
@@ -434,6 +501,7 @@ class _MoversScreenState extends State<MoversScreen> {
                             edDate = DateTime.parse(endDate!);
                           }
                           return firstDate == null ||
+                                  controller.selectedCompanyValue == null ||
                                   fsDate!.isBefore(stDate!) == true &&
                                       edDate!.isAfter(stDate!) == true
                               ? Container(

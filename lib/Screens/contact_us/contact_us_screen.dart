@@ -6,6 +6,7 @@ import 'package:finwizz_admin/ViewModel/connect_us_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ContactUsScreen extends StatefulWidget {
   const ContactUsScreen({Key? key}) : super(key: key);
@@ -25,6 +26,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
 
   ConnectUsViewModel connectUsViewModel = Get.put(ConnectUsViewModel());
   ConnectUsResponseModel? responseModel;
+  String? dateInput;
+  DateTime? pickDate;
+  DateTime? createDate;
   @override
   void initState() {
     connectUsViewModel.connectUsViewModel(limit: 10, page: 1);
@@ -41,399 +45,330 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     return Scaffold(
       backgroundColor: AppColor.bgColor,
       body: Container(
-          height: height,
-          width: width,
-          margin: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            border: Border.all(color: AppColor.mainColor),
-          ),
-          child: GetBuilder<ConnectUsViewModel>(
-            builder: (controller) {
-              if (controller.connectUsApiResponse.status == Status.LOADING) {
-                return const Center(child: CircularProgressIndicator());
+        height: height,
+        width: width,
+        margin: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: AppColor.mainColor),
+        ),
+        child: GetBuilder<ConnectUsViewModel>(
+          builder: (controller) {
+            if (controller.connectUsApiResponse.status == Status.LOADING) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.connectUsApiResponse.status == Status.COMPLETE) {
+              try {
+                responseModel = controller.connectUsApiResponse.data;
+              } catch (e) {
+                controller.updateError(true);
               }
-              if (controller.connectUsApiResponse.status == Status.COMPLETE) {
-                try {
-                  responseModel = controller.connectUsApiResponse.data;
-                } catch (e) {
-                  controller.updateError(true);
-                }
-                return controller.catchError == false
-                    ? SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: const [
-                                  Text(
-                                    'Connect Us',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              color: AppColor.mainColor,
-                              padding: const EdgeInsets.all(13),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      // padding: const EdgeInsets.only(left: 20),
-                                      color: AppColor.mainColor,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Name',
-                                        style: TextStyle(
-                                          color: AppColor.whiteColor,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      // padding: const EdgeInsets.only(left: 20),
-                                      color: AppColor.mainColor,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Email',
-                                        style: TextStyle(
-                                          color: AppColor.whiteColor,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Container(
-                                      // padding: const EdgeInsets.only(left: 20),
-                                      color: AppColor.mainColor,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Detail',
-                                        style: TextStyle(
-                                          color: AppColor.whiteColor,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      // padding: const EdgeInsets.only(left: 20),
-                                      color: AppColor.mainColor,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Date',
-                                        style: TextStyle(
-                                          color: AppColor.whiteColor,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              return controller.catchError == false
+                  ? SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const SizedBox(
-                                  height: 20,
+                                Text(
+                                  'Connect Us',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 22,
+                                  ),
                                 ),
-                                ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      height: 20,
-                                    );
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () async {
+                                    DateTime? pickedDate = await showDatePicker(
+                                        context: context,
+                                        builder: (context, child) {
+                                          return Theme(
+                                              data: Theme.of(context).copyWith(
+                                                colorScheme: ColorScheme.light(
+                                                  primary: AppColor.mainColor,
+                                                  onPrimary: Colors
+                                                      .black, // <-- SEE HERE
+                                                  onSurface: Colors.black,
+                                                ),
+                                              ),
+                                              child: child!);
+                                        },
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(1950),
+                                        //DateTime.now() - not to allow to choose before today.
+                                        lastDate: DateTime(2100));
+
+                                    if (pickedDate != null) {
+                                      print(
+                                          pickedDate); // 2021-03-10 00:00:00.000
+                                      String formattedDate =
+                                          DateFormat('yyyy-MM-dd')
+                                              .format(pickedDate);
+                                      print(formattedDate); //2021-03-16
+                                      setState(() {
+                                        dateInput = formattedDate;
+                                      });
+                                    } else {}
                                   },
-                                  itemCount: responseModel!.data!.docs!.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      width: width,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Theme(
-                                        data: Theme.of(context).copyWith(
-                                            dividerColor: Colors.transparent),
-                                        child: Container(
-                                          height: 50,
-                                          width: width,
-                                          // padding: const EdgeInsets.symmetric(
-                                          //     horizontal: 25),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: AppColor.whiteColor,
-                                            // borderRadius:
-                                            //     BorderRadius.circular(10),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  // padding: const EdgeInsets.only(left: 20),
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    responseModel!
-                                                            .data!
-                                                            .docs![index]
-                                                            .name ??
-                                                        "NA",
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  // padding: const EdgeInsets.only(left: 20),
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    responseModel!
-                                                            .data!
-                                                            .docs![index]
-                                                            .email ??
-                                                        "NA",
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  // padding: const EdgeInsets.only(left: 20),
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    responseModel!
-                                                            .data!
-                                                            .docs![index]
-                                                            .message ??
-                                                        "NA",
-                                                    maxLines: 4,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  // padding: const EdgeInsets.only(left: 20),
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    responseModel!
-                                                            .data!
-                                                            .docs![index]
-                                                            .updatedAt
-                                                            .toString()
-                                                            .split(' ')
-                                                            .first ??
-                                                        "NA",
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                  child: Container(
+                                    height: 40,
+                                    margin: EdgeInsets.only(right: 20),
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: AppColor.whiteColor,
+                                        border: Border.all(),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.calendar_month,
+                                          size: 18,
+                                        ),
+                                        SizedBox(
+                                          width: 3,
+                                        ),
+                                        Text(
+                                          dateInput == null
+                                              ? 'Date'
+                                              : dateInput!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14,
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      )
-                    : const Center(
-                        child: Text('Something went wrong'),
-                      );
-              }
-              return const Center(
-                child: Text('Something went wrong'),
-              );
-            },
-          )),
+                          ),
+                          Container(
+                            color: AppColor.mainColor,
+                            padding: const EdgeInsets.all(13),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Name',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Email',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Detail',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    // padding: const EdgeInsets.only(left: 20),
+                                    color: AppColor.mainColor,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Date',
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox(
+                                    height: 20,
+                                  );
+                                },
+                                itemCount: responseModel!.data!.docs!.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  createDate = DateTime.parse(responseModel!
+                                      .data!.docs![index].updatedAt
+                                      .toString()
+                                      .split(' ')
+                                      .first);
+
+                                  if (dateInput != null) {
+                                    pickDate = DateTime.parse(dateInput!);
+                                  }
+                                  return dateInput == null ||
+                                          pickDate!.isAfter(createDate!) ||
+                                          createDate == dateInput
+                                      ? Container(
+                                          width: width,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                                dividerColor:
+                                                    Colors.transparent),
+                                            child: Container(
+                                              height: 50,
+                                              width: width,
+                                              // padding: const EdgeInsets.symmetric(
+                                              //     horizontal: 25),
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                color: AppColor.whiteColor,
+                                                // borderRadius:
+                                                //     BorderRadius.circular(10),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        responseModel!
+                                                                .data!
+                                                                .docs![index]
+                                                                .name ??
+                                                            "NA",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        responseModel!
+                                                                .data!
+                                                                .docs![index]
+                                                                .email ??
+                                                            "NA",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        responseModel!
+                                                                .data!
+                                                                .docs![index]
+                                                                .message ??
+                                                            "NA",
+                                                        maxLines: 4,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      // padding: const EdgeInsets.only(left: 20),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        responseModel!
+                                                                .data!
+                                                                .docs![index]
+                                                                .updatedAt
+                                                                .toString()
+                                                                .split(' ')
+                                                                .first ??
+                                                            "NA",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox();
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : const Center(
+                      child: Text('Something went wrong'),
+                    );
+            }
+            return const Center(
+              child: Text('Something went wrong'),
+            );
+          },
+        ),
+      ),
     );
   }
-
-  // addConnectUsDialog(BuildContext context) {
-  //   return showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     barrierColor: Colors.black12,
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setStat) {
-  //           return Scaffold(
-  //             backgroundColor: Colors.transparent,
-  //             body: Center(
-  //               child: Container(
-  //                 height: 600,
-  //                 width: 465,
-  //                 clipBehavior: Clip.antiAliasWithSaveLayer,
-  //                 decoration: BoxDecoration(
-  //                   color: AppColor.whiteColor,
-  //                   borderRadius: BorderRadius.circular(10),
-  //                 ),
-  //                 child: SingleChildScrollView(
-  //                   child: Column(
-  //                     children: [
-  //                       Container(
-  //                         padding: const EdgeInsets.all(17),
-  //                         color: AppColor.mainColor,
-  //                         child: Stack(
-  //                           alignment: Alignment.topRight,
-  //                           children: [
-  //                             GestureDetector(
-  //                               onTap: () {
-  //                                 Get.back();
-  //                               },
-  //                               child: CircleAvatar(
-  //                                 radius: 10,
-  //                                 backgroundColor: AppColor.whiteColor,
-  //                                 child: FittedBox(
-  //                                   child: Icon(
-  //                                     Icons.clear,
-  //                                     color: AppColor.mainColor,
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             Row(
-  //                               mainAxisAlignment: MainAxisAlignment.center,
-  //                               children: [
-  //                                 Text(
-  //                                   'Add ConnectUs',
-  //                                   style: TextStyle(
-  //                                     fontWeight: FontWeight.w600,
-  //                                     color: AppColor.whiteColor,
-  //                                     fontSize: 18,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       Padding(
-  //                         padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
-  //                         child: Column(
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             addDataForm(
-  //                                 textEditingController: titleController,
-  //                                 header: 'Name',
-  //                                 hint: 'Name'),
-  //                             const SizedBox(
-  //                               height: 20,
-  //                             ),
-  //                             addDataForm(
-  //                                 textEditingController: titleController,
-  //                                 header: 'Email',
-  //                                 hint: 'Email'),
-  //                             const SizedBox(
-  //                               height: 20,
-  //                             ),
-  //                             const Text(
-  //                               'Description',
-  //                               style: TextStyle(
-  //                                 fontSize: 16,
-  //                                 fontWeight: FontWeight.w500,
-  //                               ),
-  //                             ),
-  //                             const SizedBox(
-  //                               height: 10,
-  //                             ),
-  //                             SizedBox(
-  //                               height: 140,
-  //                               width: 380,
-  //                               child: TextField(
-  //                                 controller: descriptionController,
-  //                                 maxLines: 5,
-  //                                 decoration: InputDecoration(
-  //                                   border: outlineBorder,
-  //                                   focusedBorder: outlineBorder,
-  //                                   enabledBorder: outlineBorder,
-  //                                   fillColor: Colors.grey.shade50,
-  //                                   filled: true,
-  //                                   contentPadding: const EdgeInsets.only(
-  //                                     top: 25,
-  //                                     left: 10,
-  //                                   ),
-  //                                   hintText: 'Write here...',
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             const SizedBox(
-  //                               height: 35,
-  //                             ),
-  //                             Align(
-  //                               alignment: Alignment.center,
-  //                               child: SizedBox(
-  //                                 width: 200,
-  //                                 child: ElevatedButton(
-  //                                   style: ElevatedButton.styleFrom(
-  //                                     backgroundColor: AppColor.mainColor,
-  //                                   ),
-  //                                   onPressed: () async {
-  //                                     await addConnectUs();
-  //                                   },
-  //                                   child: Text(
-  //                                     'Add',
-  //                                     style: TextStyle(
-  //                                       fontSize: 15,
-  //                                       color: AppColor.whiteColor,
-  //                                       fontWeight: FontWeight.w500,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-  //
-  // addConnectUs() async {
-  //   log('ADD');
-  //   Get.back();
-  // }
 }

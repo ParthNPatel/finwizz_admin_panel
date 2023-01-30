@@ -10,6 +10,11 @@ class InsiderViewModel extends GetxController {
 
   bool catchError = false;
   bool loader = false;
+  dynamic selectedCompanyValue;
+  updateValue(val) {
+    selectedCompanyValue = val;
+    update();
+  }
 
   updateLoader(val) {
     loader = val;

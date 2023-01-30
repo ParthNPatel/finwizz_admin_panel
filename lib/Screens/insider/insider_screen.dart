@@ -29,6 +29,13 @@ class _InsiderScreenState extends State<InsiderScreen> {
   TextEditingController valueController = TextEditingController();
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController modeController = TextEditingController();
+  DateTimeRange? _selectedDateRange;
+  String? firstDate;
+  String? endDate;
+  DateTime? stDate;
+  DateTime? lsDate;
+  DateTime? fsDate;
+  DateTime? edDate;
 
   @override
   void initState() {
@@ -71,6 +78,107 @@ class _InsiderScreenState extends State<InsiderScreen> {
                         fontWeight: FontWeight.w600,
                         fontSize: 22,
                       ),
+                    ),
+                    Spacer(),
+                    GetBuilder<InsiderViewModel>(
+                      builder: (controller) {
+                        return GetBuilder<GetCompanyViewModel>(
+                          builder: (companyController) {
+                            if (companyController
+                                    .getCompanyApiResponse.status ==
+                                Status.COMPLETE) {
+                              GetCompanyResponseModel getCompany =
+                                  companyController.getCompanyApiResponse.data;
+                              return Container(
+                                height: 40,
+                                width: 200,
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    border: Border.all(color: AppColor.grey100),
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    hint: const Text('All'),
+                                    value: controller.selectedCompanyValue,
+                                    items: getCompany.data!
+                                        .map(
+                                          (e) => DropdownMenuItem(
+                                            value: e.name,
+                                            child: SizedBox(
+                                              height: 40,
+                                              width: 150,
+                                              child: Center(
+                                                child: Text(
+                                                  '${e.name}',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    color: AppColor.blackColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (val) async {
+                                      controller.updateValue(val);
+
+                                      log('SEARCH Company ID :- ${controller.selectedCompanyValue}');
+                                    },
+                                  ),
+                                ),
+                              );
+                            }
+                            return SizedBox();
+                          },
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        DateTimeRange? result = await showDateRangePicker(
+                          context: context,
+                          firstDate:
+                              DateTime(2022, 1, 1), // the earliest allowable
+                          lastDate:
+                              DateTime(2030, 12, 31), // the latest allowable
+                          currentDate: DateTime.now(),
+                          saveText: 'Done',
+                        );
+                        if (result != null) {
+                          // Rebuild the UI
+                          print(result.start.toString());
+                          setState(() {
+                            _selectedDateRange = result;
+                          });
+                          firstDate =
+                              '${_selectedDateRange!.start.year}-${_selectedDateRange!.start.month < 10 ? '0${_selectedDateRange!.start.month}' : _selectedDateRange!.start.month}-${_selectedDateRange!.start.day < 10 ? '0${_selectedDateRange!.start.day}' : _selectedDateRange!.start.day}';
+                          endDate =
+                              '${_selectedDateRange!.end.year}-${_selectedDateRange!.end.month < 10 ? '0${_selectedDateRange!.end.month}' : _selectedDateRange!.end.month}-${_selectedDateRange!.end.day < 10 ? '0${_selectedDateRange!.end.day}' : _selectedDateRange!.end.day}';
+                        }
+                      },
+                      child: Container(
+                        height: 40,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all()),
+                        child: Center(
+                          child: Text(firstDate == null || endDate == null
+                              ? 'Pick Date'
+                              : '${firstDate}  /  ${endDate}'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
                     ),
                     SizedBox(
                       height: 40,
@@ -216,7 +324,7 @@ class _InsiderScreenState extends State<InsiderScreen> {
                         color: AppColor.mainColor,
                         alignment: Alignment.center,
                         child: Text(
-                          'Transcation Type',
+                          'Transaction Type',
                           maxLines: 2,
                           style: TextStyle(
                             color: AppColor.whiteColor,
@@ -291,9 +399,19 @@ class _InsiderScreenState extends State<InsiderScreen> {
                               )
                             : ListView.separated(
                                 separatorBuilder: (context, index) {
-                                  return const SizedBox(
-                                    height: 20,
-                                  );
+                                  return controller.selectedCompanyValue ==
+                                              null ||
+                                          controller.insiderData['data'][index]
+                                                  ['name']
+                                              .toString()
+                                              .contains(controller
+                                                  .selectedCompanyValue)
+                                      ? SizedBox(
+                                          height: 20,
+                                        )
+                                      : SizedBox(
+                                          height: 0,
+                                        );
                                 },
                                 itemCount:
                                     (controller.insiderData['data'] as List)
@@ -301,170 +419,206 @@ class _InsiderScreenState extends State<InsiderScreen> {
                                 shrinkWrap: true,
                                 reverse: true,
                                 itemBuilder: (context, index) {
-                                  print(
-                                      'DATA1111111${controller.insiderData['data'][6]['shortName']}');
-                                  return Container(
-                                    width: width,
-                                    // margin: const EdgeInsets.symmetric(horizontal: 20),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: AppColor.whiteColor,
-                                      // borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            padding:
-                                                const EdgeInsets.only(left: 20),
-                                            color: Colors.transparent,
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              '${controller.insiderData['data'][index]['name']}',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
+                                  String startDate = controller
+                                      .insiderData['data'][index]['createdAt']
+                                      .toString()
+                                      .split(" ")
+                                      .first;
+                                  String lastDate = controller
+                                      .insiderData['data'][index]['updatedAt']
+                                      .toString()
+                                      .split(" ")
+                                      .first;
+
+                                  if (firstDate != null) {
+                                    stDate = DateTime.parse(startDate);
+                                    lsDate = DateTime.parse(lastDate);
+                                    fsDate = DateTime.parse(firstDate!);
+                                    edDate = DateTime.parse(endDate!);
+                                  }
+                                  return controller.selectedCompanyValue ==
+                                              null ||
+                                          controller.insiderData['data'][index]
+                                                  ['name']
+                                              .toString()
+                                              .contains(controller
+                                                  .selectedCompanyValue)
+                                      ? Container(
+                                          width: width,
+                                          // margin: const EdgeInsets.symmetric(horizontal: 20),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 10),
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: AppColor.whiteColor,
+                                            // borderRadius: BorderRadius.circular(10),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              '${controller.insiderData['data'][index]['shortName']}',
-                                              maxLines: 4,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 20),
+                                                  color: Colors.transparent,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    '${controller.insiderData['data'][index]['name']}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              controller.insiderData['data']
-                                                          [index]['insiders'] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['personCategory'] ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                              SizedBox(
+                                                width: 5,
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              controller.insiderData['data']
-                                                          [index]['insiders'] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['shares'] ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    '${controller.insiderData['data'][index]['shortName']}',
+                                                    maxLines: 4,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              controller.insiderData['data']
-                                                          [index]['insiders'] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['value'] ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                              SizedBox(
+                                                width: 5,
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              controller.insiderData['data']
-                                                          [index]['insiders'] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['transactionType'] ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    controller.insiderData[
+                                                                        'data']
+                                                                    [index]
+                                                                ['insiders'] ==
+                                                            null
+                                                        ? "NA"
+                                                        : '${controller.insiderData['data'][index]['insiders']['table'][0]['personCategory'] ?? 'NA'}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            // padding: const EdgeInsets.only(left: 20),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              controller.insiderData['data']
-                                                          [index]['insiders'] ==
-                                                      null
-                                                  ? "NA"
-                                                  : '${controller.insiderData['data'][index]['insiders']['table'][0]['mode'] ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                              SizedBox(
+                                                width: 5,
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            // padding: const EdgeInsets.only(left: 20),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              '${controller.insiderData['data'][index]['updatedAt'].toString().split('T').first ?? 'NA'}',
-                                              style: TextStyle(
-                                                fontSize: 16,
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    controller.insiderData[
+                                                                        'data']
+                                                                    [index]
+                                                                ['insiders'] ==
+                                                            null
+                                                        ? "NA"
+                                                        : '${controller.insiderData['data'][index]['insiders']['table'][0]['shares'] ?? 'NA'}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    controller.insiderData[
+                                                                        'data']
+                                                                    [index]
+                                                                ['insiders'] ==
+                                                            null
+                                                        ? "NA"
+                                                        : '${controller.insiderData['data'][index]['insiders']['table'][0]['value'] ?? 'NA'}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    controller.insiderData[
+                                                                        'data']
+                                                                    [index]
+                                                                ['insiders'] ==
+                                                            null
+                                                        ? "NA"
+                                                        : '${controller.insiderData['data'][index]['insiders']['table'][0]['transactionType'] ?? 'NA'}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  // padding: const EdgeInsets.only(left: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    controller.insiderData[
+                                                                        'data']
+                                                                    [index]
+                                                                ['insiders'] ==
+                                                            null
+                                                        ? "NA"
+                                                        : '${controller.insiderData['data'][index]['insiders']['table'][0]['mode'] ?? 'NA'}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  // padding: const EdgeInsets.only(left: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    '${controller.insiderData['data'][index]['updatedAt'].toString().split('T').first ?? 'NA'}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                        )
+                                      : SizedBox();
                                 },
                               );
                       }

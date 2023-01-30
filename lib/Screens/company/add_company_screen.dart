@@ -24,6 +24,8 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   GetCompanyResponseModel? getCompanyResponseModel;
   String? dateInput;
+  DateTime? pickDate;
+  DateTime? createDate;
   @override
   void initState() {
     getCompanyViewModel.getCompanyViewModel(searchText: '');
@@ -259,26 +261,33 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                               )
                             : ListView.separated(
                                 separatorBuilder: (context, index) {
-                                  return const SizedBox(
-                                    height: 20,
-                                  );
+                                  return dateInput == null ||
+                                          pickDate!.isAfter(createDate!) ||
+                                          createDate == dateInput
+                                      ? SizedBox(
+                                          height: 20,
+                                        )
+                                      : SizedBox(
+                                          height: 0,
+                                        );
                                 },
                                 itemCount: getCompanyResponseModel.data!.length,
                                 shrinkWrap: true,
                                 reverse: true,
                                 itemBuilder: (context, index) {
-                                  DateTime createDate = DateTime.parse(
+                                  createDate = DateTime.parse(
                                       getCompanyResponseModel
                                           .data![index].createdAt
                                           .toString()
                                           .split(' ')
                                           .first);
-                                  DateTime? pickDate;
+
                                   if (dateInput != null) {
                                     pickDate = DateTime.parse(dateInput!);
                                   }
                                   return dateInput == null ||
-                                          pickDate!.isAfter(createDate)
+                                          pickDate!.isAfter(createDate!) ||
+                                          createDate == dateInput
                                       ? Container(
                                           width: width,
                                           decoration: BoxDecoration(
