@@ -5,6 +5,12 @@ import 'package:get/get.dart';
 class GetMoversViewModel extends GetxController {
   bool catchError = false;
   bool loader = false;
+  String searchText = '';
+  updateSearch(value) {
+    searchText = value;
+    update();
+  }
+
   dynamic selectedCompanyValue;
   updateValue(val) {
     selectedCompanyValue = val;
@@ -28,7 +34,7 @@ class GetMoversViewModel extends GetxController {
   ApiResponse get getMoversApiResponse => _getMoversApiResponse;
 
   Future<void> getMoversViewModel(
-      {bool isLoading = true, String text = ''}) async {
+      {bool isLoading = true, String text = '', String companyId = ''}) async {
     updateError(true);
     if (isLoading) {
       _getMoversApiResponse = ApiResponse.loading(message: 'Loading');
@@ -36,7 +42,8 @@ class GetMoversViewModel extends GetxController {
 
     update();
     try {
-      moversData = await GetMoversRepo().getMoversRepo(text: text);
+      moversData =
+          await GetMoversRepo().getMoversRepo(text: text, companyId: companyId);
       print("GetMoversResponseModel=response==>$moversData");
 
       _getMoversApiResponse = ApiResponse.complete(moversData);

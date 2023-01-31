@@ -10,11 +10,13 @@ import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_latest_mover_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/Widgets/toggle_button.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class LatestMoversScreen extends StatefulWidget {
   const LatestMoversScreen({Key? key}) : super(key: key);
@@ -148,6 +150,30 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              height: 40,
+                              width: 250,
+                              child: TextField(
+                                controller: TextEditingController(),
+                                onChanged: (val) async {},
+                                decoration: InputDecoration(
+                                  border: outline,
+                                  focusedBorder: outline,
+                                  enabledBorder: outline,
+                                  contentPadding:
+                                      const EdgeInsets.only(top: 5, left: 10),
+                                  suffixIcon: Icon(
+                                    Icons.search,
+                                    color: Colors.grey.shade400,
+                                    size: 20,
+                                  ),
+                                  hintText: 'Search....',
+                                ),
+                              ),
+                            ),
                             Row(
                               children: [
                                 const SizedBox(
@@ -247,7 +273,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      'Percentage',
+                                      'Percentage /',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -257,7 +283,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                       height: 3,
                                     ),
                                     Text(
-                                      'Date',
+                                      'Time stamp',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -371,6 +397,14 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                 .length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          // String date = controller.latestMoverData['data']
+                          //         ['docs'][index]['startDate']
+                          //     .toString();
+                          //
+                          // var formattedDate = DateFormat('dd-MM-yyyy HH:mm a')
+                          //     .format(DateTime.parse(date));
+
+                          // print('----formattedDate----$formattedDate');
                           String startDate = controller.latestMoverData['data']
                                   ['docs'][index]['startDate']
                               .toString()
@@ -445,7 +479,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                '${controller.latestMoverData['data']['docs'][index]['percentage']}%',
+                                                '${controller.latestMoverData['data']['docs'][index]['percentage']}% /',
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                 ),
@@ -454,7 +488,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                                 height: 5,
                                               ),
                                               Text(
-                                                '${controller.latestMoverData['data']['docs'][index]['updatedAt'].toString().split('T').first}',
+                                                '${dateConverter(controller.latestMoverData['data']['docs'][index]['updatedAt'].toString())}',
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                 ),
@@ -471,9 +505,9 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                         child: Container(
                                           alignment: Alignment.center,
                                           child: Text(
-                                            '${controller.latestMoverData['data']['docs'][index]['startDate'].toString().split(" ")[0]}',
+                                            '${dateConverter(controller.latestMoverData['data']['docs'][index]['startDate'].toString())}',
                                             style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 15,
                                             ),
                                           ),
                                         ),
@@ -487,7 +521,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                                           // padding: const EdgeInsets.only(left: 20),
                                           alignment: Alignment.center,
                                           child: Text(
-                                            '${controller.latestMoverData['data']['docs'][index]['endDate'].toString().split(" ")[0]}',
+                                            '${dateConverter(controller.latestMoverData['data']['docs'][index]['endDate'].toString())}',
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),

@@ -4,6 +4,7 @@ import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Response_model/connect_us_res_model.dart';
 import 'package:finwizz_admin/ViewModel/connect_us_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -26,9 +27,13 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
 
   ConnectUsViewModel connectUsViewModel = Get.put(ConnectUsViewModel());
   ConnectUsResponseModel? responseModel;
-  String? dateInput;
-  DateTime? pickDate;
-  DateTime? createDate;
+  DateTimeRange? _selectedDateRange;
+  DateTime? stDate;
+  DateTime? lsDate;
+  DateTime? fsDate;
+  DateTime? edDate;
+  String? firstDate;
+  String? endDate;
   @override
   void initState() {
     connectUsViewModel.connectUsViewModel(limit: 10, page: 1);
@@ -86,67 +91,40 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                 Spacer(),
                                 GestureDetector(
                                   onTap: () async {
-                                    DateTime? pickedDate = await showDatePicker(
-                                        context: context,
-                                        builder: (context, child) {
-                                          return Theme(
-                                              data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: AppColor.mainColor,
-                                                  onPrimary: Colors
-                                                      .black, // <-- SEE HERE
-                                                  onSurface: Colors.black,
-                                                ),
-                                              ),
-                                              child: child!);
-                                        },
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1950),
-                                        //DateTime.now() - not to allow to choose before today.
-                                        lastDate: DateTime(2100));
-
-                                    if (pickedDate != null) {
-                                      print(
-                                          pickedDate); // 2021-03-10 00:00:00.000
-                                      String formattedDate =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(pickedDate);
-                                      print(formattedDate); //2021-03-16
+                                    DateTimeRange? result =
+                                        await showDateRangePicker(
+                                      context: context,
+                                      firstDate: DateTime(
+                                          2022, 1, 1), // the earliest allowable
+                                      lastDate: DateTime(
+                                          2030, 12, 31), // the latest allowable
+                                      currentDate: DateTime.now(),
+                                      saveText: 'Done',
+                                    );
+                                    if (result != null) {
+                                      // Rebuild the UI
+                                      print(result.start.toString());
                                       setState(() {
-                                        dateInput = formattedDate;
+                                        _selectedDateRange = result;
                                       });
-                                    } else {}
+                                      firstDate =
+                                          '${_selectedDateRange!.start.year}-${_selectedDateRange!.start.month < 10 ? '0${_selectedDateRange!.start.month}' : _selectedDateRange!.start.month}-${_selectedDateRange!.start.day < 10 ? '0${_selectedDateRange!.start.day}' : _selectedDateRange!.start.day}';
+                                      endDate =
+                                          '${_selectedDateRange!.end.year}-${_selectedDateRange!.end.month < 10 ? '0${_selectedDateRange!.end.month}' : _selectedDateRange!.end.month}-${_selectedDateRange!.end.day < 10 ? '0${_selectedDateRange!.end.day}' : _selectedDateRange!.end.day}';
+                                    }
                                   },
                                   child: Container(
                                     height: 40,
-                                    margin: EdgeInsets.only(right: 20),
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                        color: AppColor.whiteColor,
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.calendar_month,
-                                          size: 18,
-                                        ),
-                                        SizedBox(
-                                          width: 3,
-                                        ),
-                                        Text(
-                                          dateInput == null
-                                              ? 'Date'
-                                              : dateInput!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all()),
+                                    child: Center(
+                                      child: Text(
+                                          firstDate == null || endDate == null
+                                              ? 'Pick Date'
+                                              : '${firstDate}  /  ${endDate}'),
                                     ),
                                   ),
                                 ),
@@ -210,7 +188,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     color: AppColor.mainColor,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      'Date',
+                                      'Time stamp',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -236,18 +214,20 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                 itemCount: responseModel!.data!.docs!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  createDate = DateTime.parse(responseModel!
+                                  String startDate = responseModel!
                                       .data!.docs![index].updatedAt
                                       .toString()
                                       .split(' ')
-                                      .first);
+                                      .first;
 
-                                  if (dateInput != null) {
-                                    pickDate = DateTime.parse(dateInput!);
+                                  if (firstDate != null) {
+                                    stDate = DateTime.parse(startDate);
+                                    fsDate = DateTime.parse(firstDate!);
+                                    edDate = DateTime.parse(endDate!);
                                   }
-                                  return dateInput == null ||
-                                          pickDate!.isAfter(createDate!) ||
-                                          createDate == dateInput
+                                  return firstDate == null ||
+                                          fsDate!.isBefore(stDate!) == true &&
+                                              edDate!.isAfter(stDate!) == true
                                       ? Container(
                                           width: width,
                                           decoration: BoxDecoration(
@@ -332,13 +312,13 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                                       alignment:
                                                           Alignment.center,
                                                       child: Text(
-                                                        responseModel!
-                                                                .data!
-                                                                .docs![index]
-                                                                .updatedAt
-                                                                .toString()
-                                                                .split(' ')
-                                                                .first ??
+                                                        dateConverter(
+                                                                responseModel!
+                                                                    .data!
+                                                                    .docs![
+                                                                        index]
+                                                                    .updatedAt
+                                                                    .toString()) ??
                                                             "NA",
                                                         style: TextStyle(
                                                           fontSize: 18,

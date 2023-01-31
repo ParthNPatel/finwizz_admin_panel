@@ -8,9 +8,11 @@ class GetMoversRepo {
     'Authorization':
         'Bearer eyJhbGciOiJIUzI1NiJ9.NjNiZDZkZWIyYzBjZmJkYmQxMWIzMmQ2.XxjWyJcaxqZv0VT9dYV6acZtTeipfJc0abwkkUYgVhM'
   };
-  Future<dynamic> getMoversRepo({String? text = ''}) async {
-    var response =
-        await http.get(Uri.parse('${ApiUrl.getMovers}$text'), headers: headers);
+  Future<dynamic> getMoversRepo(
+      {String? text = '', String companyId = ''}) async {
+    var response = await http.get(
+        Uri.parse('${ApiUrl.getMovers}companyId=$companyId&text=$text'),
+        headers: headers);
 
     if (response.statusCode == 200) {
       print('Success :${await jsonDecode(response.body)}');

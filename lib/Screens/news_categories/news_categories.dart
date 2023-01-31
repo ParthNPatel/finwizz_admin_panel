@@ -6,6 +6,7 @@ import 'package:finwizz_admin/Screens/movres/movers_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_news_categories_view_model.dart';
 import 'package:finwizz_admin/ViewModel/news_categories_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/Widgets/toggle_button.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +28,21 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
   GetNewsCategoriesViewModel getNewsCategoriesViewModel =
       Get.put(GetNewsCategoriesViewModel());
   GetNewsCategoriesResponseModel? responseModel;
-
+  DateTimeRange? _selectedDateRange;
+  DateTime? stDate;
+  DateTime? lsDate;
+  DateTime? fsDate;
+  DateTime? edDate;
+  String? firstDate;
+  String? endDate;
   @override
   void initState() {
     getNewsCategoriesViewModel.getNewsCategoriesViewModel();
     super.initState();
   }
 
+  InputBorder outline =
+      OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
   @override
   Widget build(BuildContext context) {
     double baseWidth = 1489;
@@ -68,6 +77,71 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                         fontWeight: FontWeight.w600,
                         fontSize: 22,
                       ),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () async {
+                        DateTimeRange? result = await showDateRangePicker(
+                          context: context,
+                          firstDate:
+                              DateTime(2022, 1, 1), // the earliest allowable
+                          lastDate:
+                              DateTime(2030, 12, 31), // the latest allowable
+                          currentDate: DateTime.now(),
+                          saveText: 'Done',
+                        );
+                        if (result != null) {
+                          // Rebuild the UI
+                          print(result.start.toString());
+                          setState(() {
+                            _selectedDateRange = result;
+                          });
+                          firstDate =
+                              '${_selectedDateRange!.start.year}-${_selectedDateRange!.start.month < 10 ? '0${_selectedDateRange!.start.month}' : _selectedDateRange!.start.month}-${_selectedDateRange!.start.day < 10 ? '0${_selectedDateRange!.start.day}' : _selectedDateRange!.start.day}';
+                          endDate =
+                              '${_selectedDateRange!.end.year}-${_selectedDateRange!.end.month < 10 ? '0${_selectedDateRange!.end.month}' : _selectedDateRange!.end.month}-${_selectedDateRange!.end.day < 10 ? '0${_selectedDateRange!.end.day}' : _selectedDateRange!.end.day}';
+                        }
+                      },
+                      child: Container(
+                        height: 40,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all()),
+                        child: Center(
+                          child: Text(firstDate == null || endDate == null
+                              ? 'Pick Date'
+                              : '${firstDate}  /  ${endDate}'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    SizedBox(
+                      height: 40,
+                      width: 250,
+                      child: TextField(
+                        controller: TextEditingController(),
+                        onChanged: (val) async {},
+                        decoration: InputDecoration(
+                          border: outline,
+                          focusedBorder: outline,
+                          enabledBorder: outline,
+                          contentPadding:
+                              const EdgeInsets.only(top: 5, left: 10),
+                          suffixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey.shade400,
+                            size: 20,
+                          ),
+                          hintText: 'Search....',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
                     ),
                     SizedBox(
                       height: 40,
@@ -140,27 +214,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 25),
                             child: Text(
-                              'Date',
-                              style: TextStyle(
-                                color: AppColor.whiteColor,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 25),
-                            child: Text(
-                              'Time ',
+                              'Time stamp',
                               style: TextStyle(
                                 color: AppColor.whiteColor,
                                 fontSize: 16,
@@ -253,140 +307,149 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                     shrinkWrap: true,
                                     reverse: true,
                                     itemBuilder: (context, index) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                            dividerColor: Colors.transparent),
-                                        child: Container(
-                                          height: 50,
-                                          width: width,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 25),
-                                          alignment: Alignment.centerLeft,
-                                          decoration: BoxDecoration(
-                                            color: AppColor.whiteColor,
-                                            // borderRadius:
-                                            //     BorderRadius.circular(10),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 2,
-                                                child: Container(
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      '${responseModel!.data![index].name ?? "NA"}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      '${responseModel!.data![index].updatedAt.toString().split(' ').first ?? "NA"}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      '${responseModel!.data![index].updatedAt.toString().split(' ').last.split(':').first}:${responseModel!.data![index].updatedAt.toString().split(' ').last.split(':')[1]}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  deleteDialog(
-                                                      onPress: () async {
-                                                        await DeleteNewsCategoriesRepo()
-                                                            .deleteNewsCategoriesRepo(
-                                                                text: responseModel!
-                                                                    .data![
-                                                                        index]
-                                                                    .id
-                                                                    .toString());
+                                      String startDate = responseModel!
+                                          .data![index].updatedAt
+                                          .toString()
+                                          .split(" ")
+                                          .first;
 
-                                                        await getNewsCategoriesViewModel
-                                                            .getNewsCategoriesViewModel(
-                                                                isLoading:
-                                                                    false);
+                                      if (firstDate != null) {
+                                        stDate = DateTime.parse(startDate);
+                                        fsDate = DateTime.parse(firstDate!);
+                                        edDate = DateTime.parse(endDate!);
+                                      }
+                                      return firstDate == null ||
+                                              fsDate!.isBefore(stDate!) ==
+                                                      true &&
+                                                  edDate!.isAfter(stDate!) ==
+                                                      true
+                                          ? Theme(
+                                              data: Theme.of(context).copyWith(
+                                                  dividerColor:
+                                                      Colors.transparent),
+                                              child: Container(
+                                                height: 50,
+                                                width: width,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 25),
+                                                alignment: Alignment.centerLeft,
+                                                decoration: BoxDecoration(
+                                                  color: AppColor.whiteColor,
+                                                  // borderRadius:
+                                                  //     BorderRadius.circular(10),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Container(
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            '${responseModel!.data![index].name ?? "NA"}',
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            '${dateConverter(responseModel!.data![index].updatedAt.toString()) ?? "NA"}',
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        deleteDialog(
+                                                            onPress: () async {
+                                                              await DeleteNewsCategoriesRepo()
+                                                                  .deleteNewsCategoriesRepo(
+                                                                      text: responseModel!
+                                                                          .data![
+                                                                              index]
+                                                                          .id
+                                                                          .toString());
+
+                                                              await getNewsCategoriesViewModel
+                                                                  .getNewsCategoriesViewModel(
+                                                                      isLoading:
+                                                                          false);
+                                                            },
+                                                            header:
+                                                                'Are you sure to delete this categorie ?',
+                                                            context: context);
                                                       },
-                                                      header:
-                                                          'Are you sure to delete this categorie ?',
-                                                      context: context);
-                                                },
-                                                child: Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3),
-                                                    border: Border.all(
-                                                      color: AppColor.mainColor,
+                                                      child: Container(
+                                                        height: 30,
+                                                        width: 30,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(3),
+                                                          border: Border.all(
+                                                            color: AppColor
+                                                                .mainColor,
+                                                          ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.delete,
+                                                            size: 20,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  child: Center(
-                                                    child: Icon(
-                                                      Icons.delete,
-                                                      size: 20,
+                                                    SizedBox(
+                                                      width: 20,
                                                     ),
-                                                  ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        newsCategoriesAddDialog(
+                                                          context,
+                                                          true,
+                                                          category:
+                                                              '${responseModel!.data![index].name ?? "NA"}',
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        height: 30,
+                                                        width: 30,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(3),
+                                                          border: Border.all(
+                                                            color: AppColor
+                                                                .mainColor,
+                                                          ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.edit,
+                                                            size: 20,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 20,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  newsCategoriesAddDialog(
-                                                    context,
-                                                    true,
-                                                    category:
-                                                        '${responseModel!.data![index].name ?? "NA"}',
-                                                  );
-                                                },
-                                                child: Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3),
-                                                    border: Border.all(
-                                                      color: AppColor.mainColor,
-                                                    ),
-                                                  ),
-                                                  child: Center(
-                                                    child: Icon(
-                                                      Icons.edit,
-                                                      size: 20,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
+                                            )
+                                          : SizedBox();
                                     },
                                   )
                             : const Center(

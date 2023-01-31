@@ -9,6 +9,7 @@ import 'package:finwizz_admin/ViewModel/add_movers_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
@@ -170,18 +171,20 @@ class _MoversScreenState extends State<MoversScreen> {
                                         items: getCompany.data!
                                             .map(
                                               (e) => DropdownMenuItem(
-                                                value: e.name,
+                                                value: e.id,
                                                 child: SizedBox(
                                                   height: 40,
                                                   width: 150,
-                                                  child: Text(
-                                                    '${e.name}',
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      color:
-                                                          AppColor.blackColor,
+                                                  child: Center(
+                                                    child: Text(
+                                                      '${e.name}',
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color:
+                                                            AppColor.blackColor,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -193,7 +196,7 @@ class _MoversScreenState extends State<MoversScreen> {
 
                                           await getMoversViewModel
                                               .getMoversViewModel(
-                                                  text: controller
+                                                  companyId: controller
                                                       .selectedCompanyValue,
                                                   isLoading: false);
 
@@ -209,42 +212,68 @@ class _MoversScreenState extends State<MoversScreen> {
                             const SizedBox(
                               width: 20,
                             ),
-                            Row(
-                              children: [
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                  width: 83,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColor.mainColor,
-                                    ),
-                                    onPressed: () {
-                                      typeMover = false;
-
-                                      addMoverDialog(context, typeMover, '');
-                                    },
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          'Add',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: AppColor.whiteColor,
-                                              fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
+                            SizedBox(
+                              height: 40,
+                              width: 250,
+                              child: TextField(
+                                controller: searchController,
+                                onChanged: (val) async {
+                                  await getMoversViewModel.getMoversViewModel(
+                                      isLoading: false,
+                                      text: val,
+                                      companyId: controller
+                                                  .selectedCompanyValue ==
+                                              null
+                                          ? ''
+                                          : controller.selectedCompanyValue);
+                                },
+                                decoration: InputDecoration(
+                                  border: outline,
+                                  focusedBorder: outline,
+                                  enabledBorder: outline,
+                                  contentPadding:
+                                      const EdgeInsets.only(top: 5, left: 10),
+                                  suffixIcon: Icon(
+                                    Icons.search,
+                                    color: Colors.grey.shade400,
+                                    size: 20,
                                   ),
+                                  hintText: 'Search....',
                                 ),
-                              ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              height: 40,
+                              width: 83,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.mainColor,
+                                ),
+                                onPressed: () {
+                                  typeMover = false;
+
+                                  addMoverDialog(context, typeMover, '');
+                                },
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      'Add',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: AppColor.whiteColor,
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             )
                           ],
                         ),
@@ -305,7 +334,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      'Image Type',
+                                      'Image Type /',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -315,7 +344,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                       height: 3,
                                     ),
                                     Text(
-                                      'Date',
+                                      'Time stamp',
                                       style: TextStyle(
                                         color: AppColor.whiteColor,
                                         fontSize: 16,
@@ -559,7 +588,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                '${controller.moversData['data'][index]['imageType']}',
+                                                '${controller.moversData['data'][index]['imageType']} /',
                                                 maxLines: 4,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
@@ -570,7 +599,7 @@ class _MoversScreenState extends State<MoversScreen> {
                                                 height: 5,
                                               ),
                                               Text(
-                                                '${controller.moversData['data'][index]['updatedAt'].toString().split('T').first}',
+                                                '${dateConverter(controller.moversData['data'][index]['updatedAt'].toString())}',
                                                 maxLines: 4,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
@@ -1251,6 +1280,7 @@ class _MoversScreenState extends State<MoversScreen> {
 Widget addDataForm(
     {String? header,
     String? hint,
+    validator,
     TextInputType? textInputType = TextInputType.emailAddress,
     TextEditingController? textEditingController,
     dynamic inputFormatter}) {
@@ -1273,7 +1303,8 @@ Widget addDataForm(
       SizedBox(
         height: 40,
         width: 380,
-        child: TextField(
+        child: TextFormField(
+          validator: validator,
           inputFormatters: inputFormatter,
           keyboardType: textInputType,
           controller: textEditingController,

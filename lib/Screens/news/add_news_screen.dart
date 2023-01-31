@@ -13,6 +13,7 @@ import 'package:finwizz_admin/ViewModel/get_news_view_model.dart';
 import 'package:finwizz_admin/ViewModel/news_categories_view_model.dart';
 import 'package:finwizz_admin/ViewModel/search_news_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
@@ -206,15 +207,17 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                         child: SizedBox(
                                                           height: 40,
                                                           width: 150,
-                                                          child: Text(
-                                                            '${e.name}',
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: TextStyle(
-                                                              color: AppColor
-                                                                  .blackColor,
+                                                          child: Center(
+                                                            child: Text(
+                                                              '${e.name}',
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                color: AppColor
+                                                                    .blackColor,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
@@ -256,6 +259,12 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           await searchNewsController
                                               .getSearchNewsViewModel(
                                                   isLoading: false,
+                                                  companyId: getCompanyViewModel
+                                                              .selectedCompanyValue ==
+                                                          null
+                                                      ? ''
+                                                      : getCompanyViewModel
+                                                          .selectedCompanyValue,
                                                   text: searchController.text
                                                       .trim()
                                                       .toString());
@@ -467,7 +476,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          'Categories',
+                                          'Categories /',
                                           style: TextStyle(
                                             color: AppColor.whiteColor,
                                             fontSize: 16,
@@ -477,7 +486,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                           height: 2,
                                         ),
                                         Text(
-                                          'Date',
+                                          'Time stamp',
                                           style: TextStyle(
                                             color: AppColor.whiteColor,
                                             fontSize: 16,
@@ -754,10 +763,10 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                                             [
                                                                             'type'] ==
                                                                         1
-                                                                    ? 'Positive'
+                                                                    ? 'Positive /'
                                                                     : searchNewsController.searchNewsData['data'][index]['type'] ==
                                                                             -1
-                                                                        ? 'Negative'
+                                                                        ? 'Negative /'
                                                                         : 'Neutral',
                                                                 style:
                                                                     TextStyle(
@@ -780,7 +789,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                                                 height: 3,
                                                               ),
                                                               Text(
-                                                                '${searchNewsController.searchNewsData['data'][index]['updatedAt'].toString().split('T').first}',
+                                                                '${dateConverter(searchNewsController.searchNewsData['data'][index]['updatedAt'].toString())}',
                                                               ),
                                                             ],
                                                           ),
