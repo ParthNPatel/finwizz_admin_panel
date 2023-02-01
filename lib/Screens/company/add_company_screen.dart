@@ -33,6 +33,11 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
   DateTime? edDate;
   String? firstDate;
   String? endDate;
+
+  String searchText = "";
+
+  TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     getCompanyViewModel.getCompanyViewModel(searchText: '');
@@ -128,8 +133,12 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                             height: 40,
                             width: 250,
                             child: TextField(
-                              controller: TextEditingController(),
-                              onChanged: (val) async {},
+                              controller: searchController,
+                              onChanged: (val) async {
+                                setState(() {
+                                  searchText = val;
+                                });
+                              },
                               decoration: InputDecoration(
                                 border: outline,
                                 focusedBorder: outline,
@@ -302,124 +311,139 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                   return firstDate == null ||
                                           fsDate!.isBefore(stDate!) == true &&
                                               edDate!.isAfter(stDate!) == true
-                                      ? Container(
-                                          width: width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Theme(
-                                            data: Theme.of(context).copyWith(
-                                                dividerColor:
-                                                    Colors.transparent),
-                                            child: Container(
-                                              height: 50,
+                                      ? getCompanyResponseModel
+                                                  .data![index].name
+                                                  .toString()
+                                                  .toLowerCase()
+                                                  .contains(searchText
+                                                      .toLowerCase()) ||
+                                              searchText == ''
+                                          ? Container(
                                               width: width,
-                                              // padding: const EdgeInsets.symmetric(
-                                              //     horizontal: 25),
-                                              alignment: Alignment.center,
                                               decoration: BoxDecoration(
-                                                color: AppColor.whiteColor,
-                                                // borderRadius:
-                                                //     BorderRadius.circular(10),
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        '${getCompanyResponseModel.data![index]!.name}',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 20,
+                                              child: Theme(
+                                                data: Theme.of(context)
+                                                    .copyWith(
+                                                        dividerColor:
+                                                            Colors.transparent),
+                                                child: Container(
+                                                  height: 50,
+                                                  width: width,
+                                                  // padding: const EdgeInsets.symmetric(
+                                                  //     horizontal: 25),
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColor.whiteColor,
+                                                    // borderRadius:
+                                                    //     BorderRadius.circular(10),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            '${getCompanyResponseModel.data![index].name}',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 20,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        '${getCompanyResponseModel.data![index]!.shortName}',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 20,
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            '${getCompanyResponseModel.data![index].shortName}',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 20,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        '${formattedDate.toString()}',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 20,
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            '${formattedDate.toString()}',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 20,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      deleteDialog(
-                                                          onPress: () async {
-                                                            await DeleteCompanyRepo()
-                                                                .deleteCompanyRepo(
-                                                                    text:
-                                                                        '${getCompanyResponseModel.data![index]!.id}');
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          deleteDialog(
+                                                              onPress:
+                                                                  () async {
+                                                                await DeleteCompanyRepo()
+                                                                    .deleteCompanyRepo(
+                                                                        text:
+                                                                            '${getCompanyResponseModel.data![index].id}');
 
-                                                            await getCompanyViewModel
-                                                                .getCompanyViewModel(
-                                                                    isLoading:
-                                                                        false);
-                                                          },
-                                                          header:
-                                                              'Are you sure to delete this company ?',
-                                                          context: context);
-                                                    },
-                                                    child: Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(3),
-                                                        border: Border.all(
-                                                          color: AppColor
-                                                              .mainColor,
+                                                                await getCompanyViewModel
+                                                                    .getCompanyViewModel(
+                                                                        isLoading:
+                                                                            false);
+                                                              },
+                                                              header:
+                                                                  'Are you sure to delete this company ?',
+                                                              context: context);
+                                                        },
+                                                        child: Container(
+                                                          height: 30,
+                                                          width: 30,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            border: Border.all(
+                                                              color: AppColor
+                                                                  .mainColor,
+                                                            ),
+                                                          ),
+                                                          child: Center(
+                                                            child: Icon(
+                                                              Icons.delete,
+                                                              size: 20,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.delete,
-                                                          size: 20,
-                                                        ),
+                                                      SizedBox(
+                                                        width: 30,
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                  SizedBox(
-                                                    width: 30,
-                                                  ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        )
+                                            )
+                                          : SizedBox()
                                       : SizedBox();
                                 },
                               ),

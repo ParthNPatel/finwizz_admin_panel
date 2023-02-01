@@ -17,6 +17,9 @@ class ContactUsScreen extends StatefulWidget {
 }
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
+  InputBorder outline =
+      OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
+
   InputBorder outlineBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.grey.shade200),
       borderRadius: BorderRadius.circular(7));
@@ -34,6 +37,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
   DateTime? edDate;
   String? firstDate;
   String? endDate;
+
+  String searchText = "";
+
   @override
   void initState() {
     connectUsViewModel.connectUsViewModel(limit: 10, page: 1);
@@ -128,6 +134,37 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                SizedBox(
+                                  height: 40,
+                                  width: 250,
+                                  child: TextField(
+                                    controller: searchController,
+                                    onChanged: (val) async {
+                                      setState(() {
+                                        searchText = val;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      border: outline,
+                                      focusedBorder: outline,
+                                      enabledBorder: outline,
+                                      contentPadding: const EdgeInsets.only(
+                                          top: 5, left: 10),
+                                      suffixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey.shade400,
+                                        size: 20,
+                                      ),
+                                      hintText: 'Search....',
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
                               ],
                             ),
                           ),
@@ -141,7 +178,6 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    // padding: const EdgeInsets.only(left: 20),
                                     color: AppColor.mainColor,
                                     alignment: Alignment.center,
                                     child: Text(
@@ -155,7 +191,6 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                 ),
                                 Expanded(
                                   child: Container(
-                                    // padding: const EdgeInsets.only(left: 20),
                                     color: AppColor.mainColor,
                                     alignment: Alignment.center,
                                     child: Text(
@@ -170,7 +205,6 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                 Expanded(
                                   flex: 2,
                                   child: Container(
-                                    // padding: const EdgeInsets.only(left: 20),
                                     color: AppColor.mainColor,
                                     alignment: Alignment.center,
                                     child: Text(
@@ -228,109 +262,121 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                   return firstDate == null ||
                                           fsDate!.isBefore(stDate!) == true &&
                                               edDate!.isAfter(stDate!) == true
-                                      ? Container(
-                                          width: width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Theme(
-                                            data: Theme.of(context).copyWith(
-                                                dividerColor:
-                                                    Colors.transparent),
-                                            child: Container(
-                                              height: 50,
+                                      ? responseModel!.data!.docs![index].name
+                                                  .toString()
+                                                  .toLowerCase()
+                                                  .contains(searchText
+                                                      .toLowerCase()) ||
+                                              searchText == ''
+                                          ? Container(
                                               width: width,
-                                              // padding: const EdgeInsets.symmetric(
-                                              //     horizontal: 25),
-                                              alignment: Alignment.center,
                                               decoration: BoxDecoration(
-                                                color: AppColor.whiteColor,
-                                                // borderRadius:
-                                                //     BorderRadius.circular(10),
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        responseModel!
-                                                                .data!
-                                                                .docs![index]
-                                                                .name ??
-                                                            "NA",
-                                                        style: TextStyle(
-                                                          fontSize: 18,
+                                              child: Theme(
+                                                data: Theme.of(context)
+                                                    .copyWith(
+                                                        dividerColor:
+                                                            Colors.transparent),
+                                                child: Container(
+                                                  height: 50,
+                                                  width: width,
+                                                  // padding: const EdgeInsets.symmetric(
+                                                  //     horizontal: 25),
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColor.whiteColor,
+                                                    // borderRadius:
+                                                    //     BorderRadius.circular(10),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            responseModel!
+                                                                    .data!
+                                                                    .docs![
+                                                                        index]
+                                                                    .name ??
+                                                                "NA",
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        responseModel!
-                                                                .data!
-                                                                .docs![index]
-                                                                .email ??
-                                                            "NA",
-                                                        style: TextStyle(
-                                                          fontSize: 18,
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            responseModel!
+                                                                    .data!
+                                                                    .docs![
+                                                                        index]
+                                                                    .email ??
+                                                                "NA",
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        responseModel!
-                                                                .data!
-                                                                .docs![index]
-                                                                .message ??
-                                                            "NA",
-                                                        maxLines: 4,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                          fontSize: 18,
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            responseModel!
+                                                                    .data!
+                                                                    .docs![
+                                                                        index]
+                                                                    .message ??
+                                                                "NA",
+                                                            maxLines: 4,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      // padding: const EdgeInsets.only(left: 20),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        dateConverter(
-                                                                responseModel!
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            dateConverter(responseModel!
                                                                     .data!
                                                                     .docs![
                                                                         index]
                                                                     .updatedAt
                                                                     .toString()) ??
-                                                            "NA",
-                                                        style: TextStyle(
-                                                          fontSize: 18,
+                                                                "NA",
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        )
+                                            )
+                                          : SizedBox()
                                       : SizedBox();
                                 },
                               ),

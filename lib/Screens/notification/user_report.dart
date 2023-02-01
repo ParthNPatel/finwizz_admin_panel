@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
+import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
+import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_user_stock_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/date_conveter.dart';
@@ -20,7 +22,6 @@ class _UserReportScreenState extends State<UserReportScreen> {
       Get.put(GetUserStockViewModel());
   InputBorder outline =
       OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
-  TextEditingController searchController = TextEditingController();
 
   DateTimeRange? _selectedDateRange;
   DateTime? stDate;
@@ -29,6 +30,15 @@ class _UserReportScreenState extends State<UserReportScreen> {
   DateTime? edDate;
   String? firstDate;
   String? endDate;
+
+  String searchText = "";
+
+  TextEditingController searchController = TextEditingController();
+
+  dynamic selectedCompanyValue;
+
+  GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
+
   @override
   void initState() {
     getUserStockViewModel.getUserStockViewModel();
@@ -111,13 +121,73 @@ class _UserReportScreenState extends State<UserReportScreen> {
                     SizedBox(
                       width: 10,
                     ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    GetBuilder<GetCompanyViewModel>(
+                      builder: (companyController) {
+                        if (companyController.getCompanyApiResponse.status ==
+                            Status.COMPLETE) {
+                          GetCompanyResponseModel getCompany =
+                              companyController.getCompanyApiResponse.data;
+                          return Container(
+                            height: 40,
+                            width: 200,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                border: Border.all(color: AppColor.grey100),
+                                borderRadius: BorderRadius.circular(7)),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton(
+                                hint: const Text('All'),
+                                value: selectedCompanyValue,
+                                items: getCompany.data!
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e.name,
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 150,
+                                          child: Center(
+                                            child: Text(
+                                              '${e.name}',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: AppColor.blackColor,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (val) {
+                                  print('Value==>>${val}');
+                                  setState(() {
+                                    selectedCompanyValue = val;
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                        return SizedBox();
+                      },
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
                     SizedBox(
                       height: 40,
                       width: 250,
                       child: TextField(
                         controller: searchController,
                         onChanged: (val) async {
-                          getUserStockViewModel.updateSearch(val);
+                          setState(() {
+                            searchText = val;
+                          });
                         },
                         decoration: InputDecoration(
                           border: outline,
@@ -237,143 +307,150 @@ class _UserReportScreenState extends State<UserReportScreen> {
                               fsDate = DateTime.parse(firstDate!);
                               edDate = DateTime.parse(endDate!);
                             }
+
                             print(
                                 '---CONTAIN$index---${controller.stockUserData['data']['docs'][index]['phone'].toString().toLowerCase().contains(controller.searchText.toLowerCase())}');
                             return firstDate == null ||
                                     fsDate!.isBefore(stDate!) == true &&
-                                        edDate!.isAfter(stDate!) == true ||
-                                    controller.stockUserData['data']['docs']
-                                            [index]['phone']
-                                        .toString()
-                                        .toLowerCase()
-                                        .contains(controller.searchText
-                                            .toLowerCase()) ||
-                                    controller.searchText == ''
-                                ? Container(
-                                    width: width,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Theme(
-                                      data: Theme.of(context).copyWith(
-                                          dividerColor: Colors.transparent),
-                                      child: Container(
-                                        // height: 50,
+                                        edDate!.isAfter(stDate!) == true
+                                ? controller.stockUserData['data']['docs']
+                                                [index]['phone']
+                                            .toString()
+                                            .toLowerCase()
+                                            .contains(
+                                                searchText.toLowerCase()) ||
+                                        searchText == ''
+                                    ? Container(
                                         width: width,
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                          color: AppColor.whiteColor,
-                                          // borderRadius:
-                                          //     BorderRadius.circular(10),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '${controller.stockUserData['data']['docs'][index]['phone'] ?? 'NA'}',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 18,
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                              dividerColor: Colors.transparent),
+                                          child: Container(
+                                            // height: 50,
+                                            width: width,
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: AppColor.whiteColor,
+                                              // borderRadius:
+                                              //     BorderRadius.circular(10),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    // padding: const EdgeInsets.only(left: 20),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      '${controller.stockUserData['data']['docs'][index]['phone'] ?? 'NA'}',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
-                                                alignment: Alignment.center,
-                                                child: ListView.separated(
-                                                  itemCount: controller
-                                                      .stockUserData['data']
-                                                          ['docs'][index]
-                                                          ['addedStocks']
-                                                      .length,
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemBuilder:
-                                                      (context, index1) {
-                                                    return Row(
-                                                      children: [
-                                                        Text(
-                                                          '(${index1 + 1})',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Text(
-                                                          '${controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['name']}',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                  separatorBuilder:
-                                                      (context, index) {
-                                                    return SizedBox(
-                                                      height: 5,
-                                                    );
-                                                  },
+                                                Expanded(
+                                                  child: Container(
+                                                    // padding: const EdgeInsets.only(left: 20),
+                                                    alignment: Alignment.center,
+                                                    child: ListView.separated(
+                                                      itemCount: controller
+                                                          .stockUserData['data']
+                                                              ['docs'][index]
+                                                              ['addedStocks']
+                                                          .length,
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (context, index1) {
+                                                        return Row(
+                                                          children: [
+                                                            Text(
+                                                              '(${index1 + 1})',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 8,
+                                                            ),
+                                                            Text(
+                                                              '${controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['name']}',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                      separatorBuilder:
+                                                          (context, index) {
+                                                        return SizedBox(
+                                                          height: 5,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
-                                                alignment: Alignment.center,
-                                                child: ListView.separated(
-                                                  itemCount: controller
-                                                      .stockUserData['data']
-                                                          ['docs'][index]
-                                                          ['addedStocks']
-                                                      .length,
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemBuilder:
-                                                      (context, index1) {
-                                                    return Row(
-                                                      children: [
-                                                        Text(
-                                                          '${dateConverter(controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['updatedAt'].toString())}',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                  separatorBuilder:
-                                                      (context, index) {
-                                                    return SizedBox(
-                                                      height: 5,
-                                                    );
-                                                  },
+                                                Expanded(
+                                                  child: Container(
+                                                    // padding: const EdgeInsets.only(left: 20),
+                                                    alignment: Alignment.center,
+                                                    child: ListView.separated(
+                                                      itemCount: controller
+                                                          .stockUserData['data']
+                                                              ['docs'][index]
+                                                              ['addedStocks']
+                                                          .length,
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (context, index1) {
+                                                        return Row(
+                                                          children: [
+                                                            Text(
+                                                              '${dateConverter(controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['updatedAt'].toString())}',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                      separatorBuilder:
+                                                          (context, index) {
+                                                        return SizedBox(
+                                                          height: 5,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  )
+                                      )
+                                    : SizedBox()
                                 : SizedBox();
                           },
                         ),

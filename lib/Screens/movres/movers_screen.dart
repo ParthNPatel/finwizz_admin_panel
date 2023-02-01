@@ -8,6 +8,7 @@ import 'package:finwizz_admin/Screens/company/add_company_screen.dart';
 import 'package:finwizz_admin/ViewModel/add_movers_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
+import 'package:finwizz_admin/ViewModel/search_movers_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
@@ -51,6 +52,9 @@ class _MoversScreenState extends State<MoversScreen> {
   int? imageTypeSelected;
 
   List<int> imageType = [1, 2, 3, 4, 5];
+
+  SearchMoversController searchMoversController =
+      Get.put(SearchMoversController());
 
   @override
   void initState() {
@@ -194,6 +198,13 @@ class _MoversScreenState extends State<MoversScreen> {
                                         onChanged: (val) async {
                                           controller.updateValue(val);
 
+                                          await searchMoversController
+                                              .getMoversViewModel(
+                                            isLoading: false,
+                                            text: searchController.text
+                                                .trim()
+                                                .toString(),
+                                          );
                                           await getMoversViewModel
                                               .getMoversViewModel(
                                                   companyId: controller

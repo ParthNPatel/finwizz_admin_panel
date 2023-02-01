@@ -35,6 +35,11 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
   DateTime? edDate;
   String? firstDate;
   String? endDate;
+
+  String searchText = "";
+
+  TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     getNewsCategoriesViewModel.getNewsCategoriesViewModel();
@@ -123,8 +128,12 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                       height: 40,
                       width: 250,
                       child: TextField(
-                        controller: TextEditingController(),
-                        onChanged: (val) async {},
+                        controller: searchController,
+                        onChanged: (val) async {
+                          setState(() {
+                            searchText = val;
+                          });
+                        },
                         decoration: InputDecoration(
                           border: outline,
                           focusedBorder: outline,
@@ -323,132 +332,149 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                                       true &&
                                                   edDate!.isAfter(stDate!) ==
                                                       true
-                                          ? Theme(
-                                              data: Theme.of(context).copyWith(
-                                                  dividerColor:
-                                                      Colors.transparent),
-                                              child: Container(
-                                                height: 50,
-                                                width: width,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
+                                          ? responseModel!.data![index].name
+                                                      .toString()
+                                                      .toLowerCase()
+                                                      .contains(searchText
+                                                          .toLowerCase()) ||
+                                                  searchText == ''
+                                              ? Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                          dividerColor: Colors
+                                                              .transparent),
+                                                  child: Container(
+                                                    height: 50,
+                                                    width: width,
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
                                                         horizontal: 25),
-                                                alignment: Alignment.centerLeft,
-                                                decoration: BoxDecoration(
-                                                  color: AppColor.whiteColor,
-                                                  // borderRadius:
-                                                  //     BorderRadius.circular(10),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Container(
-                                                        child: Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                            '${responseModel!.data![index].name ?? "NA"}',
-                                                            style: TextStyle(
-                                                              fontSize: 16,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          AppColor.whiteColor,
+                                                      // borderRadius:
+                                                      //     BorderRadius.circular(10),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Container(
+                                                            child: Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: Text(
+                                                                '${responseModel!.data![index].name ?? "NA"}',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                            '${dateConverter(responseModel!.data![index].updatedAt.toString()) ?? "NA"}',
-                                                            style: TextStyle(
-                                                              fontSize: 16,
+                                                        Expanded(
+                                                          child: Container(
+                                                            child: Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: Text(
+                                                                '${dateConverter(responseModel!.data![index].updatedAt.toString()) ?? "NA"}',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        deleteDialog(
-                                                            onPress: () async {
-                                                              await DeleteNewsCategoriesRepo()
-                                                                  .deleteNewsCategoriesRepo(
+                                                        InkWell(
+                                                          onTap: () {
+                                                            deleteDialog(
+                                                                onPress:
+                                                                    () async {
+                                                                  await DeleteNewsCategoriesRepo().deleteNewsCategoriesRepo(
                                                                       text: responseModel!
                                                                           .data![
                                                                               index]
                                                                           .id
                                                                           .toString());
 
-                                                              await getNewsCategoriesViewModel
-                                                                  .getNewsCategoriesViewModel(
-                                                                      isLoading:
-                                                                          false);
-                                                            },
-                                                            header:
-                                                                'Are you sure to delete this categorie ?',
-                                                            context: context);
-                                                      },
-                                                      child: Container(
-                                                        height: 30,
-                                                        width: 30,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(3),
-                                                          border: Border.all(
-                                                            color: AppColor
-                                                                .mainColor,
+                                                                  await getNewsCategoriesViewModel
+                                                                      .getNewsCategoriesViewModel(
+                                                                          isLoading:
+                                                                              false);
+                                                                },
+                                                                header:
+                                                                    'Are you sure to delete this category ?',
+                                                                context:
+                                                                    context);
+                                                          },
+                                                          child: Container(
+                                                            height: 30,
+                                                            width: 30,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          3),
+                                                              border:
+                                                                  Border.all(
+                                                                color: AppColor
+                                                                    .mainColor,
+                                                              ),
+                                                            ),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons.delete,
+                                                                size: 20,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                        child: Center(
-                                                          child: Icon(
-                                                            Icons.delete,
-                                                            size: 20,
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            newsCategoriesAddDialog(
+                                                              context,
+                                                              true,
+                                                              category:
+                                                                  '${responseModel!.data![index].name ?? "NA"}',
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            height: 30,
+                                                            width: 30,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          3),
+                                                              border:
+                                                                  Border.all(
+                                                                color: AppColor
+                                                                    .mainColor,
+                                                              ),
+                                                            ),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons.edit,
+                                                                size: 20,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
+                                                      ],
                                                     ),
-                                                    SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        newsCategoriesAddDialog(
-                                                          context,
-                                                          true,
-                                                          category:
-                                                              '${responseModel!.data![index].name ?? "NA"}',
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        height: 30,
-                                                        width: 30,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(3),
-                                                          border: Border.all(
-                                                            color: AppColor
-                                                                .mainColor,
-                                                          ),
-                                                        ),
-                                                        child: Center(
-                                                          child: Icon(
-                                                            Icons.edit,
-                                                            size: 20,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
+                                                  ),
+                                                )
+                                              : SizedBox()
                                           : SizedBox();
                                     },
                                   )
