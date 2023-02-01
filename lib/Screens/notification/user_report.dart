@@ -310,148 +310,108 @@ class _UserReportScreenState extends State<UserReportScreen> {
 
                             print(
                                 '---CONTAIN$index---${controller.stockUserData['data']['docs'][index]['phone'].toString().toLowerCase().contains(controller.searchText.toLowerCase())}');
-                            return firstDate == null ||
-                                    fsDate!.isBefore(stDate!) == true &&
-                                        edDate!.isAfter(stDate!) == true
-                                ? controller.stockUserData['data']['docs']
-                                                [index]['phone']
-                                            .toString()
-                                            .toLowerCase()
-                                            .contains(
-                                                searchText.toLowerCase()) ||
-                                        searchText == ''
-                                    ? Container(
-                                        width: width,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Theme(
-                                          data: Theme.of(context).copyWith(
-                                              dividerColor: Colors.transparent),
-                                          child: Container(
-                                            // height: 50,
-                                            width: width,
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: AppColor.whiteColor,
-                                              // borderRadius:
-                                              //     BorderRadius.circular(10),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    // padding: const EdgeInsets.only(left: 20),
-                                                    alignment: Alignment.center,
-                                                    child: Text(
-                                                      '${controller.stockUserData['data']['docs'][index]['phone'] ?? 'NA'}',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 18,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Container(
-                                                    // padding: const EdgeInsets.only(left: 20),
-                                                    alignment: Alignment.center,
-                                                    child: ListView.separated(
-                                                      itemCount: controller
-                                                          .stockUserData['data']
-                                                              ['docs'][index]
-                                                              ['addedStocks']
-                                                          .length,
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          NeverScrollableScrollPhysics(),
-                                                      itemBuilder:
-                                                          (context, index1) {
-                                                        return Row(
-                                                          children: [
-                                                            Text(
-                                                              '(${index1 + 1})',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 18,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 8,
-                                                            ),
-                                                            Text(
-                                                              '${controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['name']}',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 18,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                      separatorBuilder:
-                                                          (context, index) {
-                                                        return SizedBox(
-                                                          height: 5,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Container(
-                                                    // padding: const EdgeInsets.only(left: 20),
-                                                    alignment: Alignment.center,
-                                                    child: ListView.separated(
-                                                      itemCount: controller
-                                                          .stockUserData['data']
-                                                              ['docs'][index]
-                                                              ['addedStocks']
-                                                          .length,
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          NeverScrollableScrollPhysics(),
-                                                      itemBuilder:
-                                                          (context, index1) {
-                                                        return Row(
-                                                          children: [
-                                                            Text(
-                                                              '${dateConverter(controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['updatedAt'].toString())}',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 18,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                      separatorBuilder:
-                                                          (context, index) {
-                                                        return SizedBox(
-                                                          height: 5,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : SizedBox()
-                                : SizedBox();
+                            // return firstDate == null ||
+                            //         fsDate!.isBefore(stDate!) == true &&
+                            //             edDate!.isAfter(stDate!) == true
+                            //     ? controller.stockUserData['data']['docs']
+                            //                     [index]['phone']
+                            //                 .toString()
+                            //                 .toLowerCase()
+                            //                 .contains(
+                            //                     searchText.toLowerCase()) ||
+                            //             searchText == ''
+                            //         ? userReport(width, context, controller, index)
+                            //         : SizedBox()
+                            //     : SizedBox();
+
+                            if (firstDate != null &&
+                                searchController.text.isNotEmpty &&
+                                selectedCompanyValue != null) {
+                              log('-------1111');
+                              return fsDate!.isBefore(stDate!) == true &&
+                                      edDate!.isAfter(stDate!) == true &&
+                                      controller.stockUserData['data']['docs']
+                                              [index]['phone']
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(searchText.toLowerCase())
+                                  ? userReport(
+                                      width, context, controller, index)
+                                  : SizedBox();
+                            } else if (firstDate != null &&
+                                searchController.text.isNotEmpty &&
+                                selectedCompanyValue == null) {
+                              log('-------2222');
+
+                              return fsDate!.isBefore(stDate!) == true &&
+                                      edDate!.isAfter(stDate!) == true &&
+                                      controller.stockUserData['data']['docs']
+                                              [index]['phone']
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(searchText.toLowerCase())
+                                  ? userReport(
+                                      width, context, controller, index)
+                                  : SizedBox();
+                            } else if (searchController.text.isNotEmpty &&
+                                selectedCompanyValue != null &&
+                                firstDate == null) {
+                              log('-------3333');
+
+                              return controller.stockUserData['data']['docs']
+                                          [index]['phone']
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(searchText.toLowerCase())
+                                  ? userReport(
+                                      width, context, controller, index)
+                                  : SizedBox();
+                            } else if (firstDate != null &&
+                                searchController.text.isEmpty &&
+                                selectedCompanyValue != null) {
+                              log('-------4444');
+
+                              return fsDate!.isBefore(stDate!) == true &&
+                                      edDate!.isAfter(stDate!) == true
+                                  ? userReport(
+                                      width, context, controller, index)
+                                  : SizedBox();
+                            } else if (firstDate != null &&
+                                searchController.text.isEmpty &&
+                                selectedCompanyValue == null) {
+                              log('-------5555');
+
+                              return fsDate!.isBefore(stDate!) == true &&
+                                      edDate!.isAfter(stDate!) == true
+                                  ? userReport(
+                                      width, context, controller, index)
+                                  : SizedBox();
+                            } else if (firstDate == null &&
+                                searchController.text.isNotEmpty &&
+                                selectedCompanyValue == null) {
+                              log('-------6666');
+
+                              return controller.stockUserData['data']['docs']
+                                          [index]['phone']
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(searchText.toLowerCase())
+                                  ? userReport(
+                                      width, context, controller, index)
+                                  : SizedBox();
+                            } else if (firstDate == null &&
+                                searchController.text.isEmpty &&
+                                selectedCompanyValue != null) {
+                              log('-------7777');
+
+                              return userReport(
+                                  width, context, controller, index);
+                            } else {
+                              log('-------8888');
+
+                              return userReport(
+                                  width, context, controller, index);
+                            }
                           },
                         ),
                       ],
@@ -462,6 +422,131 @@ class _UserReportScreenState extends State<UserReportScreen> {
                   );
                 },
               )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container userReport(double width, BuildContext context,
+      GetUserStockViewModel controller, int index) {
+    return Container(
+      width: width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: Container(
+          // height: 50,
+          width: width,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColor.whiteColor,
+            // borderRadius:
+            //     BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  // padding: const EdgeInsets.only(left: 20),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${controller.stockUserData['data']['docs'][index]['phone'] ?? 'NA'}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  // padding: const EdgeInsets.only(left: 20),
+                  alignment: Alignment.center,
+                  child: ListView.separated(
+                    itemCount: controller
+                        .stockUserData['data']['docs'][index]['addedStocks']
+                        .length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index1) {
+                      return selectedCompanyValue == null ||
+                              controller.stockUserData['data']['docs'][index]
+                                      ['addedStocks'][index1]['name']
+                                  .toString()
+                                  .toLowerCase()
+                                  .toString()
+                                  .contains(selectedCompanyValue
+                                      .toString()
+                                      .toLowerCase()
+                                      .toString())
+                          ? Row(
+                              children: [
+                                Text(
+                                  '(${index1 + 1})',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  '${controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['name']}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SizedBox();
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        height: 5,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  // padding: const EdgeInsets.only(left: 20),
+                  alignment: Alignment.center,
+                  child: ListView.separated(
+                    itemCount: controller
+                        .stockUserData['data']['docs'][index]['addedStocks']
+                        .length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index1) {
+                      return Row(
+                        children: [
+                          Text(
+                            '${dateConverter(controller.stockUserData['data']['docs'][index]['addedStocks'][index1]['updatedAt'].toString())}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        height: 5,
+                      );
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),
