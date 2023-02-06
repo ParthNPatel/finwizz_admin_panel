@@ -5,6 +5,8 @@ import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
 import 'package:finwizz_admin/ViewModel/add_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/dashboard_panel_tabs.dart';
+import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +22,7 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
   List selectedStockTicker = [];
 
   AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
+  DashBoardController dashBoardController = Get.put(DashBoardController());
 
   @override
   void initState() {
@@ -48,8 +51,6 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
               );
             }
             if (controller.getCompanyApiResponse.status == Status.COMPLETE) {
-              GetCompanyResponseModel getCompanyResponseModel =
-                  controller.getCompanyApiResponse.data;
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -78,15 +79,23 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                   onTap: () async {
                                     if (selectedCompanies.isNotEmpty &&
                                         selectedStockTicker.isNotEmpty) {
-                                      for (int i = 0;
-                                          i <= selectedCompanies.length;
-                                          i++) {
-                                        await addCompanyViewModel
-                                            .addCompanyViewModel(model: {
-                                          "name": "${selectedCompanies[i]}",
-                                          "shortName":
-                                              "${selectedStockTicker[i]}",
-                                        });
+                                      try {
+                                        for (int i = 0;
+                                            i <= selectedCompanies.length;
+                                            i++) {
+                                          await addCompanyViewModel
+                                              .addCompanyViewModel(model: {
+                                            "name": "${selectedCompanies[i]}",
+                                            "shortName":
+                                                "${selectedStockTicker[i]}",
+                                          });
+                                        }
+                                      } catch (e) {
+                                        // TODO
+                                      } finally {
+                                        dashBoardController
+                                                .currentScreen.value =
+                                            DashBoardPanelScreens.bulkUpload;
                                       }
                                     }
                                   },
@@ -205,8 +214,10 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                         ),
                         selectedCompanies.isEmpty
                             ? Center(
-                                child:
-                                    Text('Bulk upload your existing content'),
+                                child: Text(
+                                  'Bulk upload your existing content',
+                                  textScaleFactor: 1.5,
+                                ),
                               )
                             : ListView.separated(
                                 separatorBuilder: (context, index) {
@@ -216,7 +227,6 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                 },
                                 itemCount: selectedStockTicker.length,
                                 shrinkWrap: true,
-                                reverse: true,
                                 itemBuilder: (context, index) {
                                   return Container(
                                     width: width,
@@ -238,7 +248,6 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                           children: [
                                             Expanded(
                                               child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
                                                 alignment: Alignment.center,
                                                 child: Text(
                                                   '${selectedCompanies[index]}',
@@ -251,7 +260,6 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                             ),
                                             Expanded(
                                               child: Container(
-                                                // padding: const EdgeInsets.only(left: 20),
                                                 alignment: Alignment.center,
                                                 child: Text(
                                                   '${selectedStockTicker[index]}',
