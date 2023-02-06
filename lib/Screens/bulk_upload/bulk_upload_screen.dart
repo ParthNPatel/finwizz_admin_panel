@@ -47,7 +47,6 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
             if (controller.getCompanyApiResponse.status == Status.COMPLETE) {
               GetCompanyResponseModel getCompanyResponseModel =
                   controller.getCompanyApiResponse.data;
-
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
