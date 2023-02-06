@@ -41,6 +41,9 @@ dependencies:
   flutter_svg: ^1.0.3
   emoji_picker_flutter:
   intl:
+  excel: ^2.0.1
+  file_picker: ^5.2.5
+
 
 dev_dependencies:
   flutter_test:

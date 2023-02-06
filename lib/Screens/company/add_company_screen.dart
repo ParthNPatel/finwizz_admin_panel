@@ -1,3 +1,5 @@
+import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Repo/delete_company_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
@@ -6,9 +8,12 @@ import 'package:finwizz_admin/ViewModel/add_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
+import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import '../../Widgets/dashboard_panel_tabs.dart';
 
 class AddCompanyScreen extends StatefulWidget {
   const AddCompanyScreen({Key? key}) : super(key: key);
@@ -22,6 +27,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
   TextEditingController sortCompanyNameController = TextEditingController();
   AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
+  DashBoardController dashBoardController = Get.put(DashBoardController());
   GetCompanyResponseModel? getCompanyResponseModel;
   InputBorder outline =
       OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
@@ -89,6 +95,26 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                             ),
                           ),
                           Spacer(),
+                          GestureDetector(
+                            onTap: () async {
+                              dashBoardController.currentScreen.value =
+                                  DashBoardPanelScreens.bulkUpload;
+                            },
+                            child: Container(
+                              height: 40,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all()),
+                              child: Center(
+                                child: Text('Import Content'),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
                           GestureDetector(
                             onTap: () async {
                               DateTimeRange? result = await showDateRangePicker(

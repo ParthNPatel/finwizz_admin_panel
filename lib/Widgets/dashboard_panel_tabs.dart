@@ -9,4 +9,5 @@ enum DashBoardPanelScreens {
   latestMover,
   notification,
   userReport,
+  bulkUpload,
 }

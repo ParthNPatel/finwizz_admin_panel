@@ -17,6 +17,8 @@ import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'bulk_upload/bulk_upload_screen.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -85,7 +87,13 @@ class _HomePageState extends State<HomePage> {
                                                         DashBoardPanelScreens
                                                             .userReport
                                                     ? UserReportScreen()
-                                                    : const AddNewsScreen());
+                                                    : dashBoardController
+                                                                .currentScreen
+                                                                .value ==
+                                                            DashBoardPanelScreens
+                                                                .bulkUpload
+                                                        ? BulkUploadScreen()
+                                                        : const AddNewsScreen());
 
             // Expanded(
             //   child: dashBoardController.currentScreen.value ==
