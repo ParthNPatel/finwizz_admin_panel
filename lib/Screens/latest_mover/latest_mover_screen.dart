@@ -495,251 +495,165 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                             fsDate = DateTime.parse(firstDate!);
                             edDate = DateTime.parse(endDate!);
                           }
+                          // firstDate == null ||
+                          //     fsDate!.isBefore(stDate!) == true &&
+                          //         edDate!.isAfter(stDate!) == true
+                          //     ? controller.latestMoverData['data']['docs']
+                          // [index]['title']
+                          //     .toString()
+                          //     .toLowerCase()
+                          //     .contains(searchText.toLowerCase()) ||
+                          //     controller.latestMoverData['data']['docs']
+                          //     [index]['title']
+                          //         .toString()
+                          //         .toLowerCase() ==
+                          //         selectedCompanyValue
+                          //             .toString()
+                          //             .toLowerCase() ||
+                          //     searchText == ''
+                          //     ?
                           print(
                               "Condition1==>>${controller.latestMoverData['data']['docs'][index]['title'].toString().toLowerCase().contains(searchText.toLowerCase())}");
                           print(
                               "Condition111111==>>${false || controller.latestMoverData['data']['docs'][index]['title'].toString().toLowerCase().contains(selectedCompanyValue.toString().toLowerCase().substring(0, 1))}");
-                          return firstDate == null ||
-                                  fsDate!.isBefore(stDate!) == true &&
-                                      edDate!.isAfter(stDate!) == true
-                              ? controller.latestMoverData['data']['docs']
-                                              [index]['title']
-                                          .toString()
-                                          .toLowerCase()
-                                          .contains(searchText.toLowerCase()) ||
-                                      controller.latestMoverData['data']['docs']
-                                                  [index]['title']
-                                              .toString()
-                                              .toLowerCase() ==
-                                          selectedCompanyValue
-                                              .toString()
-                                              .toLowerCase() ||
-                                      searchText == ''
-                                  ? Container(
-                                      width: width,
-                                      // margin: const EdgeInsets.symmetric(horizontal: 20),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 10),
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        color: AppColor.whiteColor,
-                                        // borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20),
-                                              color: Colors.transparent,
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${controller.latestMoverData['data']['docs'][index]['title']}',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${controller.latestMoverData['data']['docs'][index]['description']}',
-                                                maxLines: 4,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    '${controller.latestMoverData['data']['docs'][index]['percentage']}% /',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                    '${dateConverter(controller.latestMoverData['data']['docs'][index]['updatedAt'].toString())}',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${dateConverter(controller.latestMoverData['data']['docs'][index]['startDate'].toString())}',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              // padding: const EdgeInsets.only(left: 20),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${dateConverter(controller.latestMoverData['data']['docs'][index]['endDate'].toString())}',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              deleteDialog(
-                                                  onPress: () async {
-                                                    await GetLatestMoversRepo()
-                                                        .deleteLatestMoversRepo(
-                                                            text:
-                                                                '${controller.latestMoverData['data']['docs'][index]['_id']}');
-                                                    await getLatestMoverViewModel
-                                                        .getLatestMoversViewModel(
-                                                            isLoading: false);
-                                                  },
-                                                  header:
-                                                      'Are you sure to delete this mover ?',
-                                                  context: context);
-                                            },
-                                            child: Container(
-                                              height: 30,
-                                              width: 30,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(3),
-                                                border: Border.all(
-                                                  color: AppColor.mainColor,
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.delete,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              typeMover = true;
 
-                                              titleController.text = controller
-                                                  .latestMoverData['data']
-                                                      ['docs'][index]['title']
-                                                  .toString();
+                          if (firstDate != null &&
+                              searchController.text.isNotEmpty &&
+                              selectedCompanyValue != null) {
+                            log('-----------000');
 
-                                              descriptionController.text =
-                                                  controller
-                                                      .latestMoverData['data']
-                                                          ['docs'][index]
-                                                          ['description']
-                                                      .toString();
+                            return fsDate!.isBefore(stDate!) == true &&
+                                    edDate!.isAfter(stDate!) == true &&
+                                    controller.latestMoverData['data']['docs']
+                                            [index]['title']
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(searchText.toLowerCase()) &&
+                                    controller.latestMoverData['data']['docs']
+                                            [index]['title']
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(selectedCompanyValue
+                                            .toString()
+                                            .toLowerCase())
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else if (firstDate != null &&
+                              searchController.text.isNotEmpty &&
+                              selectedCompanyValue == null) {
+                            log('-----------111');
+                            return fsDate!.isBefore(stDate!) == true &&
+                                    edDate!.isAfter(stDate!) == true &&
+                                    controller.latestMoverData['data']['docs']
+                                            [index]['title']
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(searchText.toLowerCase())
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else if (searchController.text.isNotEmpty &&
+                              selectedCompanyValue != null &&
+                              firstDate == null) {
+                            log('-----------222');
 
-                                              percentageController.text =
-                                                  controller
-                                                      .latestMoverData['data']
-                                                          ['docs'][index]
-                                                          ['percentage']
-                                                      .toString();
-                                              firstDate = controller
-                                                  .latestMoverData['data']
-                                                      ['docs'][index]
-                                                      ['startDate']
-                                                  .toString()
-                                                  .split(" ")[0];
-                                              endDate = controller
-                                                  .latestMoverData['data']
-                                                      ['docs'][index]['endDate']
-                                                  .toString()
-                                                  .split(" ")[0];
+                            return controller.latestMoverData['data']['docs']
+                                            [index]['title']
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(searchText.toLowerCase()) &&
+                                    controller.latestMoverData['data']['docs']
+                                            [index]['title']
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(selectedCompanyValue
+                                            .toString()
+                                            .toLowerCase())
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else if (selectedCompanyValue != null &&
+                              firstDate != null &&
+                              searchController.text.isEmpty) {
+                            log('-----------333');
 
-                                              addLatestMoverDialog(
-                                                  context,
-                                                  typeMover,
-                                                  controller.latestMoverData[
-                                                          'data']['docs'][index]
-                                                      ['_id']);
-                                            },
-                                            child: Container(
-                                              height: 30,
-                                              width: 30,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(3),
-                                                border: Border.all(
-                                                  color: AppColor.mainColor,
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.edit,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          AnimatedToggle(
-                                            values: statusList,
-                                            buttonColor: AppColor.mainColor,
-                                            backgroundColor:
-                                                Colors.grey.shade200,
-                                            textColor: const Color(0xFFFFFFFF),
-                                            onToggleCallback: (value) {
-                                              setState(() {
-                                                selected = value;
-                                              });
-                                            },
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : SizedBox()
-                              : SizedBox();
+                            return fsDate!.isBefore(stDate!) == true &&
+                                    edDate!.isAfter(stDate!) == true &&
+                                    controller.latestMoverData['data']['docs']
+                                            [index]['title']
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(selectedCompanyValue
+                                            .toString()
+                                            .toLowerCase())
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else if (firstDate != null &&
+                              searchController.text.isEmpty &&
+                              selectedCompanyValue == null) {
+                            log('-----------444');
+
+                            return fsDate!.isBefore(stDate!) == true &&
+                                    edDate!.isAfter(stDate!) == true
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else if (selectedCompanyValue != null &&
+                              searchController.text.isEmpty &&
+                              firstDate == null) {
+                            log('-----------555');
+
+                            return controller.latestMoverData['data']['docs']
+                                        [index]['title']
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(selectedCompanyValue
+                                        .toString()
+                                        .toLowerCase())
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else if (searchController.text.isNotEmpty &&
+                              firstDate == null &&
+                              selectedCompanyValue == null) {
+                            log('-----------666');
+
+                            return controller.latestMoverData['data']['docs']
+                                        [index]['title']
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(searchText.toLowerCase())
+                                ? latestMoverData(
+                                    width, controller, index, context)
+                                : SizedBox();
+                          } else {
+                            print('-----------');
+                            return latestMoverData(
+                                width, controller, index, context);
+                          }
+
+                          // return firstDate == null ||
+                          //         fsDate!.isBefore(stDate!) == true &&
+                          //             edDate!.isAfter(stDate!) == true
+                          //     ? controller.latestMoverData['data']['docs']
+                          //                     [index]['title']
+                          //                 .toString()
+                          //                 .toLowerCase()
+                          //                 .contains(searchText.toLowerCase()) ||
+                          //             controller.latestMoverData['data']['docs']
+                          //                         [index]['title']
+                          //                     .toString()
+                          //                     .toLowerCase() ==
+                          //                 selectedCompanyValue
+                          //                     .toString()
+                          //                     .toLowerCase() ||
+                          //             searchText == ''
+                          //         ? latestMoverData(
+                          //             width, controller, index, context)
+                          //         : SizedBox()
+                          //     : SizedBox();
                           // : SizedBox();
                         },
                       ),
@@ -752,6 +666,211 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
               );
             },
           )),
+    );
+  }
+
+  Container latestMoverData(double width, GetLatestMoverViewModel controller,
+      int index, BuildContext context) {
+    return Container(
+      width: width,
+      // margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: AppColor.whiteColor,
+        // borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: const EdgeInsets.only(left: 20),
+              color: Colors.transparent,
+              alignment: Alignment.center,
+              child: Text(
+                '${controller.latestMoverData['data']['docs'][index]['title']}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                '${controller.latestMoverData['data']['docs'][index]['description']}',
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Text(
+                    '${controller.latestMoverData['data']['docs'][index]['percentage']}% /',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '${dateConverter(controller.latestMoverData['data']['docs'][index]['updatedAt'].toString())}',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                '${dateConverter(controller.latestMoverData['data']['docs'][index]['startDate'].toString())}',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              // padding: const EdgeInsets.only(left: 20),
+              alignment: Alignment.center,
+              child: Text(
+                '${dateConverter(controller.latestMoverData['data']['docs'][index]['endDate'].toString())}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          InkWell(
+            onTap: () async {
+              deleteDialog(
+                  onPress: () async {
+                    await GetLatestMoversRepo().deleteLatestMoversRepo(
+                        text:
+                            '${controller.latestMoverData['data']['docs'][index]['_id']}');
+                    await getLatestMoverViewModel.getLatestMoversViewModel(
+                        isLoading: false);
+                  },
+                  header: 'Are you sure to delete this mover ?',
+                  context: context);
+            },
+            child: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(
+                  color: AppColor.mainColor,
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.delete,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          InkWell(
+            onTap: () {
+              typeMover = true;
+
+              titleController.text = controller.latestMoverData['data']['docs']
+                      [index]['title']
+                  .toString();
+
+              descriptionController.text = controller.latestMoverData['data']
+                      ['docs'][index]['description']
+                  .toString();
+
+              percentageController.text = controller.latestMoverData['data']
+                      ['docs'][index]['percentage']
+                  .toString();
+              firstDate = controller.latestMoverData['data']['docs'][index]
+                      ['startDate']
+                  .toString()
+                  .split(" ")[0];
+              endDate = controller.latestMoverData['data']['docs'][index]
+                      ['endDate']
+                  .toString()
+                  .split(" ")[0];
+
+              addLatestMoverDialog(context, typeMover,
+                  controller.latestMoverData['data']['docs'][index]['_id']);
+            },
+            child: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(
+                  color: AppColor.mainColor,
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.edit,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          AnimatedToggle(
+            values: statusList,
+            buttonColor: AppColor.mainColor,
+            backgroundColor: Colors.grey.shade200,
+            textColor: const Color(0xFFFFFFFF),
+            onToggleCallback: (value) {
+              setState(() {
+                selected = value;
+              });
+            },
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
+      ),
     );
   }
 
