@@ -2,6 +2,7 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
+import 'package:finwizz_admin/ViewModel/add_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class BulkUploadScreen extends StatefulWidget {
 class _BulkUploadScreenState extends State<BulkUploadScreen> {
   List selectedCompanies = [];
   List selectedStockTicker = [];
+
+  AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
 
   @override
   void initState() {
@@ -72,7 +75,21 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                           ),
                           selectedCompanies.isNotEmpty
                               ? GestureDetector(
-                                  onTap: () async {},
+                                  onTap: () async {
+                                    if (selectedCompanies.isNotEmpty &&
+                                        selectedStockTicker.isNotEmpty) {
+                                      for (int i = 0;
+                                          i <= selectedCompanies.length;
+                                          i++) {
+                                        await addCompanyViewModel
+                                            .addCompanyViewModel(model: {
+                                          "name": "${selectedCompanies[i]}",
+                                          "shortName":
+                                              "${selectedStockTicker[i]}",
+                                        });
+                                      }
+                                    }
+                                  },
                                   child: Container(
                                     height: 40,
                                     padding: EdgeInsets.all(10),
