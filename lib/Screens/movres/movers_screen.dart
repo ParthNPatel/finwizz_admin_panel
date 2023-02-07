@@ -16,6 +16,9 @@ import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/dashboard_panel_tabs.dart';
+import '../../controller/dashboard_controller.dart';
+
 class MoversScreen extends StatefulWidget {
   const MoversScreen({Key? key}) : super(key: key);
 
@@ -55,6 +58,8 @@ class _MoversScreenState extends State<MoversScreen> {
 
   SearchMoversController searchMoversController =
       Get.put(SearchMoversController());
+
+  DashBoardController dashBoardController = Get.put(DashBoardController());
 
   @override
   void initState() {
@@ -108,6 +113,26 @@ class _MoversScreenState extends State<MoversScreen> {
                               ),
                             ),
                             const Spacer(),
+                            GestureDetector(
+                              onTap: () async {
+                                dashBoardController.currentScreen.value =
+                                    DashBoardPanelScreens.moversBulkUpload;
+                              },
+                              child: Container(
+                                height: 40,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all()),
+                                child: Center(
+                                  child: Text('Import Content'),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
                             GestureDetector(
                               onTap: () async {
                                 DateTimeRange? result =

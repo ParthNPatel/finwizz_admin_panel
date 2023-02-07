@@ -139,7 +139,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                 GestureDetector(
                                   onTap: () async {
                                     dashBoardController.currentScreen.value =
-                                        DashBoardPanelScreens.news;
+                                        DashBoardPanelScreens.newsBulkUpload;
                                   },
                                   child: Container(
                                     height: 40,

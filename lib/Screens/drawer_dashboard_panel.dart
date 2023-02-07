@@ -18,7 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'bulk_upload/company_bulk_upload_screen.dart';
+import 'bulk_upload/insider_bulk_upload_screen.dart';
 import 'bulk_upload/latest_movers_bulk_upload_screen.dart';
+import 'bulk_upload/movers_bulk_upload_screen.dart';
+import 'bulk_upload/news_bulk_upload_screen.dart';
 import 'bulk_upload/news_category_bulk_upload_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -74,8 +77,7 @@ class _HomePageState extends State<HomePage> {
                                     : dashBoardController.currentScreen.value ==
                                             DashBoardPanelScreens.insider
                                         ? const InsiderScreen()
-                                        : dashBoardController
-                                                    .currentScreen.value ==
+                                        : dashBoardController.currentScreen.value ==
                                                 DashBoardPanelScreens
                                                     .latestMover
                                             ? const LatestMoversScreen()
@@ -108,7 +110,16 @@ class _HomePageState extends State<HomePage> {
                                                                     DashBoardPanelScreens
                                                                         .newsCategoryBulkUpload
                                                                 ? NewsCategoryBulkUploadScreen()
-                                                                : const AddNewsScreen());
+                                                                : dashBoardController
+                                                                            .currentScreen
+                                                                            .value ==
+                                                                        DashBoardPanelScreens.newsBulkUpload
+                                                                    ? NewsBulkUploadScreen()
+                                                                    : dashBoardController.currentScreen.value == DashBoardPanelScreens.moversBulkUpload
+                                                                        ? MoversBulkUploadScreen()
+                                                                        : dashBoardController.currentScreen.value == DashBoardPanelScreens.insiderBulkUpload
+                                                                            ? InsiderBulkUploadScreen()
+                                                                            : const AddNewsScreen());
 
             // Expanded(
             //   child: dashBoardController.currentScreen.value ==

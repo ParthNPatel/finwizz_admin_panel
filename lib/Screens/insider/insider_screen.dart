@@ -11,6 +11,9 @@ import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/dashboard_panel_tabs.dart';
+import '../../controller/dashboard_controller.dart';
+
 class InsiderScreen extends StatefulWidget {
   const InsiderScreen({Key? key}) : super(key: key);
 
@@ -40,6 +43,9 @@ class _InsiderScreenState extends State<InsiderScreen> {
   InputBorder outline =
       OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
   final _formKey = GlobalKey<FormState>();
+
+  DashBoardController dashBoardController = Get.put(DashBoardController());
+
   @override
   void initState() {
     getCompanyViewModel.getCompanyViewModel();
@@ -85,6 +91,26 @@ class _InsiderScreenState extends State<InsiderScreen> {
                         ),
                       ),
                       Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          dashBoardController.currentScreen.value =
+                              DashBoardPanelScreens.insiderBulkUpload;
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all()),
+                          child: Center(
+                            child: Text('Import Content'),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
                       GestureDetector(
                         onTap: () async {
                           DateTimeRange? result = await showDateRangePicker(

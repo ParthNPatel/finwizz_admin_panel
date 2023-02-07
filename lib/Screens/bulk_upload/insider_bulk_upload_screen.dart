@@ -1,41 +1,40 @@
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:finwizz_admin/Model/Apis/api_response.dart';
-import 'package:finwizz_admin/Model/Response_model/get_company_res_model.dart';
-import 'package:finwizz_admin/ViewModel/add_company_view_model.dart';
-import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/dashboard_panel_tabs.dart';
 import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../ViewModel/add_news_view_model.dart';
+import '../../ViewModel/add_movers_view_model.dart';
 import '../../ViewModel/get_latest_mover_view_model.dart';
+import '../../ViewModel/insider_view_model.dart';
 
-class NewsBulkUploadScreen extends StatefulWidget {
-  const NewsBulkUploadScreen({Key? key}) : super(key: key);
+class InsiderBulkUploadScreen extends StatefulWidget {
+  const InsiderBulkUploadScreen({Key? key}) : super(key: key);
 
   @override
-  State<NewsBulkUploadScreen> createState() => _NewsBulkUploadScreenState();
+  State<InsiderBulkUploadScreen> createState() =>
+      _InsiderBulkUploadScreenState();
 }
 
-class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
-  List heading = [];
-  List source = [];
-  List isGeneric = [];
-  List type = [];
-  List categories = [];
+class _InsiderBulkUploadScreenState extends State<InsiderBulkUploadScreen> {
   List companies = [];
-  List news = [];
+  List sharedSold = [];
+  List sharesSoldPerson = [];
+  List sharedBought = [];
+  List sharesBoughtPerson = [];
+  List personCategories = [];
+  List shares = [];
+  List shareValue = [];
+  List transactionType = [];
+  List transactionMode = [];
 
-  AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
   DashBoardController dashBoardController = Get.put(DashBoardController());
-
-  AddNewsViewModel addNewsViewModel = Get.put(AddNewsViewModel());
+  InsiderViewModel insiderViewModel = Get.put(InsiderViewModel());
 
   GetLatestMoverViewModel getLatestMoverViewModel =
       Get.put(GetLatestMoverViewModel());
+  AddMoversViewModel addMoversViewModel = Get.put(AddMoversViewModel());
 
   @override
   void initState() {
@@ -44,6 +43,7 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("DATe==>>${DateTime.now()}");
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -79,7 +79,7 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                     SizedBox(
                       width: 20,
                     ),
-                    heading.isNotEmpty
+                    companies.isNotEmpty
                         ? SizedBox(
                             height: 40,
                             width: 83,
@@ -88,32 +88,52 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                                 backgroundColor: AppColor.mainColor,
                               ),
                               onPressed: () async {
-                                if (heading.isNotEmpty &&
-                                    source.isNotEmpty &&
-                                    type.isNotEmpty &&
-                                    categories.isNotEmpty &&
-                                    companies.isNotEmpty &&
-                                    news.isNotEmpty) {
+                                if (companies.isNotEmpty &&
+                                    sharedSold.isNotEmpty &&
+                                    sharesSoldPerson.isNotEmpty &&
+                                    sharedBought.isNotEmpty &&
+                                    sharesBoughtPerson.isNotEmpty &&
+                                    transactionType.isNotEmpty &&
+                                    transactionMode.isNotEmpty &&
+                                    shares.isNotEmpty &&
+                                    shareValue.isNotEmpty) {
                                   try {
-                                    for (int i = 0; i <= heading.length; i++) {
-                                      await addNewsViewModel.addNewsViewModel(
-                                        model: {
-                                          "title": heading[i].toString(),
-                                          "description": news[i].toString(),
-                                          "source": source[i].toString(),
-                                          "companyId": companies[i].toString(),
-                                          "categoryId":
-                                              categories[i].toString(),
-                                          "generic": false,
-                                          "type": int.parse(type[i].toString())
+                                    for (int i = 0;
+                                        i <= companies.length;
+                                        i++) {
+                                      await insiderViewModel
+                                          .addInsiderViewModel(model: {
+                                        "companyId": "${companies[i]}",
+                                        "sharesSold": {
+                                          "shares": int.parse(
+                                              sharedSold[i].toString()),
+                                          "person": int.parse(
+                                              sharesSoldPerson[i].toString()),
                                         },
-                                      );
+                                        "sharesBought": {
+                                          "shares": int.parse(
+                                              sharedBought[i].toString()),
+                                          "person": int.parse(
+                                              sharesBoughtPerson[i].toString()),
+                                        },
+                                        "table": {
+                                          "personCategory":
+                                              "${personCategories[i]}",
+                                          "shares":
+                                              int.parse(shares[i].toString()),
+                                          "value": int.parse(
+                                              shareValue[i].toString()),
+                                          "transactionType":
+                                              "${transactionType[i]}",
+                                          "mode": "${transactionMode[i]}"
+                                        }
+                                      });
                                     }
                                   } catch (e) {
                                     // TODO
                                   } finally {
                                     dashBoardController.currentScreen.value =
-                                        DashBoardPanelScreens.news;
+                                        DashBoardPanelScreens.insider;
                                   }
                                 }
                               },
@@ -152,13 +172,16 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                             for (var row in excel.tables[table]!.rows) {
                               print("====>>${row}");
 
-                              heading.add(row.first!.value);
-                              source.add(row[1]!.value);
-                              isGeneric.add(row[2]!.value);
-                              type.add(row[3]!.value);
-                              categories.add(row[4]!.value);
-                              companies.add(row[5]!.value);
-                              news.add(row[6]!.value);
+                              companies.add(row.first!.value);
+                              sharedSold.add(row[1]!.value);
+                              sharesSoldPerson.add(row[2]!.value);
+                              sharedBought.add(row[3]!.value);
+                              sharesBoughtPerson.add(row[4]!.value);
+                              personCategories.add(row[5]!.value);
+                              shares.add(row[6]!.value);
+                              shareValue.add(row[7]!.value);
+                              transactionType.add(row[7]!.value);
+                              transactionMode.add(row[9]!.value);
                             }
 
                             setState(() {});
@@ -197,79 +220,6 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                         color: AppColor.mainColor,
                         alignment: Alignment.center,
                         child: Text(
-                          'Heading',
-                          style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Source',
-                          style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Generic',
-                          style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Type',
-                          style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Category',
-                          style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Text(
                           'Company',
                           style: TextStyle(
                             color: AppColor.whiteColor,
@@ -278,6 +228,62 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                         ),
                       ),
                     ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares Sold',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares Sold Person',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares Bought',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares Bought Person',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: 10,
                     ),
@@ -287,7 +293,75 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                         color: AppColor.mainColor,
                         alignment: Alignment.center,
                         child: Text(
-                          'Associated News',
+                          'Person Category',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Shares Value',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Transaction Type',
+                          style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
+                        color: AppColor.mainColor,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Transaction Mode',
                           style: TextStyle(
                             color: AppColor.whiteColor,
                             fontSize: 16,
@@ -317,7 +391,7 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  heading.isEmpty
+                  companies.isEmpty
                       ? Center(
                           child: Text(
                             'Bulk upload your existing content',
@@ -330,7 +404,7 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                               height: 20,
                             );
                           },
-                          itemCount: heading.length,
+                          itemCount: companies.length,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return Container(
@@ -355,64 +429,13 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                                         child: Container(
                                           alignment: Alignment.center,
                                           child: Text(
-                                            '${heading[index]}',
+                                            '${companies[index]}',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 15,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '${source[index]}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '${isGeneric[index]}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '${type[index]}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '${categories[index]}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
                                       ),
                                       Expanded(
                                         child: Container(
@@ -426,6 +449,42 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                                           ),
                                         ),
                                       ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${sharedSold[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${sharesSoldPerson[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${sharedBought[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(
                                         width: 10,
                                       ),
@@ -433,7 +492,82 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                                         child: Container(
                                           alignment: Alignment.center,
                                           child: Text(
-                                            '${news[index]}',
+                                            '${sharesBoughtPerson[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${personCategories[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${shares[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${shareValue[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${transactionType[index]}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${transactionMode[index]}',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 15,
@@ -446,13 +580,15 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          heading.removeAt(index);
-                                          source.removeAt(index);
-                                          type.removeAt(index);
-                                          isGeneric.removeAt(index);
-                                          categories.removeAt(index);
                                           companies.removeAt(index);
-                                          news.removeAt(index);
+                                          sharedSold.removeAt(index);
+                                          sharesSoldPerson.removeAt(index);
+                                          sharedBought.removeAt(index);
+                                          sharesBoughtPerson.removeAt(index);
+                                          shares.removeAt(index);
+                                          shareValue.removeAt(index);
+                                          transactionMode.removeAt(index);
+                                          transactionType.removeAt(index);
                                           setState(() {});
                                         },
                                         child: Container(
