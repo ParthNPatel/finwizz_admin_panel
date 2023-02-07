@@ -10,27 +10,30 @@ import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BulkUploadScreen extends StatefulWidget {
-  const BulkUploadScreen({Key? key}) : super(key: key);
+import '../../ViewModel/add_news_categories_view_model.dart';
+import '../../ViewModel/news_categories_view_model.dart';
+
+class NewsCategoryBulkUploadScreen extends StatefulWidget {
+  const NewsCategoryBulkUploadScreen({Key? key}) : super(key: key);
 
   @override
-  State<BulkUploadScreen> createState() => _BulkUploadScreenState();
+  State<NewsCategoryBulkUploadScreen> createState() =>
+      _NewsCategoryBulkUploadScreenState();
 }
 
-class _BulkUploadScreenState extends State<BulkUploadScreen> {
-  List selectedCompanies = [];
-  List selectedStockTicker = [];
+class _NewsCategoryBulkUploadScreenState
+    extends State<NewsCategoryBulkUploadScreen> {
+  List categories = [];
 
   AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
   DashBoardController dashBoardController = Get.put(DashBoardController());
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  AddNewsCategoriesViewModel addNewsCategoriesViewModel =
+      Get.put(AddNewsCategoriesViewModel());
 
   @override
   Widget build(BuildContext context) {
+    print("DATe==>>${DateTime.now()}");
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -74,40 +77,45 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                           SizedBox(
                             width: 20,
                           ),
-                          selectedCompanies.isNotEmpty
-                              ? GestureDetector(
-                                  onTap: () async {
-                                    if (selectedCompanies.isNotEmpty &&
-                                        selectedStockTicker.isNotEmpty) {
-                                      try {
-                                        for (int i = 0;
-                                            i <= selectedCompanies.length;
-                                            i++) {
-                                          await addCompanyViewModel
-                                              .addCompanyViewModel(model: {
-                                            "name": "${selectedCompanies[i]}",
-                                            "shortName":
-                                                "${selectedStockTicker[i]}",
-                                          });
+                          categories.isNotEmpty
+                              ? SizedBox(
+                                  height: 40,
+                                  width: 83,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.mainColor,
+                                    ),
+                                    onPressed: () async {
+                                      if (categories.isNotEmpty) {
+                                        try {
+                                          for (int i = 0;
+                                              i < categories.length;
+                                              i++) {
+                                            await addNewsCategoriesViewModel
+                                                .addNewsCategoriesViewModel(
+                                              model: {
+                                                "name": categories[i].toString()
+                                              },
+                                            );
+                                          }
+                                        } catch (e) {
+                                          // TODO
+                                        } finally {
+                                          dashBoardController
+                                                  .currentScreen.value =
+                                              DashBoardPanelScreens
+                                                  .newsCategories;
                                         }
-                                      } catch (e) {
-                                        // TODO
-                                      } finally {
-                                        dashBoardController
-                                                .currentScreen.value =
-                                            DashBoardPanelScreens.bulkUpload;
                                       }
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 40,
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(width: 2)),
-                                    child: Center(
-                                      child: Text('Upload'),
+                                    },
+                                    child: Text(
+                                      'Upload',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: AppColor.whiteColor,
+                                        fontSize: 14,
+                                      ),
                                     ),
                                   ),
                                 )
@@ -134,15 +142,10 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                 for (var table in excel.tables.keys) {
                                   for (var row in excel.tables[table]!.rows) {
                                     print("====>>${row}");
-                                    selectedCompanies.add(row.first!.value);
-                                    selectedStockTicker.add(row.last!.value);
+                                    categories.add(row.first!.value);
                                   }
 
                                   setState(() {});
-
-                                  print('COMPONIES===>>11${selectedCompanies}');
-                                  print(
-                                      'COMPONIES===>>22${selectedStockTicker}');
                                 }
                               }
                             },
@@ -154,7 +157,7 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(width: 2)),
                               child: Center(
-                                child: Text('Upload Content'),
+                                child: Text('Import Sheet'),
                               ),
                             ),
                           ),
@@ -178,21 +181,7 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                               color: AppColor.mainColor,
                               alignment: Alignment.center,
                               child: Text(
-                                'Stock Name',
-                                style: TextStyle(
-                                  color: AppColor.whiteColor,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              // padding: const EdgeInsets.only(left: 20),
-                              color: AppColor.mainColor,
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Stock Ticker',
+                                'News Category',
                                 style: TextStyle(
                                   color: AppColor.whiteColor,
                                   fontSize: 16,
@@ -212,7 +201,7 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        selectedCompanies.isEmpty
+                        categories.isEmpty
                             ? Center(
                                 child: Text(
                                   'Bulk upload your existing content',
@@ -225,8 +214,9 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                     height: 20,
                                   );
                                 },
-                                itemCount: selectedStockTicker.length,
+                                itemCount: categories.length,
                                 shrinkWrap: true,
+                                //reverse: true,
                                 itemBuilder: (context, index) {
                                   return Container(
                                     width: width,
@@ -250,19 +240,7 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                               child: Container(
                                                 alignment: Alignment.center,
                                                 child: Text(
-                                                  '${selectedCompanies[index]}',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '${selectedStockTicker[index]}',
+                                                  '${categories[index]}',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 20,
@@ -275,10 +253,7 @@ class _BulkUploadScreenState extends State<BulkUploadScreen> {
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                selectedStockTicker
-                                                    .removeAt(index);
-                                                selectedCompanies
-                                                    .removeAt(index);
+                                                categories.removeAt(index);
                                                 setState(() {});
                                               },
                                               child: Container(

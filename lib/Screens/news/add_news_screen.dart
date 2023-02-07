@@ -19,6 +19,9 @@ import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/dashboard_panel_tabs.dart';
+import '../../controller/dashboard_controller.dart';
+
 class AddNewsScreen extends StatefulWidget {
   const AddNewsScreen({Key? key}) : super(key: key);
 
@@ -47,6 +50,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   AddNewsViewModel addNewsViewModel = Get.put(AddNewsViewModel());
   SearchNewsController searchNewsController = Get.put(SearchNewsController());
+  DashBoardController dashBoardController = Get.put(DashBoardController());
 
   GetNewsCategoriesResponseModel? responseModel;
   bool newsSelect = false;
@@ -132,6 +136,26 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                                   ),
                                 ),
                                 const Spacer(),
+                                GestureDetector(
+                                  onTap: () async {
+                                    dashBoardController.currentScreen.value =
+                                        DashBoardPanelScreens.news;
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all()),
+                                    child: Center(
+                                      child: Text('Import Content'),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
                                 GestureDetector(
                                   onTap: () async {
                                     DateTimeRange? result =

@@ -29,6 +29,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
   GetCompanyViewModel getCompanyViewModel = Get.put(GetCompanyViewModel());
   DashBoardController dashBoardController = Get.put(DashBoardController());
   GetCompanyResponseModel? getCompanyResponseModel;
+
   InputBorder outline =
       OutlineInputBorder(borderSide: BorderSide(color: AppColor.grey400));
 
@@ -98,7 +99,7 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                           GestureDetector(
                             onTap: () async {
                               dashBoardController.currentScreen.value =
-                                  DashBoardPanelScreens.bulkUpload;
+                                  DashBoardPanelScreens.companyBulkUpload;
                             },
                             child: Container(
                               height: 40,

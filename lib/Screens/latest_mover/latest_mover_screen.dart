@@ -10,9 +10,11 @@ import 'package:finwizz_admin/ViewModel/get_company_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_latest_mover_view_model.dart';
 import 'package:finwizz_admin/ViewModel/get_movers_view_model.dart';
 import 'package:finwizz_admin/Widgets/app_color.dart';
+import 'package:finwizz_admin/Widgets/dashboard_panel_tabs.dart';
 import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/Widgets/toggle_button.dart';
+import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:finwizz_admin/controller/type_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,6 +57,7 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
 
   GetLatestMoverViewModel getLatestMoverViewModel =
       Get.put(GetLatestMoverViewModel());
+  DashBoardController dashBoardController = Get.put(DashBoardController());
 
   dynamic selectedCompanyValue;
 
@@ -116,6 +119,27 @@ class _LatestMoversScreenState extends State<LatestMoversScreen> {
                               ),
                             ),
                             const Spacer(),
+                            GestureDetector(
+                              onTap: () async {
+                                dashBoardController.currentScreen.value =
+                                    DashBoardPanelScreens
+                                        .latestMoversBulkUpload;
+                              },
+                              child: Container(
+                                height: 40,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all()),
+                                child: Center(
+                                  child: Text('Import Content'),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
                             GestureDetector(
                               onTap: () async {
                                 DateTimeRange? result =

@@ -9,8 +9,11 @@ import 'package:finwizz_admin/Widgets/app_color.dart';
 import 'package:finwizz_admin/Widgets/date_conveter.dart';
 import 'package:finwizz_admin/Widgets/snackbar.dart';
 import 'package:finwizz_admin/Widgets/toggle_button.dart';
+import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../Widgets/dashboard_panel_tabs.dart';
 
 class AddNewsCategoriesScreen extends StatefulWidget {
   const AddNewsCategoriesScreen({Key? key}) : super(key: key);
@@ -39,6 +42,8 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
   String searchText = "";
 
   TextEditingController searchController = TextEditingController();
+
+  DashBoardController dashBoardController = Get.put(DashBoardController());
 
   @override
   void initState() {
@@ -84,6 +89,26 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                       ),
                     ),
                     Spacer(),
+                    GestureDetector(
+                      onTap: () async {
+                        dashBoardController.currentScreen.value =
+                            DashBoardPanelScreens.newsCategoryBulkUpload;
+                      },
+                      child: Container(
+                        height: 40,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all()),
+                        child: Center(
+                          child: Text('Import Content'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
                     GestureDetector(
                       onTap: () async {
                         DateTimeRange? result = await showDateRangePicker(

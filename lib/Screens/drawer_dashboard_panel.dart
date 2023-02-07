@@ -17,7 +17,9 @@ import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'bulk_upload/bulk_upload_screen.dart';
+import 'bulk_upload/company_bulk_upload_screen.dart';
+import 'bulk_upload/latest_movers_bulk_upload_screen.dart';
+import 'bulk_upload/news_category_bulk_upload_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,6 +31,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   DashBoardController dashBoardController = Get.put(DashBoardController());
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,9 +94,21 @@ class _HomePageState extends State<HomePage> {
                                                                 .currentScreen
                                                                 .value ==
                                                             DashBoardPanelScreens
-                                                                .bulkUpload
-                                                        ? BulkUploadScreen()
-                                                        : const AddNewsScreen());
+                                                                .companyBulkUpload
+                                                        ? CompanyBulkUploadScreen()
+                                                        : dashBoardController
+                                                                    .currentScreen
+                                                                    .value ==
+                                                                DashBoardPanelScreens
+                                                                    .latestMoversBulkUpload
+                                                            ? LatestMoversBulkUploadScreen()
+                                                            : dashBoardController
+                                                                        .currentScreen
+                                                                        .value ==
+                                                                    DashBoardPanelScreens
+                                                                        .newsCategoryBulkUpload
+                                                                ? NewsCategoryBulkUploadScreen()
+                                                                : const AddNewsScreen());
 
             // Expanded(
             //   child: dashBoardController.currentScreen.value ==
