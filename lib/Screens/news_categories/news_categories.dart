@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
 import 'package:finwizz_admin/Model/Repo/delete_news_categories_repo.dart';
 import 'package:finwizz_admin/Model/Response_model/get_news_cetegories_res_model.dart';
@@ -221,6 +222,32 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                       flex: 2,
                       child: Container(
                         // padding: const EdgeInsets.only(left: 20),
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'ID',
+                              style: TextStyle(
+                                color: AppColor.whiteColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.copy,
+                                color: Colors.transparent,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        // padding: const EdgeInsets.only(left: 20),
                         color: AppColor.mainColor,
                         alignment: Alignment.center,
                         child: Align(
@@ -239,6 +266,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                       ),
                     ),
                     Expanded(
+                      flex: 2,
                       child: Container(
                         // padding: const EdgeInsets.only(left: 20),
                         color: AppColor.mainColor,
@@ -387,6 +415,47 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                                         Expanded(
                                                           flex: 2,
                                                           child: Container(
+                                                            // padding: const EdgeInsets.only(left: 20),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                Text(
+                                                                  '${responseModel!.data![index].id?.substring(0, 7)}xxxx',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        16,
+                                                                  ),
+                                                                ),
+                                                                IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    FlutterClipboard.copy(
+                                                                            '${responseModel!.data![index].id}')
+                                                                        .then(
+                                                                      (value) => snackBarGet(
+                                                                          seconds:
+                                                                              1,
+                                                                          'Category ID Copied!',
+                                                                          snackBarBackGroundColor:
+                                                                              AppColor.greenColor),
+                                                                    );
+                                                                  },
+                                                                  icon: Icon(
+                                                                      Icons
+                                                                          .copy),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Container(
                                                             child: Align(
                                                               alignment: Alignment
                                                                   .centerLeft,
@@ -401,6 +470,7 @@ class _AddNewsCategoriesScreenState extends State<AddNewsCategoriesScreen> {
                                                           ),
                                                         ),
                                                         Expanded(
+                                                          flex: 2,
                                                           child: Container(
                                                             child: Align(
                                                               alignment: Alignment

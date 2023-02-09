@@ -18,6 +18,7 @@ class MoversBulkUploadScreen extends StatefulWidget {
 
 class _MoversBulkUploadScreenState extends State<MoversBulkUploadScreen> {
   List companies = [];
+  List companiesId = [];
   List startDate = [];
   List endDate = [];
   List startPrice = [];
@@ -98,7 +99,7 @@ class _MoversBulkUploadScreenState extends State<MoversBulkUploadScreen> {
                                         i++) {
                                       await addMoversViewModel
                                           .addMoversViewModel(model: {
-                                        "companyId": "${companies[i]}",
+                                        "companyId": "${companiesId[i]}",
                                         "currentPrice": int.parse(
                                             currentPrice[i].toString()),
                                         "percentage":
@@ -107,11 +108,11 @@ class _MoversBulkUploadScreenState extends State<MoversBulkUploadScreen> {
                                         "endDate": '${endDate[i]}',
                                         "startPrice":
                                             int.parse(startPrice[i].toString()),
-                                        "imageType": int.parse(imageType[i])
+                                        "imageType": imageType[i].toString()
                                       });
                                     }
                                   } catch (e) {
-                                    // TODO
+                                    print('ERROR===>>${e}');
                                   } finally {
                                     dashBoardController.currentScreen.value =
                                         DashBoardPanelScreens.movers;
@@ -153,17 +154,27 @@ class _MoversBulkUploadScreenState extends State<MoversBulkUploadScreen> {
                             for (var row in excel.tables[table]!.rows) {
                               print("====>>${row}");
 
-                              companies.add(row.first!.value);
-                              startDate.add(row[1]!.value);
-                              endDate.add(row[2]!.value);
-                              startPrice.add(row[3]!.value);
-                              currentPrice.add(row[4]!.value);
-                              percentage.add(row[5]!.value);
-                              imageType.add(row[6]!.value);
+                              companies.add(row[1]!.value);
+                              startDate.add(row[2]!.value);
+                              endDate.add(row[3]!.value);
+                              startPrice.add(row[4]!.value);
+                              currentPrice.add(row[5]!.value);
+                              percentage.add(row[6]!.value);
+                              imageType.add(row[7]!.value);
+                              companiesId.add(row.first!.value);
                             }
 
                             setState(() {});
                           }
+
+                          companies.removeAt(0);
+                          startDate.removeAt(0);
+                          endDate.removeAt(0);
+                          startPrice.removeAt(0);
+                          currentPrice.removeAt(0);
+                          percentage.removeAt(0);
+                          imageType.removeAt(0);
+                          companiesId.removeAt(0);
                         }
                       },
                       child: Container(
@@ -199,20 +210,6 @@ class _MoversBulkUploadScreenState extends State<MoversBulkUploadScreen> {
                         alignment: Alignment.center,
                         child: Text(
                           'Company',
-                          style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        // padding: const EdgeInsets.only(left: 20),
-                        color: AppColor.mainColor,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Source',
                           style: TextStyle(
                             color: AppColor.whiteColor,
                             fontSize: 16,

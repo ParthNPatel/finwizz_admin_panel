@@ -4,7 +4,6 @@ import 'package:finwizz_admin/Widgets/images_path.dart';
 import 'package:finwizz_admin/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'tiles.dart';
 
 class DashBoardPanel extends StatelessWidget {

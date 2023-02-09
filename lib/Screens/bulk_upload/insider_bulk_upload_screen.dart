@@ -19,6 +19,7 @@ class InsiderBulkUploadScreen extends StatefulWidget {
 
 class _InsiderBulkUploadScreenState extends State<InsiderBulkUploadScreen> {
   List companies = [];
+  List companiesId = [];
   List sharedSold = [];
   List sharesSoldPerson = [];
   List sharedBought = [];
@@ -103,7 +104,7 @@ class _InsiderBulkUploadScreenState extends State<InsiderBulkUploadScreen> {
                                         i++) {
                                       await insiderViewModel
                                           .addInsiderViewModel(model: {
-                                        "companyId": "${companies[i]}",
+                                        "companyId": "${companiesId[i]}",
                                         "sharesSold": {
                                           "shares": int.parse(
                                               sharedSold[i].toString()),
@@ -172,20 +173,32 @@ class _InsiderBulkUploadScreenState extends State<InsiderBulkUploadScreen> {
                             for (var row in excel.tables[table]!.rows) {
                               print("====>>${row}");
 
-                              companies.add(row.first!.value);
-                              sharedSold.add(row[1]!.value);
-                              sharesSoldPerson.add(row[2]!.value);
-                              sharedBought.add(row[3]!.value);
-                              sharesBoughtPerson.add(row[4]!.value);
-                              personCategories.add(row[5]!.value);
-                              shares.add(row[6]!.value);
-                              shareValue.add(row[7]!.value);
-                              transactionType.add(row[7]!.value);
-                              transactionMode.add(row[9]!.value);
+                              companiesId.add(row.first!.value);
+                              companies.add(row[1]!.value);
+                              sharedSold.add(row[2]!.value);
+                              sharesSoldPerson.add(row[3]!.value);
+                              sharedBought.add(row[4]!.value);
+                              sharesBoughtPerson.add(row[5]!.value);
+                              personCategories.add(row[6]!.value);
+                              shares.add(row[7]!.value);
+                              shareValue.add(row[8]!.value);
+                              transactionType.add(row[9]!.value);
+                              transactionMode.add(row[10]!.value);
                             }
-
                             setState(() {});
                           }
+
+                          companiesId.removeAt(0);
+                          companies.removeAt(0);
+                          sharedSold.removeAt(0);
+                          sharesSoldPerson.removeAt(0);
+                          sharedBought.removeAt(0);
+                          sharesBoughtPerson.removeAt(0);
+                          personCategories.removeAt(0);
+                          shares.removeAt(0);
+                          shareValue.removeAt(0);
+                          transactionType.removeAt(0);
+                          transactionMode.removeAt(0);
                         }
                       },
                       child: Container(
@@ -425,18 +438,6 @@ class _InsiderBulkUploadScreenState extends State<InsiderBulkUploadScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '${companies[index]}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
                                       Expanded(
                                         child: Container(
                                           alignment: Alignment.center,

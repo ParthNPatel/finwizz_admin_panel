@@ -26,7 +26,9 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
   List isGeneric = [];
   List type = [];
   List categories = [];
+  List categoriesId = [];
   List companies = [];
+  List companiesId = [];
   List news = [];
 
   AddCompanyViewModel addCompanyViewModel = Get.put(AddCompanyViewModel());
@@ -101,9 +103,10 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                                           "title": heading[i].toString(),
                                           "description": news[i].toString(),
                                           "source": source[i].toString(),
-                                          "companyId": companies[i].toString(),
+                                          "companyId":
+                                              companiesId[i].toString(),
                                           "categoryId":
-                                              categories[i].toString(),
+                                              categoriesId[i].toString(),
                                           "generic": false,
                                           "type": int.parse(type[i].toString())
                                         },
@@ -156,13 +159,25 @@ class _NewsBulkUploadScreenState extends State<NewsBulkUploadScreen> {
                               source.add(row[1]!.value);
                               isGeneric.add(row[2]!.value);
                               type.add(row[3]!.value);
-                              categories.add(row[4]!.value);
-                              companies.add(row[5]!.value);
-                              news.add(row[6]!.value);
+                              categories.add(row[5]!.value);
+                              companies.add(row[7]!.value);
+                              news.add(row[8]!.value);
+                              companiesId.add(row[4]!.value);
+                              categoriesId.add(row[6]!.value);
                             }
 
                             setState(() {});
                           }
+
+                          heading.removeAt(0);
+                          source.removeAt(0);
+                          isGeneric.removeAt(0);
+                          type.removeAt(0);
+                          categories.removeAt(0);
+                          companies.removeAt(0);
+                          news.removeAt(0);
+                          companiesId.removeAt(0);
+                          categoriesId.removeAt(0);
                         }
                       },
                       child: Container(

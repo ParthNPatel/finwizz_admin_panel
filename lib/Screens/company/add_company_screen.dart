@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:finwizz_admin/Model/Apis/api_response.dart';
@@ -230,6 +231,20 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                               color: AppColor.mainColor,
                               alignment: Alignment.center,
                               child: Text(
+                                'ID',
+                                style: TextStyle(
+                                  color: AppColor.whiteColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              // padding: const EdgeInsets.only(left: 20),
+                              color: AppColor.mainColor,
+                              alignment: Alignment.center,
+                              child: Text(
                                 'Stock Name',
                                 style: TextStyle(
                                   color: AppColor.whiteColor,
@@ -370,6 +385,47 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
                                                   ),
                                                   child: Row(
                                                     children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          // padding: const EdgeInsets.only(left: 20),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                '${getCompanyResponseModel.data![index].id?.substring(0, 7)}xxxx',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 20,
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  FlutterClipboard
+                                                                          .copy(
+                                                                              '${getCompanyResponseModel.data![index].id}')
+                                                                      .then(
+                                                                    (value) => snackBarGet(
+                                                                        seconds:
+                                                                            1,
+                                                                        'Company ID Copied!',
+                                                                        snackBarBackGroundColor:
+                                                                            AppColor.greenColor),
+                                                                  );
+                                                                },
+                                                                icon: Icon(
+                                                                    Icons.copy),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
                                                       Expanded(
                                                         child: Container(
                                                           // padding: const EdgeInsets.only(left: 20),
