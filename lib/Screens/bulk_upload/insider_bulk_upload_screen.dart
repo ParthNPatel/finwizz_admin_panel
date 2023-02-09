@@ -38,11 +38,6 @@ class _InsiderBulkUploadScreenState extends State<InsiderBulkUploadScreen> {
   AddMoversViewModel addMoversViewModel = Get.put(AddMoversViewModel());
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     print("DATe==>>${DateTime.now()}");
     final width = MediaQuery.of(context).size.width;
